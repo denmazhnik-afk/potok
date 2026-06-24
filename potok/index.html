@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Поток</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/day.css">
+  <link rel="stylesheet" href="css/month.css">
+  <link rel="stylesheet" href="css/finance.css">
+  <link rel="stylesheet" href="css/deadlines.css">
+  <link rel="stylesheet" href="css/ideas.css">
+</head>
+<body>
+
+  <div class="sync-status" id="syncStatus">
+    <div class="sync-dot"></div>
+    <span id="syncText">Синхронизация...</span>
+  </div>
+
+  <div class="xp-toast" id="xpToast">
+    <span class="xp-toast-icon">⚡</span>
+    <span id="xpToastText">+10 XP</span>
+  </div>
+
+  <div class="xp-toast" id="xpToast">
+    <span class="xp-toast-icon">⚡</span>
+    <span id="xpToastText">+10 XP</span>
+  </div>
+
+  <div id="app"></div>
+
+  <button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <script src="js/state.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/day.js"></script>
+  <script src="js/month.js"></script>
+  <script src="js/finance.js"></script>
+  <script src="js/deadlines.js"></script>
+  <script src="js/ideas.js"></script>
+  <script src="js/sleep.js"></script>
+  <script src="js/render.js"></script>
+</body>
+</html>

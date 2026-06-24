@@ -1,0 +1,99 @@
+:root {
+  --bg: #050506;
+  --bg2: #0a0a10;
+  --card: rgba(255,255,255,0.04);
+  --card-hover: rgba(255,255,255,0.065);
+  --border: rgba(255,255,255,0.07);
+  --border-light: rgba(255,255,255,0.12);
+  --text-primary: #FAFAFA;
+  --text-secondary: #B8B6B0;
+  --text-tertiary: #76746E;
+  --green: #6BE3A4;
+  --green-glow: rgba(107,227,164,0.25);
+  --green-dim: rgba(107,227,164,0.08);
+  --yellow: #F2C063;
+  --red: #FF6B6B;
+  --purple: #A78BFA;
+  --blue: #60A5FA;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(107,227,164,0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 15% 85%, rgba(96,165,250,0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 30% at 50% 50%, rgba(167,139,250,0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+  animation: bgDrift 36s ease-in-out infinite alternate;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 3 3' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1' height='1' fill='rgba(255,255,255,0.014)'/%3E%3C/svg%3E");
+  background-size: 3px 3px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes bgDrift {
+  from { transform: scale(1) translate(0,0); }
+  to { transform: scale(1.06) translate(-15px, 10px); }
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  #app { padding: 14px; }
+  .home-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .month-detail-layout {
+    grid-template-columns: 1fr;
+  }
+  .panel-day { grid-column: 1; grid-row: 1; }
+  .panel-plan { grid-column: 1; grid-row: 2; }
+  .panel-finance { grid-column: 1; grid-row: 3; }
+  .day-view-layout { grid-template-columns: 1fr; }
+  .cal-sidebar { position: static; order: -1; }
+  .month-detail-layout { grid-template-columns: 1fr; }
+  .finance-layout { grid-template-columns: 1fr; }
+  .day-note-grid { grid-template-columns: 1fr; }
+  .dash-title { font-size: 20px; }
+  .day-card { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .months-grid { grid-template-columns: 1fr 1fr; }
+  .water-cups-large { gap: 6px; }
+  .cup-btn { width: 34px; height: 34px; font-size: 16px; }
+  .rings-row { gap: 12px; }
+  .home-grid { gap: 12px; }
+}
