@@ -741,3 +741,25 @@
   gap: 3px;
   flex-wrap: wrap;
 }
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  .day-view-layout {
+    grid-template-columns: 1fr;
+  }
+  .cal-sidebar {
+    position: static;
+    order: -1;
+  }
+  .day-note-grid {
+    grid-template-columns: 1fr;
+  }
+  .sleep-times {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .sleep-day-fields {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

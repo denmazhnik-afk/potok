@@ -75,6 +75,9 @@ body::after {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
   }
+  .month-detail-layout {
+    grid-template-columns: 1fr;
+  }
   .panel-day { grid-column: 1; grid-row: 1; }
   .panel-plan { grid-column: 1; grid-row: 2; }
   .panel-finance { grid-column: 1; grid-row: 3; }
