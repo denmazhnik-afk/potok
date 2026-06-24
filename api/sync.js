@@ -3,6 +3,8 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const TABLE = 'app_state';
 const ROW_KEY = 'planner_data';
 
+export const config = { api: { bodyParser: true } };
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -27,10 +29,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      // Read body manually for reliability
-      let body = '';
-      for await (const chunk of req) body += chunk;
-      const { data } = JSON.parse(body);
+      const { data } = req.body;
 
       const url = `${SUPABASE_URL}/rest/v1/${TABLE}`;
       const r = await fetch(url, {
