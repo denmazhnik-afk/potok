@@ -237,7 +237,7 @@ function buildRing(pct, size, color, label) {
       <circle class="ring-fill" cx="${size/2}" cy="${size/2}" r="${r}"
         stroke="${color}" stroke-width="${sw}"
         stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/>
-      <text class="ring-text" x="${size/2}" y="${size/2}">${pct}%</text>
+      <text class="ring-text" x="${size/2}" y="${size/2}" dy="0.35em" transform="rotate(90 ${size/2} ${size/2})">${pct}%</text>
     </svg>
     <div class="ring-label">${label}</div>
   </div>`;

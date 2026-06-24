@@ -22,20 +22,17 @@ function buildDeadlinesPage() {
         statusClass = 'today';
         statusText = 'Сегодня!';
       } else {
-        statusClass = days <= 3 ? 'urgent' : 'normal';
+        statusClass = 'overdue';
         statusText = `${days} дн.`;
       }
 
-      const urgentBtn = item.urgent ? 'active' : '';
-      const urgentCls = item.urgent && !item.done ? 'urgent-highlight' : '';
       listHTML += `
-        <div class="deadline-item ${statusClass} ${urgentCls}">
+        <div class="deadline-item ${statusClass}">
           <div class="deadline-status">${statusText}</div>
           <div class="deadline-content">
             <div class="deadline-text ${item.done ? 'done' : ''}">${esc(item.text)}</div>
             <div class="deadline-date">${item.deadline}</div>
           </div>
-          <button class="task-urgent-btn ${urgentBtn}" onclick="toggleDeadlineTaskUrgent(${item.dayY},${item.dayM},${item.dayD},${item.taskIdx})" title="Срочно">⚡</button>
           <button class="deadline-toggle" onclick="toggleDeadlineTask(${item.dayY},${item.dayM},${item.dayD},${item.taskIdx})">
             ${item.done ? '✓' : '○'}
           </button>
@@ -67,16 +64,6 @@ function toggleDeadlineTask(y, m, d, taskIdx) {
   const dd = getDayData(y, m, d);
   if (dd.tasks[taskIdx]) {
     dd.tasks[taskIdx].done = !dd.tasks[taskIdx].done;
-    sortTasks(dd.tasks);
-    saveDayData(y, m, d, dd);
-    render();
-  }
-}
-
-function toggleDeadlineTaskUrgent(y, m, d, taskIdx) {
-  const dd = getDayData(y, m, d);
-  if (dd.tasks[taskIdx]) {
-    dd.tasks[taskIdx].urgent = !dd.tasks[taskIdx].urgent;
     sortTasks(dd.tasks);
     saveDayData(y, m, d, dd);
     render();

@@ -256,9 +256,6 @@
   font-size: 11px;
   font-weight: 700;
   text-anchor: middle;
-  dominant-baseline: central;
-  transform: rotate(90deg);
-  transform-origin: center;
 }
 
 /* ====== BUTTONS ====== */
