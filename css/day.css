@@ -762,4 +762,22 @@
     flex-direction: column;
     gap: 10px;
   }
+  .task-urgent-btn {
+    opacity: 0.4 !important;
+    font-size: 16px;
+  }
+  .task-urgent-btn.active {
+    opacity: 1 !important;
+  }
+  .ring-svg {
+    width: 56px;
+    height: 56px;
+  }
+  .add-row {
+    flex-wrap: wrap;
+  }
+  .deadline-input {
+    max-width: 100%;
+    flex: 1 1 130px;
+  }
 }

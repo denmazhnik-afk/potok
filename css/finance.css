@@ -78,3 +78,31 @@
 
 .wish-item:hover .wish-del { opacity: 1; }
 .wish-del:hover { color: var(--red); }
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  .finance-layout {
+    grid-template-columns: 1fr;
+  }
+  .finance-entry {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .entry-del {
+    opacity: 0.5;
+  }
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  .finance-layout {
+    grid-template-columns: 1fr;
+  }
+  .finance-entry {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .entry-del {
+    opacity: 0.5;
+  }
+}

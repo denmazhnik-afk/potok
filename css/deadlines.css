@@ -109,3 +109,23 @@
   color: #facc15;
   text-shadow: 0 0 8px rgba(250, 204, 21, 0.3);
 }
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  .deadline-item {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .deadline-status {
+    min-width: auto;
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+  .add-row {
+    flex-wrap: wrap;
+  }
+  .deadline-input {
+    max-width: 100%;
+    flex: 1 1 130px;
+  }
+}

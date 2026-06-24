@@ -83,6 +83,19 @@ function afterRender() {
     drawSleepChart('sleepPageChart', getSleepData14());
   }
 
+  if (view === 'plan') {
+    const curCard = document.getElementById('currentMonthCard');
+    if (curCard && !viewData._scrolledToCurrent) {
+      setTimeout(() => {
+        curCard.scrollIntoView({ behavior: 'auto', block: 'center' });
+        curCard.style.transition = 'box-shadow 0.3s';
+        curCard.style.boxShadow = '0 0 30px rgba(107,227,164,0.35)';
+        setTimeout(() => { curCard.style.boxShadow = ''; }, 1500);
+        viewData._scrolledToCurrent = true;
+      }, 50);
+    }
+  }
+
   if (view === 'finance') {
     const tab = uiState.finTab;
     if (tab === 'balance') {
@@ -197,6 +210,139 @@ function initScrollTop() {
   }, { passive: true });
 }
 
+// ==================== TOUCH DRAG & DROP ====================
+let _touchDrag = { active: false, el: null, idx: null, id: null, type: null, startY: 0, clone: null, targetIdx: null, scrollTimer: null };
+
+function initTouchDrag() {
+  if (window._touchDragInited) return;
+  window._touchDragInited = true;
+
+  document.addEventListener('touchstart', touchDragStart, { passive: false });
+  document.addEventListener('touchmove', touchDragMove, { passive: false });
+  document.addEventListener('touchend', touchDragEnd, { passive: false });
+}
+
+function touchDragStart(e) {
+  const handle = e.target.closest('.task-drag');
+  if (!handle) return;
+
+  const item = handle.closest('.task-item, .day-task-mini');
+  if (!item) return;
+
+  e.preventDefault();
+  const touch = e.touches[0];
+
+  // Determine what kind of list this is
+  let type = 'day';
+  let dragId = null;
+  if (item.closest('.idea-tasks-list')) {
+    type = 'idea';
+    dragId = viewData.id;
+  } else if (item.closest('.panel-day .day-tasks-col')) {
+    type = 'home';
+  } else if (item.closest('.day-card .task-list')) {
+    type = 'month';
+    const card = item.closest('.day-card');
+    if (card && card.id) dragId = card.id.replace('dc-', '');
+  }
+
+  _touchDrag.active = true;
+  _touchDrag.el = item;
+  _touchDrag.idx = parseInt(item.getAttribute('data-idx'));
+  _touchDrag.id = dragId;
+  _touchDrag.type = type;
+  _touchDrag.startY = touch.clientY;
+  _touchDrag.targetIdx = null;
+
+  // Create floating clone
+  const rect = item.getBoundingClientRect();
+  const clone = item.cloneNode(true);
+  clone.style.cssText = `
+    position: fixed; z-index: 9999; pointer-events: none;
+    width: ${rect.width}px; opacity: 0.85;
+    box-shadow: 0 8px 30px rgba(107,227,164,0.3);
+    border: 1px solid rgba(107,227,164,0.4);
+    border-radius: 10px; transition: none;
+    left: ${rect.left}px; top: ${rect.top}px;
+  `;
+  document.body.appendChild(clone);
+  _touchDrag.clone = clone;
+  item.style.opacity = '0.3';
+}
+
+function touchDragMove(e) {
+  if (!_touchDrag.active || !_touchDrag.clone) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  const rect = _touchDrag.el.getBoundingClientRect();
+  _touchDrag.clone.style.top = (touch.clientY - rect.height / 2) + 'px';
+
+  // Hide clone to find element underneath
+  _touchDrag.clone.style.display = 'none';
+  const elBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+  _touchDrag.clone.style.display = '';
+
+  // Clear old highlights
+  document.querySelectorAll('.touch-drag-over').forEach(el => el.classList.remove('touch-drag-over'));
+  _touchDrag.targetIdx = null;
+
+  if (!elBelow) return;
+  const target = elBelow.closest('.task-item, .day-task-mini');
+  if (!target || target === _touchDrag.el) return;
+
+  const tIdx = parseInt(target.getAttribute('data-idx'));
+  if (isNaN(tIdx)) return;
+  _touchDrag.targetIdx = tIdx;
+  target.classList.add('touch-drag-over');
+}
+
+function touchDragEnd(e) {
+  if (!_touchDrag.active) return;
+
+  document.querySelectorAll('.touch-drag-over').forEach(el => el.classList.remove('touch-drag-over'));
+
+  if (_touchDrag.clone) {
+    _touchDrag.clone.remove();
+    _touchDrag.clone = null;
+  }
+  if (_touchDrag.el) {
+    _touchDrag.el.style.opacity = '';
+  }
+
+  if (_touchDrag.targetIdx !== null && _touchDrag.targetIdx !== _touchDrag.idx) {
+    const fromIdx = _touchDrag.idx;
+    const toIdx = _touchDrag.targetIdx;
+    const type = _touchDrag.type;
+
+    if (type === 'home' || type === 'day') {
+      const td = getDayData(ACT_Y, ACT_M, ACT_D);
+      const [item] = td.tasks.splice(fromIdx, 1);
+      td.tasks.splice(toIdx, 0, item);
+      saveDayData(ACT_Y, ACT_M, ACT_D, td);
+      render();
+    } else if (type === 'month') {
+      const { y, m } = viewData;
+      const dayNum = parseInt(_touchDrag.id);
+      const dd = getDayData(y, m, dayNum);
+      const [item] = dd.tasks.splice(fromIdx, 1);
+      dd.tasks.splice(toIdx, 0, item);
+      saveDayData(y, m, dayNum, dd);
+      render();
+    } else if (type === 'idea') {
+      const ideas = getIdeas();
+      const idea = ideas.find(p => p.id === _touchDrag.id);
+      if (idea) {
+        const [item] = idea.tasks.splice(fromIdx, 1);
+        idea.tasks.splice(toIdx, 0, item);
+        saveIdeas(ideas);
+        render();
+      }
+    }
+  }
+
+  _touchDrag = { active: false, el: null, idx: null, id: null, type: null, startY: 0, clone: null, targetIdx: null, scrollTimer: null };
+}
+
 // ==================== SCROLL ====================
 function scrollToDay(d) {
   const el = document.getElementById(`dc-${d}`) || document.getElementById(`day-card-${d}`);
@@ -273,6 +419,7 @@ async function init() {
   await loadFromSupabase();
   doRollover();
   initScrollTop();
+  initTouchDrag();
   render();
 }
 

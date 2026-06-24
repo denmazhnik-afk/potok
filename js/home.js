@@ -232,7 +232,7 @@ function buildRing(pct, size, color, label) {
   const circ = 2 * Math.PI * r;
   const offset = circ - (pct/100) * circ;
   return `<div class="ring-wrap">
-    <svg class="ring-svg" width="${size}" height="${size}">
+    <svg class="ring-svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
       <circle class="ring-bg" cx="${size/2}" cy="${size/2}" r="${r}" stroke-width="${sw}"/>
       <circle class="ring-fill" cx="${size/2}" cy="${size/2}" r="${r}"
         stroke="${color}" stroke-width="${sw}"

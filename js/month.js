@@ -5,7 +5,7 @@ function buildPlanPage() {
     <button class="back-btn" onclick="goHome()">← Назад</button>
     <h2 class="page-heading">Планировщик</h2>
   </div>
-  <div class="months-grid">`;
+  <div class="months-grid" id="monthsGrid">`;
 
   YEARS.forEach(y => {
     for (let m = 0; m < 12; m++) {
@@ -18,7 +18,7 @@ function buildPlanPage() {
       const pct = totalG > 0 ? doneG/totalG*100 : 0;
       const daysLeft = isCur ? dim - ACT_D : (isPast ? 0 : dim);
 
-      html += `<div class="month-card ${isCur?'is-current':''} ${isPast?'is-past':''}" onclick="openMonthDetail(${y},${m})">
+      html += `<div class="month-card ${isCur?'is-current':''} ${isPast?'is-past':''}" ${isCur?'id="currentMonthCard"':''} onclick="openMonthDetail(${y},${m})">
         <div class="mc-year">${y}</div>
         <div class="mc-name ${isCur?'is-current-name':''}">${isCur ? '● ' : ''}${MONTHS_RU[m]}</div>
         <div class="mc-days">${dim} дн.${isCur?' · ещё ' + daysLeft : ''}</div>
@@ -91,7 +91,11 @@ function buildMonthDetail() {
       const dlBadge = t.deadline ? `<span class="task-deadline-badge ${t.done ? 'done' : ''}">${t.deadline}</span>` : '';
       const urgentCls = isUrgent ? 'urgent-row' : '';
       const urgentBtn = isUrgent ? 'active' : '';
-      tasksHTML += `<li class="task-item ${t.done?'done-row':''} ${hasDeadline?'deadline-row':''} ${urgentCls}" data-flip-id="mt-${d}-${flipKey(t.text)}">
+      tasksHTML += `<li class="task-item ${t.done?'done-row':''} ${hasDeadline?'deadline-row':''} ${urgentCls}"
+        draggable="true" data-idx="${ti}" data-flip-id="mt-${d}-${flipKey(t.text)}"
+        ondragstart="monthDragStart(event,${d},${ti})" ondragover="monthDragOver(event)"
+        ondrop="monthDrop(event,${d},${ti})" ondragend="monthDragEnd(event)">
+        <span class="task-drag" title="Перетащить">⋮⋮</span>
         <div class="task-cb ${t.done?'checked':''}" onclick="toggleMonthTask(${d},${ti})"></div>
         <span class="task-name ${t.done?'struck':''}">${esc(t.text)}</span>
         ${dlBadge}
@@ -208,6 +212,41 @@ function confirmMonthTask(d) {
   saveDayData(y, m, d, dd);
   delete uiState.addingTask[`month-${d}`];
   render();
+}
+
+// ==================== MONTH DRAG & DROP ====================
+let _monthDragDay = null;
+let _monthDragIdx = null;
+
+function monthDragStart(e, day, idx) {
+  _monthDragDay = day;
+  _monthDragIdx = idx;
+  e.dataTransfer.effectAllowed = 'move';
+  e.target.style.opacity = '0.4';
+}
+
+function monthDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function monthDrop(e, day, targetIdx) {
+  e.preventDefault();
+  if (_monthDragDay !== day || _monthDragIdx === null || _monthDragIdx === targetIdx) return;
+  const { y, m } = viewData;
+  const dd = getDayData(y, m, day);
+  const [item] = dd.tasks.splice(_monthDragIdx, 1);
+  dd.tasks.splice(targetIdx, 0, item);
+  saveDayData(y, m, day, dd);
+  _monthDragDay = null;
+  _monthDragIdx = null;
+  render();
+}
+
+function monthDragEnd(e) {
+  _monthDragDay = null;
+  _monthDragIdx = null;
+  e.target.style.opacity = '';
 }
 
 // ==================== GOALS ====================
