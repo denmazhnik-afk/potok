@@ -89,6 +89,22 @@ function save() {
   }
 }
 
+// ==================== PERIODIC SYNC ====================
+function startPeriodicSync() {
+  // Push to Supabase every 30s if there were local changes
+  setInterval(() => {
+    if (supabaseClient && !isSyncing) syncToSupabase();
+  }, 30000);
+
+  // Pull from Supabase when user returns to tab
+  document.addEventListener('visibilitychange', async () => {
+    if (!document.hidden && supabaseClient) {
+      await loadFromSupabase();
+      render();
+    }
+  });
+}
+
 // ==================== CONSTANTS & HELPERS ====================
 const MONTHS_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 const MONTHS_SHORT = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];

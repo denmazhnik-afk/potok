@@ -420,6 +420,7 @@ async function init() {
   doRollover();
   initScrollTop();
   initTouchDrag();
+  startPeriodicSync();
   render();
 }
 
