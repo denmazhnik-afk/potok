@@ -431,16 +431,28 @@ function startSyncPolling() {
 
 async function init() {
   console.log('🚀 Initializing...');
-  try {
-    await loadFromSupabase();
-  } catch (e) {
-    console.error('Failed to load from Supabase:', e);
-    showSyncStatus('Ошибка загрузки', 'error');
-  }
+
+  // Start from cache immediately (instant render)
   doRollover();
   initScrollTop();
   initTouchDrag();
   render();
+
+  // Now try to upgrade from cloud
+  initSupabase();
+  if (supabaseClient) {
+    await loadFromSupabase();
+    render(); // Re-render with fresh cloud data
+  } else {
+    // CDN async not loaded yet, wait and retry
+    setTimeout(async () => {
+      if (initSupabase()) {
+        await loadFromSupabase();
+        render();
+      }
+    }, 2000);
+  }
+
   startSyncPolling();
 }
 

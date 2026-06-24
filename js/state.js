@@ -1,14 +1,18 @@
 // ==================== SUPABASE SETUP ====================
 let supabaseClient = null;
 
-if (typeof window.supabase !== 'undefined') {
-  supabaseClient = window.supabase.createClient(
-    'https://qgmzuhprvbdwjgtwajei.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFnbXp1aHBydmJkd2pndHdhamVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMzQ5NDcsImV4cCI6MjA5NzgxMDk0N30.lZ_qaVEZ1UR4btb2VvgD60sGH39fa10hj2iCB9wFo8I'
-  );
-  console.log('✅ Supabase client created');
-} else {
+function initSupabase() {
+  if (supabaseClient) return true;
+  if (typeof window.supabase !== 'undefined') {
+    supabaseClient = window.supabase.createClient(
+      'https://qgmzuhprvbdwjgtwajei.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFnbXp1aHBydmJkd2pndHdhamVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMzQ5NDcsImV4cCI6MjA5NzgxMDk0N30.lZ_qaVEZ1UR4btb2VvgD60sGH39fa10hj2iCB9wFo8I'
+    );
+    console.log('✅ Supabase client created');
+    return true;
+  }
   console.warn('❌ Supabase library not loaded');
+  return false;
 }
 
 // ==================== STATE ====================
