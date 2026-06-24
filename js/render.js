@@ -420,7 +420,14 @@ function startSyncPolling() {
   if (_syncInterval) clearInterval(_syncInterval);
   _syncInterval = setInterval(() => {
     if (supabaseClient && !isSyncing) {
-      loadFromSupabase().then(() => {});
+      const before = JSON.stringify(localStore);
+      loadFromSupabase().then(() => {
+        const after = JSON.stringify(localStore);
+        if (before !== after) {
+          console.log('🔄 Remote changes detected, re-rendering');
+          render();
+        }
+      });
     }
   }, 60000);
 }

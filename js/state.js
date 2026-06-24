@@ -149,14 +149,20 @@ async function loadFromSupabase() {
 }
 
 function save() {
+  localStorage.setItem('plannerV2', JSON.stringify(localStore));
   if (_saveTimer) clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(() => {
-    localStorage.setItem('plannerV2', JSON.stringify(localStore));
-    if (supabaseClient && Date.now() - lastSync > 2000) {
-      setTimeout(() => syncToSupabase(), 500);
-    }
-  }, 100);
+  if (supabaseClient && Date.now() - lastSync > 2000) {
+    _saveTimer = setTimeout(() => syncToSupabase(), 200);
+  }
 }
+
+// Force sync on page close — use sendBeacon with supabase REST
+window.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden' && supabaseClient && Date.now() - lastSync > 2000) {
+    // Fire and forget — supabase client uses fetch internally
+    syncToSupabase();
+  }
+});
 
 // ==================== CONSTANTS & HELPERS ====================
 const MONTHS_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
