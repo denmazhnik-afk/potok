@@ -1,54 +1,20 @@
 // ==================== SUPABASE SETUP ====================
 let supabaseClient = null;
 
-function initSupabase() {
-  if (supabaseClient) return true;
-  if (typeof window.supabase !== 'undefined') {
-    supabaseClient = window.supabase.createClient(
-      'https://qgmzuhprvbdwjgtwajei.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFnbXp1aHBydmJkd2pndHdhamVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMzQ5NDcsImV4cCI6MjA5NzgxMDk0N30.lZ_qaVEZ1UR4btb2VvgD60sGH39fa10hj2iCB9wFo8I'
-    );
-    console.log('✅ Supabase client created');
-    return true;
-  }
+if (typeof window.supabase !== 'undefined') {
+  supabaseClient = window.supabase.createClient(
+    'https://qgmzuhprvbdwjgtwajei.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFnbXp1aHBydmJkd2pndHdhamVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMzQ5NDcsImV4cCI6MjA5NzgxMDk0N30.lZ_qaVEZ1UR4btb2VvgD60sGH39fa10hj2iCB9wFo8I'
+  );
+  console.log('✅ Supabase client created');
+} else {
   console.warn('❌ Supabase library not loaded');
-  return false;
 }
 
 // ==================== STATE ====================
 let localStore = JSON.parse(localStorage.getItem('plannerV2') || '{}');
 let isSyncing = false;
-let _saveTimer = null;
-let _loaded = false; // Only sync AFTER initial load
-
-// ==================== SYNC ====================
-function touchKey(key) {
-  if (!localStore._ts) localStore._ts = {};
-  localStore._ts[key] = Date.now();
-}
-
-function mergeStores(remote) {
-  const localTs = localStore._ts || {};
-  const remoteTs = remote._ts || {};
-  const allKeys = new Set([...Object.keys(localStore), ...Object.keys(remote)]);
-
-  allKeys.forEach(key => {
-    if (key === '_ts') return;
-    const lt = localTs[key] || 0;
-    const rt = remoteTs[key] || 0;
-    if (rt > lt) {
-      localStore[key] = remote[key];
-    }
-  });
-
-  if (!localStore._ts) localStore._ts = {};
-  allKeys.forEach(key => {
-    if (key === '_ts') return;
-    const lt = localTs[key] || 0;
-    const rt = remoteTs[key] || 0;
-    localStore._ts[key] = Math.max(lt, rt);
-  });
-}
+let lastSync = 0;
 
 function showSyncStatus(text, type = 'syncing') {
   const status = document.getElementById('syncStatus');
@@ -62,8 +28,9 @@ function showSyncStatus(text, type = 'syncing') {
   }
 }
 
+// Синхронизация В СУПЕЙБАЗ
 async function syncToSupabase() {
-  if (!supabaseClient || isSyncing || !_loaded) return;
+  if (!supabaseClient || isSyncing) return;
 
   isSyncing = true;
   showSyncStatus('Синхронизация...');
@@ -79,6 +46,7 @@ async function syncToSupabase() {
 
     if (error) throw error;
 
+    lastSync = Date.now();
     showSyncStatus('Синхронизировано', 'success');
   } catch (err) {
     console.error('Sync error:', err);
@@ -88,10 +56,9 @@ async function syncToSupabase() {
   }
 }
 
+// Загрузка ИЗ СУПЕЙБАЗА
 async function loadFromSupabase() {
   if (!supabaseClient) {
-    localStore = JSON.parse(localStorage.getItem('plannerV2') || '{}');
-    _loaded = true;
     console.log('Working in local mode');
     return;
   }
@@ -106,24 +73,19 @@ async function loadFromSupabase() {
     if (error && error.code !== 'PGRST116') throw error;
 
     if (data && data.data) {
-      mergeStores(data.data);
+      localStore = data.data;
       localStorage.setItem('plannerV2', JSON.stringify(localStore));
       showSyncStatus('Данные загружены', 'success');
     }
-    _loaded = true;
   } catch (err) {
     console.error('Load error:', err);
-    localStore = JSON.parse(localStorage.getItem('plannerV2') || '{}');
-    _loaded = true;
-    showSyncStatus('Оффлайн режим', 'error');
   }
 }
 
 function save() {
   localStorage.setItem('plannerV2', JSON.stringify(localStore));
-  if (_saveTimer) clearTimeout(_saveTimer);
-  if (supabaseClient) {
-    _saveTimer = setTimeout(() => syncToSupabase(), 300);
+  if (supabaseClient && Date.now() - lastSync > 2000) {
+    setTimeout(() => syncToSupabase(), 500);
   }
 }
 
@@ -246,7 +208,6 @@ function setMood(y, m, d, val) {
 function saveDayData(y, m, d, data) {
   const k = `day:${y}-${m}-${d}`;
   localStore[k] = data;
-  touchKey(k);
   save();
 }
 
@@ -259,7 +220,6 @@ function getMonthData(y, m) {
 function saveMonthData(y, m, data) {
   const k = `month:${y}-${m}`;
   localStore[k] = data;
-  touchKey(k);
   save();
 }
 
@@ -272,18 +232,17 @@ function getWater() {
 function saveWater(v) {
   const k = `water:${activeDateStr()}`;
   localStore[k] = v;
-  touchKey(k);
   save();
 }
 
 function getFinBalance() { return localStore['fin:balance'] || []; }
-function saveFinBalance(v) { localStore['fin:balance'] = v; touchKey('fin:balance'); save(); }
+function saveFinBalance(v) { localStore['fin:balance'] = v; save(); }
 
 function getFinIncome() { return localStore['fin:income'] || []; }
-function saveFinIncome(v) { localStore['fin:income'] = v; touchKey('fin:income'); save(); }
+function saveFinIncome(v) { localStore['fin:income'] = v; save(); }
 
 function getWishlist() { return localStore['wishlist'] || []; }
-function saveWishlist(v) { localStore['wishlist'] = v; touchKey('wishlist'); save(); }
+function saveWishlist(v) { localStore['wishlist'] = v; save(); }
 
 // ==================== ROLLOVER ====================
 function doRollover() {
@@ -303,8 +262,6 @@ function doRollover() {
     }
     prev._rolledOver = rollKey;
     localStore[yk] = prev;
-    touchKey(yk);
-    touchKey(`day:${ACT_Y}-${ACT_M}-${ACT_D}`);
     save();
   }
 }
@@ -344,8 +301,6 @@ function addXP(amount, reason, actionKey) {
   const cutoffKey = `${cutoff.getFullYear()}-${String(cutoff.getMonth()+1).padStart(2,'0')}-${cutoff.getDate()}`;
   Object.keys(localStore._xpLog).forEach(k => { if (k < cutoffKey) delete localStore._xpLog[k]; });
 
-  touchKey('_xp');
-  touchKey('_xpLog');
   save();
   showXPToast(amount);
   return true;
@@ -384,9 +339,7 @@ function getSleep(y, m, d) {
 }
 
 function saveSleep(y, m, d, data) {
-  const k = `sleep:${y}-${m}-${d}`;
-  localStore[k] = data;
-  touchKey(k);
+  localStore[`sleep:${y}-${m}-${d}`] = data;
   if (data.bed && data.wake) addXP(XP_PER_SLEEP, 'Сон', `sleep-${y}-${m}-${d}`);
   save();
 }
@@ -473,7 +426,6 @@ function getIdeas() {
 
 function saveIdeas(v) {
   localStore['ideas'] = v;
-  touchKey('ideas');
   save();
 }
 

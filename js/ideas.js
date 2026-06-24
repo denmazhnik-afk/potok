@@ -14,7 +14,10 @@ function buildIdeasPage() {
         <div class="idea-card" onclick="openIdeaDetail('${esc(p.id)}')">
           <div class="idea-emoji">${p.emoji || '📁'}</div>
           <div class="idea-name">${esc(p.name)}</div>
-          ${total > 0 ? buildRing(pct, 60, pct === 100 ? '#6BE3A4' : pct > 60 ? '#60A5FA' : '#F2C063', `${done}/${total}`) : '<div class="idea-stats">Нет задач</div>'}
+          <div class="idea-stats">${done}/${total} задач</div>
+          <div class="idea-bar">
+            <div class="idea-bar-fill" style="width:${pct}%"></div>
+          </div>
         </div>
       `;
     });

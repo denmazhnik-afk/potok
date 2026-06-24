@@ -414,46 +414,13 @@ function bindEvents() {
 }
 
 // ==================== INIT ====================
-let _syncInterval = null;
-
-function startSyncPolling() {
-  if (_syncInterval) clearInterval(_syncInterval);
-  _syncInterval = setInterval(async () => {
-    if (supabaseClient && !isSyncing) {
-      const before = JSON.stringify(localStore);
-      await loadFromSupabase();
-      if (JSON.stringify(localStore) !== before) {
-        render();
-      }
-    }
-  }, 60000);
-}
-
 async function init() {
   console.log('🚀 Initializing...');
-
-  // Start from cache immediately (instant render)
+  await loadFromSupabase();
   doRollover();
   initScrollTop();
   initTouchDrag();
   render();
-
-  // Now try to upgrade from cloud
-  initSupabase();
-  if (supabaseClient) {
-    await loadFromSupabase();
-    render(); // Re-render with fresh cloud data
-  } else {
-    // CDN async not loaded yet, wait and retry
-    setTimeout(async () => {
-      if (initSupabase()) {
-        await loadFromSupabase();
-        render();
-      }
-    }, 2000);
-  }
-
-  startSyncPolling();
 }
 
 if (document.readyState === 'loading') {
