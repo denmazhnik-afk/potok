@@ -31,10 +31,7 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST') {
       if (!req.body || req.body.data === undefined) {
-        return res.status(400).json({
-          error: 'No data in body',
-          hasBody: !!req.body,
-        });
+        return res.status(400).json({ error: 'No data in request' });
       }
 
       const url = SUPABASE_URL + '/rest/v1/' + TABLE;
