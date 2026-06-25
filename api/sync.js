@@ -3,7 +3,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const TABLE = 'app_state';
 const ROW_KEY = 'planner_data';
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -34,12 +34,21 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       let data;
 
-      // req.body is parsed automatically by Vercel Node.js runtime
       if (req.body && req.body.data !== undefined) {
+        // Body was auto-parsed by Vercel
         data = req.body.data;
       } else {
-        // Debug: return what we received so we can diagnose
-        return res.status(400).json({ error: 'No data in body', hasBody: !!req.body, bodyKeys: req.body ? Object.keys(req.body) : [] });
+        // Fallback: read raw body
+        const chunks = [];
+        for await (const chunk of req) {
+          chunks.push(chunk);
+        }
+        const raw = Buffer.concat(chunks).toString('utf8');
+        if (!raw) {
+          return res.status(400).json({ error: 'Empty request body' });
+        }
+        const parsed = JSON.parse(raw);
+        data = parsed.data;
       }
 
       const url = `${SUPABASE_URL}/rest/v1/${TABLE}`;
@@ -64,4 +73,4 @@ export default async function handler(req, res) {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-}
+};
