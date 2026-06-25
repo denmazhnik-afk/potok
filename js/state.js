@@ -461,6 +461,7 @@ function getDayTasksWithIdeas(y, m, d) {
       done: it.done,
       urgent: it.urgent,
       deadline: it.scheduledDate,
+      scheduledTime: it.scheduledTime || null,
       ideaId: it.ideaId,
       ideaTaskId: it.id,
       fromIdea: true
