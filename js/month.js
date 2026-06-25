@@ -19,10 +19,16 @@ function buildPlanPage() {
       const daysLeft = isCur ? dim - ACT_D : (isPast ? 0 : dim);
 
       html += `<div class="month-card ${isCur?'is-current':''} ${isPast?'is-past':''}" ${isCur?'id="currentMonthCard"':''} onclick="openMonthDetail(${y},${m})">
-        <div class="mc-year">${y}</div>
-        <div class="mc-name ${isCur?'is-current-name':''}">${isCur ? '● ' : ''}${MONTHS_RU[m]}</div>
-        <div class="mc-days">${dim} дн.${isCur?' · ещё ' + daysLeft : ''}</div>
+        <div class="mc-top">
+          <div class="mc-name ${isCur?'is-current-name':''}">${isCur ? '● ' : ''}${MONTHS_RU[m]}</div>
+          <div class="mc-year">${y}</div>
+        </div>
+        <div class="mc-goals">${totalG > 0 ? '🎯 ' + totalG + ' ' + (totalG === 1 ? 'цель' : totalG < 5 ? 'цели' : 'целей') : '—'}</div>
         <div class="mc-bar"><div class="mc-bar-fill" style="width:${pct}%"></div></div>
+        <div class="mc-bottom">
+          <div class="mc-pct">${totalG > 0 ? Math.round(pct) + '%' : ''}</div>
+          <div class="mc-days">${dim} дн.${isCur ? ' · осталось ' + daysLeft : ''}</div>
+        </div>
       </div>`;
     }
   });
