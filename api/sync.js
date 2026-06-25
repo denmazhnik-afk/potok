@@ -30,24 +30,20 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      const incoming = req.body;
-
-      if (!incoming || !incoming.data) {
+      if (!req.body || req.body.data === undefined) {
         return res.status(400).json({
           error: 'No data in body',
           hasBody: !!req.body,
-          bodyType: typeof req.body,
-          keys: req.body ? Object.keys(req.body) : [],
         });
       }
 
       const url = SUPABASE_URL + '/rest/v1/' + TABLE;
       const r = await fetch(url, {
         method: 'POST',
-        headers: { ...headers, Prefer: 'resolution=merge-duplicates' },
+        headers: Object.assign({}, headers, { Prefer: 'resolution=merge-duplicates' }),
         body: JSON.stringify({
           key: ROW_KEY,
-          data: incoming.data,
+          data: req.body.data,
           updated_at: new Date().toISOString(),
         }),
       });
@@ -55,7 +51,7 @@ export default async function handler(req, res) {
       if (r.ok) {
         return res.status(200).json({ ok: true });
       }
-      const json = await r.json().catch(() => ({}));
+      const json = await r.json().catch(function() { return {}; });
       return res.status(500).json({ error: json });
     }
 
