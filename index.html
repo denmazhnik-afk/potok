@@ -2,9 +2,9 @@
 <html lang="ru">
 <head>
   <script>
-    window.onerror = function(msg, url, line) {
-      alert('Ошибка JS: ' + msg + '\nФайл: ' + url + '\nСтрока: ' + line);
-    };
+    window.addEventListener('error', function(e) {
+      alert('Файл: ' + e.filename + '\nСтрока: ' + e.lineno + '\nОшибка: ' + (e.error ? e.error.message : e.message));
+    });
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
