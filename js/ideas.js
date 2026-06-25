@@ -25,7 +25,6 @@ function buildIdeasPage() {
 
   return `
     <div class="page-header">
-      <button class="back-btn" onclick="goHome()">← Назад</button>
       <h2 class="page-heading">💡 База идей</h2>
       <button class="btn-primary" onclick="startAddIdea()">+ Проект</button>
     </div>

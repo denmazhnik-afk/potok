@@ -1,10 +1,6 @@
 // ==================== PLAN PAGE ====================
 function buildPlanPage() {
   let html = `
-  <div class="page-header">
-    <button class="back-btn" onclick="goHome()">← Назад</button>
-    <h2 class="page-heading">Планировщик</h2>
-  </div>
   <div class="months-grid" id="monthsGrid">`;
 
   YEARS.forEach(y => {

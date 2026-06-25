@@ -38,6 +38,7 @@ function render() {
   bindEvents();
   afterRender();
   applyFlipAnimation();
+  updateNav();
 }
 
 function buildHTML() {
@@ -186,6 +187,24 @@ function openIdeas() {
 function openIdeaDetail(id) {
   view = 'idea-detail'; viewData = { id };
   resetUI(); render();
+}
+
+// ==================== SIDEBAR / TABBAR NAV ====================
+function navTo(section) {
+  if (section === 'plan') openMonthDetail(ACT_Y, ACT_M);
+  else if (section === 'home') goHome();
+  else if (section === 'ideas') openIdeas();
+}
+
+function updateNav() {
+  const section = view === 'home' ? 'home'
+    : (view === 'ideas' || view === 'idea-detail') ? 'ideas'
+    : 'plan';
+
+  document.querySelectorAll('.sidebar-btn, .tabbar-btn').forEach(function(btn) {
+    if (btn.dataset.view === section) btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
 }
 
 function resetUI() {
