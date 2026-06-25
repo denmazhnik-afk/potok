@@ -3,10 +3,6 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const TABLE = 'app_state';
 const ROW_KEY = 'planner_data';
 
-export const config = {
-  api: { bodyParser: true },
-};
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -36,7 +32,15 @@ export default async function handler(req, res) {
 
     // POST — сохранение данных
     if (req.method === 'POST') {
-      const { data } = req.body;
+      let data;
+
+      // req.body is parsed automatically by Vercel Node.js runtime
+      if (req.body && req.body.data !== undefined) {
+        data = req.body.data;
+      } else {
+        // Debug: return what we received so we can diagnose
+        return res.status(400).json({ error: 'No data in body', hasBody: !!req.body, bodyKeys: req.body ? Object.keys(req.body) : [] });
+      }
 
       const url = `${SUPABASE_URL}/rest/v1/${TABLE}`;
       const r = await fetch(url, {
