@@ -154,6 +154,11 @@ function getDayData(y, m, d) {
   const k = `day:${y}-${m}-${d}`;
   if (!localStore[k]) localStore[k] = { tasks: [], summary: '', thoughts: '', mood: 0 };
   if (!localStore[k].mood) localStore[k].mood = 0;
+
+  if (localStore[k].tasks) {
+    localStore[k].tasks = localStore[k].tasks.filter(t => t !== null && t !== undefined);
+  }
+  
   return localStore[k];
 }
 
@@ -240,12 +245,12 @@ function doRollover() {
   const prev = localStore[yk];
   const rollKey = `${ACT_Y}-${String(ACT_M+1).padStart(2,'0')}-${String(ACT_D).padStart(2,'0')}`;
   if (prev && prev.tasks && prev._rolledOver !== rollKey) {
-    const undone = prev.tasks.filter(t => !t.done);
+    const undone = prev.tasks.filter(t => t && !t.done);
     if (undone.length > 0) {
       const td = getDayData(ACT_Y, ACT_M, ACT_D);
-      const existingTexts = new Set(td.tasks.map(t => t.text));
+      const existingTexts = new Set(td.tasks.filter(t => t).map(t => t.text));
       undone.forEach(t => {
-        if (!existingTexts.has(t.text)) td.tasks.push({
+        if (t && !existingTexts.has(t.text)) td.tasks.push({
           text: t.text, done: false,
           deadline: t.deadline, urgent: t.urgent,
           ideaId: t.ideaId, ideaTaskId: t.ideaTaskId
@@ -452,10 +457,12 @@ function getDayTasksWithIdeas(y, m, d) {
   const dd = getDayData(y, m, d);
   const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
   const ideaTasks = getIdeaTasksForDate(dateStr);
-  const existingTexts = new Set(dd.tasks.map(t => t.text));
+  
+  // Добавлен фильтр t => t
+  const existingTexts = new Set(dd.tasks.filter(t => t).map(t => t.text));
 
   const virtual = ideaTasks
-    .filter(it => !existingTexts.has(it.text))
+    .filter(it => it && !existingTexts.has(it.text))
     .map(it => ({
       text: it.text,
       done: it.done,
