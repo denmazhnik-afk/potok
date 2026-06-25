@@ -124,7 +124,7 @@ function buildMonthDetail() {
       <div>
         <div class="day-date">
           ${d} ${MONTHS_SHORT[m]}<span class="day-weekday-tag">, ${wd}</span>
-          ${dd.mood > 0 ? `<span class="day-mood-badge" style="color:${getMoodColor(dd.mood)}">${getMoodEmoji(dd.mood)} ${dd.mood}/10</span>` : ''}
+          ${dd.mood > 0 ? `<span class="day-mood-badge" style="color:${getMoodColor(dd.mood)}">${getMoodEmoji(dd.mood)} ${dd.mood}/5</span>` : ''}
         </div>
         <ul class="task-list">${tasksHTML}</ul>
         ${addRow}

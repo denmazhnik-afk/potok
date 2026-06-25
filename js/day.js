@@ -31,9 +31,9 @@ function buildDayPage() {
 
   // Пикер настроения
   const currentMood = td.mood || 0;
-  const moodLabels = ['','Ужас','Плохо','Так себе','Нормально','Хорошо','Отлично','Супер','Круто','Вау 🔥','Бомба 🔥🔥'];
+  const moodLabels = ['','Ужасно','Плохо','Так себе','Хорошо','Супер'];
   let moodHTML = '';
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 5; i++) {
     const isActive = i === currentMood;
     const moodColor = getMoodColor(i);
     moodHTML += `<button class="mood-btn ${isActive ? 'active' : ''}"
@@ -120,7 +120,7 @@ function buildDayPage() {
           <div class="mood-picker">
             ${moodHTML}
           </div>
-          ${currentMood > 0 ? `<div class="mood-label" style="color:${getMoodColor(currentMood)}">${currentMood}/10 — ${moodLabels[currentMood]}</div>` : '<div class="mood-label" style="color:var(--text-tertiary)">Оцени своё настроение</div>'}
+          ${currentMood > 0 ? `<div class="mood-label" style="color:${getMoodColor(currentMood)}">${currentMood}/5 — ${moodLabels[currentMood]}</div>` : '<div class="mood-label" style="color:var(--text-tertiary)">Оцени своё настроение</div>'}
         </div>
         <div class="section-card" style="margin-bottom:0">${sumHTML}</div>
       </div>

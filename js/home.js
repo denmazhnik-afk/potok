@@ -78,7 +78,7 @@ function buildHome() {
 
         <div class="day-top-row">
           <div class="panel-title">День</div>
-          <div class="streak-badge">🔥 ${getStreak()} дн.</div>
+          <div class="streak-badge ${getStreak() > 0 ? 'active' : ''}">🔥 ${getStreak()} дн.</div>
         </div>
 
         <div class="rings-row">
@@ -163,7 +163,7 @@ function buildHome() {
                   <span>🌙 ${sl.bed}</span>
                   <span>☀️ ${sl.wake}</span>
                 </div>
-                <div class="sleep-mini-quality" style="color:${sl.quality >= 7 ? 'var(--green)' : sl.quality >= 4 ? 'var(--blue)' : 'var(--red)'}">Качество: ${sl.quality}/10</div>
+                <div class="sleep-mini-quality" style="color:${sl.quality >= 4 ? 'var(--green)' : sl.quality >= 3 ? 'var(--blue)' : 'var(--red)'}">Качество: ${sl.quality}/5</div>
               </div>
             `;
           } else {

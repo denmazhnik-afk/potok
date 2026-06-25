@@ -200,18 +200,20 @@ function sortTasks(tasks) {
 
 function getMoodEmoji(val) {
   if (val === 0) return '';
-  if (val <= 2) return '😫';
-  if (val <= 4) return '😕';
-  if (val <= 6) return '😐';
-  if (val <= 8) return '😊';
-  return '🔥';
+  if (val === 1) return '😫';
+  if (val === 2) return '😕';
+  if (val === 3) return '😐';
+  if (val === 4) return '😊';
+  if (val === 5) return '🔥';
+  return '';
 }
 
 function getMoodColor(val) {
-  if (val <= 3) return 'var(--red)';
-  if (val <= 5) return 'var(--yellow)';
-  if (val <= 7) return 'var(--blue)';
-  return 'var(--green)';
+  if (val <= 2) return '#ef4444';
+  if (val === 3) return '#eab308';
+  if (val === 4) return '#60a5fa';
+  if (val === 5) return '#22c55e';
+  return 'var(--text-tertiary)';
 }
 
 function setMood(y, m, d, val) {
