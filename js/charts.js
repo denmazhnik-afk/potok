@@ -137,10 +137,10 @@ function drawSleepChart(id, data) {
 
     const quality = d.quality || 5;
     const grad = ctx.createLinearGradient(0, y, 0, H - 14);
-    if (quality >= 7) {
+    if (quality >= 8) {
       grad.addColorStop(0, 'rgba(107,227,164,0.9)');
       grad.addColorStop(1, 'rgba(107,227,164,0.15)');
-    } else if (quality >= 4) {
+    } else if (quality >= 5) {
       grad.addColorStop(0, 'rgba(96,165,250,0.9)');
       grad.addColorStop(1, 'rgba(96,165,250,0.15)');
     } else {

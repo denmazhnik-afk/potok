@@ -49,14 +49,14 @@ function buildSleepPage() {
           </label>
         </div>
         <div class="sleep-day-quality">
-          <div class="mood-picker" style="margin:0;gap:3px">
-            ${Array.from({length: 5}, (_, i) => i + 1).map(n => {
+          <div class="mood-picker" style="margin:0;gap:2px;flex-wrap:wrap">
+            ${Array.from({length: 10}, (_, i) => i + 1).map(n => {
               const isActive = n === quality;
-              return `<button class="mood-btn ${isActive ? 'active' : ''}" style="--mood-color: ${getMoodColor(n)};width:36px;height:34px"
+              const color = n <= 3 ? 'var(--red)' : n <= 5 ? 'var(--yellow)' : n <= 7 ? 'var(--blue)' : 'var(--green)';
+              return `<button class="mood-btn ${isActive ? 'active' : ''}" style="--mood-color: ${color};width:30px;height:30px"
                 onclick="saveSleepForDay(${day.y},${day.m},${day.d},'quality',${n})"
                 title="${n}">
                 <span class="mood-num" style="font-size:11px">${n}</span>
-                <span class="mood-emoji">${getMoodEmoji(n)}</span>
               </button>`;
             }).join('')}
           </div>
@@ -87,7 +87,7 @@ function buildSleepPage() {
           <div class="sleep-stat-lbl">Среднее</div>
         </div>
         <div class="sleep-stat">
-          <div class="sleep-stat-num">${avgQ > 0 ? avgQ + '/5' : '—'}</div>
+          <div class="sleep-stat-num">${avgQ > 0 ? avgQ + '/10' : '—'}</div>
           <div class="sleep-stat-lbl">Качество</div>
         </div>
         <div class="sleep-stat">

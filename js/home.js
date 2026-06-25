@@ -168,7 +168,7 @@ function buildHome() {
                   <span>🌙 ${sl.bed}</span>
                   <span>☀️ ${sl.wake}</span>
                 </div>
-                <div class="sleep-mini-quality" style="color:${sl.quality >= 4 ? 'var(--green)' : sl.quality >= 3 ? 'var(--blue)' : 'var(--red)'}">Качество: ${sl.quality}/5</div>
+                <div class="sleep-mini-quality" style="color:${sl.quality >= 8 ? 'var(--green)' : sl.quality >= 5 ? 'var(--blue)' : 'var(--red)'}">Качество: ${sl.quality}/10</div>
               </div>
             `;
           } else {
