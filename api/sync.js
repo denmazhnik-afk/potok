@@ -1,27 +1,9 @@
-const { Buffer } = require('buffer');
-
 const SUPABASE_URL = 'https://qgmzuhprvbdwjgtwajei.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFnbXp1aHBydmJkd2pndHdhamVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMzQ5NDcsImV4cCI6MjA5NzgxMDk0N30.lZ_qaVEZ1UR4btb2VvgD60sGH39fa10hj2iCB9wFo8I';
 const TABLE = 'app_state';
 const ROW_KEY = 'planner_data';
 
-function readBody(req) {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    req.on('data', c => chunks.push(c));
-    req.on('end', () => {
-      try {
-        const raw = Buffer.concat(chunks).toString('utf8');
-        resolve(JSON.parse(raw));
-      } catch (e) {
-        resolve(null);
-      }
-    });
-    req.on('error', reject);
-  });
-}
-
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -38,7 +20,7 @@ module.exports = async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
-      const url = `${SUPABASE_URL}/rest/v1/${TABLE}?key=eq.${ROW_KEY}&select=data`;
+      const url = SUPABASE_URL + '/rest/v1/' + TABLE + '?key=eq.' + ROW_KEY + '&select=data';
       const r = await fetch(url, { headers });
       const json = await r.json();
       if (Array.isArray(json) && json.length > 0 && json[0].data) {
@@ -48,36 +30,32 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      // Try req.body first (Vercel may auto-parse)
-      let parsed = req.body;
+      const incoming = req.body;
 
-      // If no body or no data field, try reading raw stream
-      if (!parsed || parsed.data === undefined) {
-        parsed = await readBody(req);
-      }
-
-      if (!parsed || parsed.data === undefined) {
+      if (!incoming || !incoming.data) {
         return res.status(400).json({
-          error: 'No data in request body',
-          hasReqBody: !!req.body,
+          error: 'No data in body',
+          hasBody: !!req.body,
+          bodyType: typeof req.body,
+          keys: req.body ? Object.keys(req.body) : [],
         });
       }
 
-      const url = `${SUPABASE_URL}/rest/v1/${TABLE}`;
+      const url = SUPABASE_URL + '/rest/v1/' + TABLE;
       const r = await fetch(url, {
         method: 'POST',
-        headers: { ...headers, 'Prefer': 'resolution=merge-duplicates' },
+        headers: { ...headers, Prefer: 'resolution=merge-duplicates' },
         body: JSON.stringify({
           key: ROW_KEY,
-          data: parsed.data,
+          data: incoming.data,
           updated_at: new Date().toISOString(),
         }),
       });
 
-      const json = await r.json();
       if (r.ok) {
         return res.status(200).json({ ok: true });
       }
+      const json = await r.json().catch(() => ({}));
       return res.status(500).json({ error: json });
     }
 
@@ -85,4 +63,4 @@ module.exports = async function handler(req, res) {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-};
+}
