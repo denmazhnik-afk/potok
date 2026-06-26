@@ -1,7 +1,10 @@
-// ==================== SYNC (via Vercel proxy) ====================
-const PROXY_URL = '/api/sync';
+// ==================== LIKHOY PERSONAL YANDEX SYNC ====================
+const MY_YANDEX_TOKEN = 'y0__wgBENbAnfEDGNuWAyD0xPeIGDCjiKurCH5GoD8qiJawul3ifb7fZmj3pvhH'; // <--- Твой токен из Полигона
+
 let isSyncing = false;
 let lastSync = 0;
+let hasLocalChanges = false;
+let syncTimeout = null;
 
 function showSyncStatus(text, type = 'syncing') {
   const status = document.getElementById('syncStatus');
@@ -9,66 +12,99 @@ function showSyncStatus(text, type = 'syncing') {
   if (status && textEl) {
     status.className = 'sync-status show ' + type;
     textEl.textContent = text;
-    setTimeout(() => {
-      status.classList.remove('show');
-    }, 2000);
+    setTimeout(() => { status.classList.remove('show'); }, 2000);
   }
 }
 
 async function syncToServer() {
-  if (isSyncing) return;
+  if (isSyncing || !MY_YANDEX_TOKEN || !hasLocalChanges) return;
   isSyncing = true;
+  hasLocalChanges = false;
   showSyncStatus('Синхронизация...');
 
+  const dataToUpload = JSON.stringify(localStore);
+
   try {
-    const r = await fetch(PROXY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: localStore }),
+    // Получаем ссылку на загрузку в корень твоего Диска в файл potok-data.json
+    const urlRes = await fetch('https://cloud-api.yandex.net/v1/disk/resources/upload?path=disk:/potok-data.json&overwrite=true', {
+      headers: { 'Authorization': 'OAuth ' + MY_YANDEX_TOKEN }
     });
-    if (!r.ok) {
-      const err = await r.json().catch(() => ({}));
-      throw new Error(err.error || 'HTTP ' + r.status);
-    }
+    const urlData = await urlRes.json();
+    
+    if (!urlData.href) throw new Error('Не удалось получить ссылку от Яндекса');
+
+    // Загружаем данные
+    await fetch(urlData.href, {
+      method: 'PUT',
+      body: dataToUpload
+    });
+
     lastSync = Date.now();
-    showSyncStatus('Синхронизировано', 'success');
+    hasLocalChanges = false;
+    showSyncStatus('Сохранено в облако', 'success');
   } catch (err) {
-    console.error('Sync error:', err);
-    showSyncStatus('Ошибка синхронизации', 'error');
+    console.error('Yandex Sync error:', err);
+    hasLocalChanges = true;
+    showSyncStatus('Ошибка сохранения', 'error');
   } finally {
     isSyncing = false;
+    if (hasLocalChanges) {
+      setTimeout(() => syncToServer(), 1000);
+    }
   }
 }
 
 async function loadFromServer() {
+  if (!MY_YANDEX_TOKEN) return;
   try {
-    const r = await fetch(PROXY_URL);
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const json = await r.json();
-    if (json && json.data) {
-      localStore = json.data;
-      localStorage.setItem('plannerV2', JSON.stringify(localStore));
-      showSyncStatus('Данные загружены', 'success');
+    const urlRes = await fetch('https://cloud-api.yandex.net/v1/disk/resources/download?path=disk:/potok-data.json', {
+      headers: { 'Authorization': 'OAuth ' + MY_YANDEX_TOKEN }
+    });
+    const urlData = await urlRes.json();
+
+    if (urlData.href) {
+      // ✦ МАГИЯ: Обращаемся к НАШЕМУ собственному серверу на Vercel
+      const proxyUrl = '/api/sync?url=' + encodeURIComponent(urlData.href);
+      const dataRes = await fetch(proxyUrl);
+      
+      const downloadedStore = await dataRes.json();
+      
+      // Проверяем, что сервер вернул реальные данные, а не ошибку
+      if (downloadedStore && !downloadedStore.error) {
+
+	if (hasLocalChanges) {
+          console.log('Скачивание отменено: локальные данные новее');
+          return;
+        }
+
+        localStore = downloadedStore;
+        localStorage.setItem('plannerV2', JSON.stringify(localStore));
+        hasLocalChanges = false;
+        showSyncStatus('Синхронизировано', 'success');
+      } else {
+        console.error('Ошибка от прокси-сервера:', downloadedStore.error);
+      }
     }
   } catch (err) {
-    console.log('Server sync unavailable, using local data');
+    console.error('Критическая ошибка загрузки:', err);
   }
 }
-
 // ==================== STATE ====================
 let localStore = JSON.parse(localStorage.getItem('plannerV2') || '{}');
 
 function save() {
   localStorage.setItem('plannerV2', JSON.stringify(localStore));
-  if (Date.now() - lastSync > 2000) {
-    setTimeout(() => syncToServer(), 500);
-  }
+  hasLocalChanges = true;
+  clearTimeout(syncTimeout);
+  syncTimeout = setTimeout(() => {
+    if (!isSyncing) syncToServer();
+  }, 1500);
 }
 
 // ==================== PERIODIC SYNC ====================
 function startPeriodicSync() {
   setInterval(() => {
-    if (!isSyncing) syncToServer();
+    if (!isSyncing && hasLocalChanges) syncToServer(); 
   }, 30000);
 
   document.addEventListener('visibilitychange', async () => {

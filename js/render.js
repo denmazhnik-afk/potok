@@ -31,12 +31,36 @@ function applyFlipAnimation() {
 }
 
 // ==================== RENDER ENGINE ====================
+let _draftInputs = {};
+
+function captureInputs() {
+  _draftInputs = {};
+  // Список ID главных полей ввода, текст в которых нужно защищать от стирания
+  const ids = ['dayTaskInput', 'dlTaskInput', 'newGoalInp', 'ideaTaskInp'];
+  
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) _draftInputs[id] = el.value;
+  });
+}
+
+function restoreInputs() {
+  Object.keys(_draftInputs).forEach(id => {
+    const el = document.getElementById(id);
+    if (el && _draftInputs[id]) {
+      el.value = _draftInputs[id];
+    }
+  });
+}
+
 function render() {
   const app = document.getElementById('app');
   captureFlipPositions();
+  captureInputs();
   app.innerHTML = buildHTML();
   bindEvents();
   afterRender();
+  restoreInputs();
   applyFlipAnimation();
   updateNav();
 }
@@ -475,12 +499,15 @@ function bindEvents() {
 // ==================== INIT ====================
 async function init() {
   console.log('🚀 Initializing...');
+  render();
+  // 1. СНАЧАЛА ЖДЕМ СКАЧИВАНИЯ БАЗЫ
+  await loadFromServer(); 
+  
+  // 2. И ТОЛЬКО ПОТОМ запускаем перенос дат, синхронизацию и отрисовку
   doRollover();
   initScrollTop();
   initTouchDrag();
-  render();
   startPeriodicSync();
-  await loadFromServer();
   render();
 }
 

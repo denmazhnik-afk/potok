@@ -40,12 +40,12 @@ function buildSleepPage() {
           <label class="sleep-day-field">
             <span class="sleep-day-label">🌙 Лёг</span>
             <input type="time" class="sleep-day-input" value="${day.sl.bed || ''}"
-              onchange="saveSleepForDay(${day.y},${day.m},${day.d},'bed',this.value)">
+              onblur="saveSleepForDay(${day.y},${day.m},${day.d},'bed',this.value)">
           </label>
           <label class="sleep-day-field">
             <span class="sleep-day-label">☀️ Встал</span>
             <input type="time" class="sleep-day-input" value="${day.sl.wake || ''}"
-              onchange="saveSleepForDay(${day.y},${day.m},${day.d},'wake',this.value)">
+              onblur="saveSleepForDay(${day.y},${day.m},${day.d},'wake',this.value)">
           </label>
         </div>
         <div class="sleep-day-quality">

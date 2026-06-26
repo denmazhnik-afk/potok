@@ -1048,30 +1048,68 @@
 /* ====== ФИКС КНОПОК ЗАДАЧ НА МОБИЛЬНЫХ ====== */
 @media (max-width: 768px) {
   .task-item {
-    align-items: flex-start !important; /* Кнопки остаются сверху, если текст длинный */
-  }
-  
-  .task-name {
-    min-width: 0 !important; /* Разрешает тексту переноситься на новую строку */
-    word-wrap: break-word !important;
+    flex-wrap: wrap !important;
+    align-items: flex-start !important;
+    padding-bottom: 8px !important; /* Чуть уменьшили отступ от самого нижнего края */
+    row-gap: 0px !important;        /* ✦ МАГИЯ: Убиваем огромный межстрочный интервал */
+    column-gap: 12px !important;    /* Оставляем стандартный отступ по горизонтали */
   }
 
-  /* Жестко фиксируем размеры молнии, крестика и календаря */
+  /* --- 1 СТРОКА: Чекбокс, текст и крестик --- */
+  .task-drag { order: 1; }
+  .task-cb   { order: 2; margin-top: 2px; }
+  
+  .task-name {
+    order: 3;
+    flex: 1 1 0% !important; /* Забирает всё свободное место на первой строке */
+    min-width: 0 !important; /* Разрешает длинным словам переноситься вниз, а не растягивать экран */
+    word-wrap: break-word !important;
+    margin-right: 8px !important; 
+  }
+  
+  .task-del {
+    order: 4;
+    margin-left: auto !important; /* Всегда прижимаем крестик к правому краю */
+    margin-top: 0 !important;
+  }
+
+  /* --- МАГИЯ: Невидимый элемент, который делает жесткий перенос строки --- */
+  .task-item::before {
+    content: "";
+    display: block;
+    width: 100%;
+    order: 5;
+    height: 0;
+  }
+
+  /* --- 2 СТРОКА: Беджи и настройки --- */
+  .task-deadline-badge {
+    order: 6;
+    margin-left: 36px !important; /* Сдвигаем вправо, чтобы выровнять ровно под текстом */
+    margin-top: 2px !important;
+  }
+  
+  .task-urgent-btn {
+    order: 7;
+    margin-top: 2px !important;
+    margin-left: 8px !important;
+  }
+  
+  .ibtn[title="Дата"] { /* Кнопка календарика в Проектах */
+    order: 8;
+    margin-top: 2px !important;
+    margin-left: 8px !important;
+  }
+
+  /* --- Фикс размеров кнопок, чтобы они были ровными --- */
   .task-urgent-btn, 
   .task-del, 
-  .date-pick-btn {
+  .ibtn[title="Дата"] {
     flex: 0 0 auto !important; 
-    padding: 4px 8px !important;
     height: 28px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    margin: 0 !important;
-  }
-
-  /* Не даем кнопке календаря раздуваться */
-  .date-pick-btn {
-    max-width: 90px !important;
-    font-size: 11px !important;
+    padding: 4px 8px !important;
   }
 }
