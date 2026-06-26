@@ -158,7 +158,7 @@ function buildIdeaDetail() {
         ${tasksHTML}
       </div>
       <div class="add-row idea-add-row">
-        <input class="add-input" id="ideaTaskInp" placeholder="Новая задача..." autofocus>
+        <input class="add-input" id="ideaTaskInp" placeholder="Новая задача...">
         <button type="button" class="date-pick-btn ${uiState.ideaAddDate ? 'has-date' : ''}" onclick="openIdeaAddDatePicker()">
           📅 ${uiState.ideaAddDate ? formatDateDisplay(uiState.ideaAddDate) : 'Дата'}
         </button>

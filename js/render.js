@@ -114,7 +114,7 @@ function afterRender() {
     }, 100);
   }
 
-  const inputs = ['newGoalInp','goalEditInp','wishNameIn','ideaTaskInp'];
+  const inputs = ['newGoalInp','goalEditInp','wishNameIn'];
   inputs.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.focus();
