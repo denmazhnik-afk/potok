@@ -347,10 +347,19 @@ function toggleGoal(i) {
   const {y, m} = viewData;
   const md = getMonthData(y, m);
   const goal = md.goals[i];
-  goal.done = !goal.done;
+  if (!goal) return;
+
+  const wasDone = goal.done;
+  goal.done = !wasDone;
+
+  // Выдаем +15 XP за достижение цели месяца
+  if (!wasDone) {
+    addXP(15, 'Цель месяца', `month-goal-${y}-${m}-${i}-${Date.now()}`);
+  }
+
   saveMonthData(y, m, md);
 
-  // Обратная синхронизация с проектом
+  // Обратная синхронизация с проектом (без повторного начисления XP)
   if (goal.ideaGoalId && goal.ideaId) {
     const ideas = getIdeas();
     const idea = ideas.find(p => p.id === goal.ideaId);

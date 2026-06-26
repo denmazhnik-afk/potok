@@ -279,7 +279,15 @@ function toggleIdeaTask(id, idx) {
   const ideas = getIdeas();
   const idea = ideas.find(p => p.id === id);
   if (!idea || !idea.tasks[idx]) return;
-  idea.tasks[idx].done = !idea.tasks[idx].done;
+  
+  const wasDone = idea.tasks[idx].done;
+  idea.tasks[idx].done = !wasDone;
+  
+  // Выдаем +10 XP, если задача только что была выполнена
+  if (!wasDone) {
+    addXP(10, 'Задача проекта', `idea-task-${id}-${idx}-${Date.now()}`);
+  }
+  
   saveIdeas(ideas);
   render();
 }
@@ -421,10 +429,17 @@ function toggleIdeaGoal(ideaId, goalId) {
   const goal = idea.goals.find(g => g.id === goalId);
   if (!goal) return;
 
-  goal.done = !goal.done;
+  const wasDone = goal.done;
+  goal.done = !wasDone;
+
+  // Выдаем +15 XP за достижение цели проекта
+  if (!wasDone) {
+    addXP(15, 'Цель проекта', `idea-goal-${ideaId}-${goalId}-${Date.now()}`);
+  }
+
   saveIdeas(ideas);
 
-  // Синхронизируем статус с месяцем
+  // Синхронизируем статус с месяцем (без повторного начисления XP)
   if (goal.month) {
     const [y, m] = goal.month.split('-').map(Number);
     const md = getMonthData(y, m);
