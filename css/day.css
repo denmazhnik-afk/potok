@@ -1045,3 +1045,33 @@
     flex: 1 1 130px;
   }
 }
+/* ====== ФИКС КНОПОК ЗАДАЧ НА МОБИЛЬНЫХ ====== */
+@media (max-width: 768px) {
+  .task-item {
+    align-items: flex-start !important; /* Кнопки остаются сверху, если текст длинный */
+  }
+  
+  .task-name {
+    min-width: 0 !important; /* Разрешает тексту переноситься на новую строку */
+    word-wrap: break-word !important;
+  }
+
+  /* Жестко фиксируем размеры молнии, крестика и календаря */
+  .task-urgent-btn, 
+  .task-del, 
+  .date-pick-btn {
+    flex: 0 0 auto !important; 
+    padding: 4px 8px !important;
+    height: 28px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+  }
+
+  /* Не даем кнопке календаря раздуваться */
+  .date-pick-btn {
+    max-width: 90px !important;
+    font-size: 11px !important;
+  }
+}
