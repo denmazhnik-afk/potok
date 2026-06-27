@@ -26,6 +26,9 @@ function buildSleepPage() {
     const durStr = day.dur > 0 ? formatDuration(day.dur) : '—';
     const quality = day.sl.quality || 0;
     const dayKey = `${day.y}-${day.m}-${day.d}`;
+    
+    // ✦ Проверяем, есть ли в дне хоть какие-то данные
+    const hasData = day.sl.bed || day.sl.wake || quality > 0;
 
     daysHTML += `
       <div class="sleep-day-card ${day.isToday ? 'is-today' : ''}">
@@ -34,7 +37,10 @@ function buildSleepPage() {
             ${day.isToday ? '📍 ' : ''}${day.d} ${MONTHS_SHORT[day.m]}
             <span class="sleep-day-wd">${day.wd}</span>
           </div>
-          <div class="sleep-day-dur">${durStr}</div>
+          <div style="display:flex; align-items:center; gap: 12px;">
+            <div class="sleep-day-dur">${durStr}</div>
+            ${hasData ? `<button onclick="clearSleepForDay(${day.y},${day.m},${day.d})" style="background:none; border:none; color:var(--red, #ef4444); font-size:16px; padding:0; cursor:pointer;" title="Сбросить">✕</button>` : ''}
+          </div>
         </div>
         <div class="sleep-day-fields">
           <label class="sleep-day-field">
@@ -123,4 +129,11 @@ function saveSleepForDay(y, m, d, field, value) {
   }
   saveSleep(y, m, d, sl);
   render();
+}
+
+function clearSleepForDay(y, m, d) {
+  if (confirm('Сбросить данные сна за этот день?')) {
+    saveSleep(y, m, d, { bed: '', wake: '', quality: 0 });
+    render();
+  }
 }
