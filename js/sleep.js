@@ -105,9 +105,9 @@ function buildSleepPage() {
     </div>
 
     <div class="sleep-nav">
-      <button class="btn-secondary" onclick="sleepNav(7)">← 7 дн.</button>
-      <button class="btn-secondary" onclick="sleepNav(0)">Сегодня</button>
-      <button class="btn-secondary" onclick="sleepNav(-7)">7 дн. →</button>
+      <button class="btn-secondary" onclick="sleepNav(-7)">← 7 дн.</button>
+      <button class="btn-secondary" onclick="sleepNav('today')">Сегодня</button>
+      <button class="btn-secondary" onclick="sleepNav(7)">7 дн. →</button>
     </div>
 
     <div class="sleep-days-list">
@@ -117,7 +117,11 @@ function buildSleepPage() {
 }
 
 function sleepNav(offset) {
-  sleepViewOffset = offset;
+  if (offset === 'today') {
+    sleepViewOffset = 0; // Сбрасываем на сегодняшний день
+  } else {
+    sleepViewOffset += offset; // ✦ Теперь мы ПРИБАВЛЯЕМ или ВЫЧИТАЕМ дни!
+  }
   render();
 }
 
