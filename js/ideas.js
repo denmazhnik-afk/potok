@@ -256,6 +256,11 @@ function addIdeaTask(id) {
     sortIdeaTasks(idea.tasks);
     saveIdeas(ideas);
     uiState.ideaAddDate = null;
+    
+    // ✦ Принудительно стираем текст
+    if (typeof _draftInputs !== 'undefined') _draftInputs['ideaTaskInp'] = '';
+    if (inp) inp.value = '';
+    
     render();
   }
 }

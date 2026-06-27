@@ -252,6 +252,11 @@ function confirmMonthTask(d) {
   sortTasks(dd.tasks);
   saveDayData(y, m, d, dd);
   delete uiState.addingTask[`month-${d}`];
+  
+  // ✦ Принудительно стираем текст
+  if (typeof _draftInputs !== 'undefined') _draftInputs[`mTaskIn-${d}`] = '';
+  if (inp) inp.value = '';
+  
   render();
 }
 
@@ -340,6 +345,11 @@ function confirmAddGoal() {
   md.goals.push({ text, done: false });
   saveMonthData(y, m, md);
   uiState.addingGoal = false;
+  
+  // ✦ Принудительно стираем текст
+  if (typeof _draftInputs !== 'undefined') _draftInputs['newGoalInp'] = '';
+  if (inp) inp.value = '';
+  
   render();
 }
 

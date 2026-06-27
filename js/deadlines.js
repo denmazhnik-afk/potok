@@ -77,7 +77,6 @@ function addDeadlineTask() {
   if (!text) return;
   const deadline = dlInp ? dlInp.value : '';
 
-  // If deadline is set, add task to that day; otherwise today
   if (deadline) {
     const [dy, dm, dd] = deadline.split('-').map(Number);
     const td = getDayData(dy, dm - 1, dd);
@@ -90,5 +89,10 @@ function addDeadlineTask() {
     sortTasks(td.tasks);
     saveDayData(ACT_Y, ACT_M, ACT_D, td);
   }
+  
+  // ✦ Принудительно стираем текст
+  if (typeof _draftInputs !== 'undefined') _draftInputs['dlTaskInput'] = '';
+  if (inp) inp.value = '';
+  
   render();
 }
