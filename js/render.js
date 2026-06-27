@@ -441,7 +441,15 @@ function bindEvents() {
 
   bindings.forEach(([id, fn]) => {
     const el = document.getElementById(id);
-    if (el && fn) el.addEventListener('keydown', e => { if (e.key === 'Enter') fn(); });
+    if (el && fn) el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        fn();
+        // ✦ МАГИЯ: Принудительно стираем текст после нажатия Enter
+        _draftInputs[id] = '';
+        const newEl = document.getElementById(id);
+        if (newEl) newEl.value = '';
+      }
+    });
   });
 
   const gei = document.getElementById('goalEditInp');
@@ -457,7 +465,12 @@ function bindEvents() {
       const d = parseInt(k.replace('month-',''));
       const el = document.getElementById(`mTaskIn-${d}`);
       if (el) el.addEventListener('keydown', e => {
-        if (e.key === 'Enter') confirmMonthTask(d);
+        if (e.key === 'Enter') {
+          confirmMonthTask(d);
+          _draftInputs[`mTaskIn-${d}`] = '';
+          const newEl = document.getElementById(`mTaskIn-${d}`);
+          if (newEl) newEl.value = '';
+        }
         if (e.key === 'Escape') cancelMonthTask(d);
       });
     }
@@ -472,18 +485,38 @@ function bindEvents() {
   }
 
   const balIn = document.getElementById('balAmtIn');
-  if (balIn) balIn.addEventListener('keydown', e => { if (e.key === 'Enter') addBalance(); });
+  if (balIn) balIn.addEventListener('keydown', e => { 
+    if (e.key === 'Enter') {
+      addBalance();
+      if (document.getElementById('balAmtIn')) document.getElementById('balAmtIn').value = '';
+    } 
+  });
+  
   const incIn = document.getElementById('incAmtIn');
-  if (incIn) incIn.addEventListener('keydown', e => { if (e.key === 'Enter') addIncome(); });
+  if (incIn) incIn.addEventListener('keydown', e => { 
+    if (e.key === 'Enter') {
+      addIncome();
+      if (document.getElementById('incAmtIn')) document.getElementById('incAmtIn').value = '';
+    } 
+  });
 
   const wishIn = document.getElementById('wishNameIn');
-  if (wishIn) wishIn.addEventListener('keydown', e => { if (e.key === 'Enter') confirmAddWish(); });
+  if (wishIn) wishIn.addEventListener('keydown', e => { 
+    if (e.key === 'Enter') {
+      confirmAddWish();
+      _draftInputs['wishNameIn'] = '';
+      if (document.getElementById('wishNameIn')) document.getElementById('wishNameIn').value = '';
+    } 
+  });
 
   const ideaIn = document.getElementById('ideaTaskInp');
   if (ideaIn) ideaIn.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       const id = viewData.id;
       if (id) addIdeaTask(id);
+      _draftInputs['ideaTaskInp'] = '';
+      const newEl = document.getElementById('ideaTaskInp');
+      if (newEl) newEl.value = '';
     }
   });
 
@@ -492,6 +525,9 @@ function bindEvents() {
     if (e.key === 'Enter') {
       const id = viewData.id;
       if (id) addIdeaGoal(id);
+      _draftInputs['ideaGoalInp'] = '';
+      const newEl = document.getElementById('ideaGoalInp');
+      if (newEl) newEl.value = '';
     }
   });
 }
