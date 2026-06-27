@@ -315,7 +315,11 @@ function quickAddDayTask() {
   td.tasks.push({ text, done: false });
   sortTasks(td.tasks);
   saveDayData(ACT_Y, ACT_M, ACT_D, td);
+  
+  // ✦ Принудительно стираем текст
+  if (typeof _draftInputs !== 'undefined') _draftInputs['dayTaskInput'] = '';
   if (inp) inp.value = '';
+  
   render();
 }
 
@@ -326,11 +330,19 @@ function confirmDayTask() {
   if (!text) return;
   const task = { text, done: false };
   
+  // ✦ Теперь дедлайн реально сохраняется!
+  if (dlInp && dlInp.value) task.deadline = dlInp.value; 
+  
   const td = getDayData(ACT_Y, ACT_M, ACT_D);
   td.tasks.push(task);
   sortTasks(td.tasks);
   saveDayData(ACT_Y, ACT_M, ACT_D, td);
   delete uiState.addingTask['today'];
+  
+  // ✦ Принудительно стираем текст
+  if (typeof _draftInputs !== 'undefined') _draftInputs['dayTaskInput'] = '';
+  if (inp) inp.value = '';
+  
   render();
 }
 
