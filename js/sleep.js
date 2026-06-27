@@ -10,6 +10,7 @@ function buildSleepPage() {
     const sl = getSleep(y, m, dd);
     const dur = calcDuration(sl.bed, sl.wake);
     const isToday = y === ACT_Y && m === ACT_M && dd === ACT_D;
+    const dayIdx = d.getDay() === 0 ? 6 : d.getDay() - 1;
     const wd = WEEKDAYS_SHORT[d.getDay()];
     days.push({ y, m, d: dd, sl, dur, isToday, wd, dateStr: `${dd}.${m + 1}` });
   }
