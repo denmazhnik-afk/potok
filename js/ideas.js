@@ -12,7 +12,7 @@ function buildIdeasPage() {
       const pct = total > 0 ? Math.round(done / total * 100) : 0;
       cardsHTML += `
         <div class="idea-card" onclick="openIdeaDetail('${esc(p.id)}')">
-          <div class="idea-emoji">${p.emoji || '📁'}</div>
+          <div class="idea-emoji">${ICONS[p.emoji] || ICONS.folder}</div>
           <div class="idea-name">${esc(p.name)}</div>
           <div class="idea-stats">${done}/${total} задач</div>
           <div class="idea-bar">
@@ -71,8 +71,8 @@ function buildIdeaDetail() {
         <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleIdeaTask('${esc(idea.id)}',${i})"></div>
         <span class="task-name ${t.done ? 'struck' : ''}">${esc(t.text)}</span>
         ${dateBadge}
-        ${t.done ? '' : `<button class="task-urgent-btn ${urgentBtn}" onclick="toggleIdeaTaskUrgent('${esc(idea.id)}',${i})" title="Срочно">⚡</button>`}
-        <button class="ibtn" onclick="setIdeaTaskDate('${esc(idea.id)}',${i})" title="Дата">📅</button>
+        ${t.done ? '' : `<button class="task-urgent-btn ${urgentBtn}" onclick="toggleIdeaTaskUrgent('${esc(idea.id)}',${i})" title="Срочно">${ICONS.lightning}</button>`}
+        <button class="ibtn" onclick="setIdeaTaskDate('${esc(idea.id)}',${i})" title="Дата">${ICONS.calendar}</button>
         <button class="task-del" onclick="deleteIdeaTask('${esc(idea.id)}',${i})">×</button>
       </div>
     `;
@@ -122,7 +122,7 @@ function buildIdeaDetail() {
 
   const goalsSection = `
     <div class="section-card">
-      <div class="section-eyebrow">🎯 Цели проекта</div>
+      <div class="section-eyebrow">${ICONS.target} Цели проекта</div>
       <div style="margin-bottom:12px">${goalsHTML}</div>
       <div class="add-row">
         <input class="add-input" id="ideaGoalInp" placeholder="Новая цель...">
@@ -138,13 +138,13 @@ function buildIdeaDetail() {
   return `
     <div class="page-header">
       <button class="back-btn" onclick="openIdeas()">← Назад</button>
-      <h2 class="page-heading">${idea.emoji || '📁'} ${esc(idea.name)}</h2>
-      <button class="btn-secondary" onclick="deleteIdea('${esc(idea.id)}')">🗑️</button>
+      <h2 class="page-heading">${ICONS[idea.emoji] || ICONS.folder} ${esc(idea.name)}</h2>
+      <button class="btn-secondary" onclick="deleteIdea('${esc(idea.id)}')">${ICONS.trash}</button>
     </div>
 
     <div class="section-card">
       <div class="idea-emoji-row">
-        <div class="idea-big-emoji" id="ideaEmojiBtn" onclick="toggleEmojiPicker()">${idea.emoji || '📁'}</div>
+        <div class="idea-big-emoji" id="ideaEmojiBtn" onclick="toggleEmojiPicker()">${ICONS[idea.emoji] || ICONS.folder}</div>
         <div class="idea-emoji-label">Нажмите, чтобы сменить эмодзи</div>
       </div>
       ${emojiPickerHTML}
@@ -153,14 +153,14 @@ function buildIdeaDetail() {
     ${goalsSection}
 
     <div class="section-card">
-      <div class="section-eyebrow">📋 Задачи</div>
+      <div class="section-eyebrow">${ICONS.task} Задачи</div>
       <div class="idea-tasks-list">
         ${tasksHTML}
       </div>
       <div class="add-row idea-add-row">
         <input class="add-input" id="ideaTaskInp" placeholder="Новая задача...">
         <button type="button" class="date-pick-btn ${uiState.ideaAddDate ? 'has-date' : ''}" onclick="openIdeaAddDatePicker()">
-          📅 ${uiState.ideaAddDate ? formatDateDisplay(uiState.ideaAddDate) : 'Дата'}
+          ${ICONS.calendar} ${uiState.ideaAddDate ? formatDateDisplay(uiState.ideaAddDate) : 'Дата'}
         </button>
         <button class="btn-primary" onclick="addIdeaTask('${esc(idea.id)}')">+</button>
       </div>
@@ -171,18 +171,15 @@ function buildIdeaDetail() {
 }
 
 // ==================== EMOJI PICKER ====================
-const IDEA_EMOJIS = [
-  '📁','🎯','🚀','💡','🛠️','📚','🎨','🎮','🎵','⚡',
-  '🔥','💻','📱','🌐','🏠','✈️','🏋️','🧘','📷','🎬',
-  '🌱','🍎','☕','🎸','✏️','📊','🔮','🎁','🪐','👾',
-  '🤖','🧪','🧪','🫧','💎','🏆','🎪','🌍','🐾','❤️',
-  '🧠','🦋','🌊','🌙','☀️','🍕','🥑','🦊','🐙','🦾'
-];
+const PROJECT_ICONS_LIST = ['folder', 'rocket', 'code', 'briefcase', 'book', 'camera', 'video', 'monitor', 'music', 'heart', 'activity', 'globe', 'tool', 'megaphone', 'shopping', 'star', 'coffee', 'cpu', 'users', 'pen'];
 
 function buildEmojiPicker(ideaId) {
-  let html = `<div class="emoji-picker" id="emojiPicker">`;
-  IDEA_EMOJIS.forEach(e => {
-    html += `<button class="emoji-option" onclick="changeIdeaEmoji('${esc(ideaId)}','${e}')">${e}</button>`;
+  let html = `<div class="emoji-picker" id="emojiPicker" style="display: flex; flex-wrap: wrap; gap: 8px;">`;
+  PROJECT_ICONS_LIST.forEach(key => {
+    html += `<div class="emoji-option" style="cursor:pointer; display:inline-flex; padding:8px; border-radius:8px; transition:0.2s; color: var(--text-primary);" 
+      onclick="changeIdeaEmoji('${esc(ideaId)}', '${key}')" title="${key}">
+      ${ICONS[key]}
+    </div>`;
   });
   html += '</div>';
   return html;
