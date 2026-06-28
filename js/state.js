@@ -537,3 +537,6 @@ function toggleTaskDone(y, m, d, taskIndex, fromIdea, ideaTaskId, ideaId) {
 // ==================== FINANCE IDS ====================
 let _finId = Date.now();
 function nextId() { return ++_finId; }
+// ==================== HABITS ====================
+function getHabits() { return localStore['habits'] || []; }
+function saveHabits(v) { localStore['habits'] = v; save(); }

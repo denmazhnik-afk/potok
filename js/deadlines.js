@@ -1,40 +1,35 @@
-// ==================== DEADLINES PAGE ====================
-function buildDeadlinesPage() {
-  const deadlines = getAllDeadlines();
-  const today = todayStr();
+// ==================== HABITS PAGE ====================
+function buildHabitsPage() {
+  const habits = getHabits();
+  const today = activeDateStr();
 
   let listHTML = '';
-  if (deadlines.length === 0) {
-    listHTML = '<div class="empty-state">Нет задач с дедлайнами</div>';
+  if (habits.length === 0) {
+    listHTML = '<div class="empty-state">Нет привычек. Добавьте первую!</div>';
   } else {
-    deadlines.forEach((item, i) => {
-      const days = daysUntil(item.deadline);
-      let statusClass = '';
-      let statusText = '';
+    habits.forEach(h => {
+      const isDoneToday = h.history && h.history[today];
 
-      if (item.done) {
-        statusClass = 'done';
-        statusText = '✓';
-      } else if (days < 0) {
-        statusClass = 'overdue';
-        statusText = `${Math.abs(days)} дн. назад`;
-      } else if (days === 0) {
-        statusClass = 'today';
-        statusText = 'Сегодня!';
-      } else {
-        statusClass = 'overdue';
-        statusText = `${days} дн.`;
+      // Генерируем 14 квадратиков для истории (2 ряда по 7)
+      let squaresHTML = '';
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date(ACT_Y, ACT_M, ACT_D - i);
+        const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        const done = h.history && h.history[iso];
+        squaresHTML += `<div class="habit-square ${done ? 'done' : ''}" title="${iso}"></div>`;
       }
 
       listHTML += `
-        <div class="deadline-item ${statusClass}">
-          <div class="deadline-status">${statusText}</div>
-          <div class="deadline-content">
-            <div class="deadline-text ${item.done ? 'done' : ''}">${esc(item.text)}</div>
-            <div class="deadline-date">${item.deadline}</div>
+        <div class="habit-card">
+          <div class="habit-header">
+            <div class="habit-name">${esc(h.name)}</div>
+            <button class="habit-del-btn" onclick="deleteHabit(${h.id})">✕</button>
           </div>
-          <button class="deadline-toggle" onclick="toggleDeadlineTask(${item.dayY},${item.dayM},${item.dayD},${item.taskIdx})">
-            ${item.done ? '✓' : '○'}
+          <div class="habit-grid-14">
+            ${squaresHTML}
+          </div>
+          <button class="habit-mark-btn ${isDoneToday ? 'done' : ''}" onclick="toggleHabit(${h.id})">
+            ${isDoneToday ? '✓ Выполнено (Отменить)' : 'Отметить'}
           </button>
         </div>
       `;
@@ -42,57 +37,76 @@ function buildDeadlinesPage() {
   }
 
   return `
+    <style>
+      .habit-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+      .habit-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+      .habit-name { font-size: 20px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; }
+      .habit-del-btn { background: none; border: none; color: var(--text-tertiary); font-size: 18px; padding: 4px; cursor: pointer; }
+      .habit-grid-14 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 16px; }
+      .habit-square { aspect-ratio: 1; background: rgba(255,255,255,0.05); border-radius: 8px; transition: 0.2s; }
+      .habit-square.done { background: #6BE3A4; box-shadow: 0 0 10px rgba(107,227,164,0.3); }
+      .habit-mark-btn { width: 100%; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 700; border: none; cursor: pointer; background: #fff; color: #000; transition: 0.2s; }
+      .habit-mark-btn.done { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); }
+    </style>
     <div class="page-header">
       <button class="back-btn" onclick="goHome()">← Назад</button>
-      <h2 class="page-heading">📋 Дедлайны</h2>
+      <h2 class="page-heading">🔄 Привычки</h2>
     </div>
     <div class="section-card" style="margin-bottom:16px">
-      <div class="section-eyebrow">Добавить задачу с дедлайном</div>
       <div class="add-row">
-        <input class="add-input" id="dlTaskInput" placeholder="Текст задачи..." autofocus>
-        <input class="add-input deadline-input" id="dlDateInput" type="date" value="${today}">
-        <button class="btn-primary" onclick="addDeadlineTask()">+</button>
+        <input class="add-input" id="habitInput" placeholder="Новая привычка..." autofocus>
+        <button class="btn-primary" onclick="addHabit()">+</button>
       </div>
     </div>
-    <div class="deadlines-list">
+    <div class="habits-list">
       ${listHTML}
     </div>
   `;
 }
 
-function toggleDeadlineTask(y, m, d, taskIdx) {
-  const dd = getDayData(y, m, d);
-  if (dd.tasks[taskIdx]) {
-    dd.tasks[taskIdx].done = !dd.tasks[taskIdx].done;
-    sortTasks(dd.tasks);
-    saveDayData(y, m, d, dd);
-    render();
-  }
+function addHabit() {
+  const inp = document.getElementById('habitInput');
+  const name = inp ? inp.value.trim() : '';
+  if (!name) return;
+  const habits = getHabits();
+  habits.push({ id: Date.now(), name: name, history: {} });
+  saveHabits(habits);
+  
+  // Очищаем инпут
+  if (typeof _draftInputs !== 'undefined') _draftInputs['habitInput'] = '';
+  if (inp) inp.value = '';
+  render();
 }
 
-function addDeadlineTask() {
-  const inp = document.getElementById('dlTaskInput');
-  const dlInp = document.getElementById('dlDateInput');
-  const text = inp ? inp.value.trim() : '';
-  if (!text) return;
-  const deadline = dlInp ? dlInp.value : '';
+function deleteHabit(id) {
+  if (!confirm('Удалить привычку навсегда?')) return;
+  const habits = getHabits().filter(h => h.id !== id);
+  saveHabits(habits);
+  render();
+}
 
-  if (deadline) {
-    const [dy, dm, dd] = deadline.split('-').map(Number);
-    const td = getDayData(dy, dm - 1, dd);
-    td.tasks.push({ text, done: false, deadline });
-    sortTasks(td.tasks);
-    saveDayData(dy, dm - 1, dd, td);
+function toggleHabit(id) {
+  const habits = getHabits();
+  const habit = habits.find(h => h.id === id);
+  if (!habit) return;
+
+  const today = activeDateStr();
+  if (!habit.history) habit.history = {};
+
+  const wasDone = habit.history[today];
+
+  if (wasDone) {
+    delete habit.history[today];
+    // ✦ Отменяем XP, если нажали случайно
+    if (localStore._xp >= 10) localStore._xp -= 10;
+    if (localStore._xpLog && localStore._xpLog[today] && localStore._xpLog[today][`habit-${id}-${today}`]) {
+      delete localStore._xpLog[today][`habit-${id}-${today}`];
+    }
   } else {
-    const td = getDayData(ACT_Y, ACT_M, ACT_D);
-    td.tasks.push({ text, done: false });
-    sortTasks(td.tasks);
-    saveDayData(ACT_Y, ACT_M, ACT_D, td);
+    habit.history[today] = true;
+    addXP(10, 'Привычка', `habit-${id}-${today}`); // Даем +10 XP
   }
-  
-  // ✦ Принудительно стираем текст
-  if (typeof _draftInputs !== 'undefined') _draftInputs['dlTaskInput'] = '';
-  if (inp) inp.value = '';
-  
+
+  saveHabits(habits);
   render();
 }

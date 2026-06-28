@@ -180,25 +180,21 @@ function buildHome() {
       <div class="panel-arrow">→</div>
     </div>
 
-    <div class="panel panel-deadlines" onclick="openDeadlines()">
+    <div class="panel panel-habits" onclick="openHabits()">
       <div class="panel-inner">
-        <div class="panel-eyebrow">Дедлайны</div>
-        <div class="panel-title">Сроки</div>
+        <div class="panel-eyebrow">Трекер привычек</div>
+        <div class="panel-title">Привычки</div>
         ${(() => {
-          const allDl = getAllDeadlines().filter(d => !d.done);
-          if (allDl.length === 0) {
-            return `<div class="empty-state" style="padding:12px 0;font-size:13px">Нет активных дедлайнов</div>`;
-          }
-          let html = '';
-          allDl.slice(0, 3).forEach(item => {
-            const days = daysUntil(item.deadline);
-            const cls = days < 0 ? 'overdue' : days <= 3 ? 'urgent' : 'normal';
-            html += `<div class="deadline-mini ${cls}">
-              <div class="deadline-mini-text">${esc(item.text)}</div>
-              <div class="deadline-mini-count">${days < 0 ? 'просрочено' : days === 0 ? 'Сегодня!' : days + ' дн.'}</div>
-            </div>`;
-          });
-          return html;
+          const habs = getHabits();
+          if (habs.length === 0) return `<div class="empty-state" style="padding:12px 0;font-size:13px">Нет привычек</div>`;
+          const today = activeDateStr();
+          const doneCount = habs.filter(h => h.history && h.history[today]).length;
+          const pct = Math.round((doneCount / Math.max(habs.length, 1)) * 100);
+          return `
+            <div style="font-size: 24px; font-weight: 800; margin: 10px 0;">${doneCount} / ${habs.length}</div>
+            <div style="font-size: 13px; color: var(--text-tertiary); margin-bottom: 8px;">Выполнено сегодня</div>
+            <div class="mc-bar"><div class="mc-bar-fill" style="width:${pct}%"></div></div>
+          `;
         })()}
       </div>
       <div class="panel-arrow">→</div>

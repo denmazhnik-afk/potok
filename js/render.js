@@ -77,7 +77,7 @@ function buildHTML() {
   if (view === 'plan') return headerHTML + buildPlanPage();
   if (view === 'month-detail') return headerHTML + buildMonthDetail();
   if (view === 'finance') return headerHTML + buildFinancePage();
-  if (view === 'deadlines') return headerHTML + buildDeadlinesPage();
+  if (view === 'habits') return headerHTML + buildHabitsPage();
   if (view === 'ideas') return headerHTML + buildIdeasPage();
   if (view === 'idea-detail') return headerHTML + buildIdeaDetail();
   if (view === 'sleep') return headerHTML + buildSleepPage();
@@ -199,8 +199,8 @@ function openSleep() {
   resetUI(); render();
 }
 
-function openDeadlines() {
-  view = 'deadlines'; viewData = {};
+function openHabits() {
+  view = 'habits'; viewData = {};
   resetUI(); render();
 }
 
@@ -432,7 +432,7 @@ function scrollToDay(d) {
 // ==================== BIND EVENTS ====================
 function bindEvents() {
   const bindings = [
-    ['dayTaskInput', quickAddDayTask],
+    ['habitInput', addHabit],
     ['newGoalInp', confirmAddGoal],
     ['balAmtIn', null],
     ['incAmtIn', null],
