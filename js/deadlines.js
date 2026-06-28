@@ -38,14 +38,29 @@ function buildHabitsPage() {
 
   return `
     <style>
-      .habit-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
-      .habit-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-      .habit-name { font-size: 20px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; }
-      .habit-del-btn { background: none; border: none; color: var(--text-tertiary); font-size: 18px; padding: 4px; cursor: pointer; }
-      .habit-grid-14 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 16px; }
-      .habit-square { aspect-ratio: 1; background: rgba(255,255,255,0.05); border-radius: 8px; transition: 0.2s; }
-      .habit-square.done { background: #6BE3A4; box-shadow: 0 0 10px rgba(107,227,164,0.3); }
-      .habit-mark-btn { width: 100%; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 700; border: none; cursor: pointer; background: #fff; color: #000; transition: 0.2s; }
+      /* ✦ Делаем контейнер сеткой: 2 колонки на телефоне, больше на ПК */
+      .habits-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 12px;
+      }
+      @media (min-width: 768px) {
+        .habits-list { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+      }
+      
+      /* ✦ Уменьшаем отступы и размеры внутри карточки */
+      .habit-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; }
+      .habit-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 8px; }
+      .habit-name { font-size: 15px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; word-break: break-word; line-height: 1.2; }
+      .habit-del-btn { background: none; border: none; color: var(--text-tertiary); font-size: 16px; padding: 0; cursor: pointer; line-height: 1; flex-shrink: 0; }
+      
+      /* ✦ Делаем квадратики и отступы между ними меньше */
+      .habit-grid-14 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; }
+      .habit-square { aspect-ratio: 1; background: rgba(255,255,255,0.05); border-radius: 4px; transition: 0.2s; }
+      .habit-square.done { background: #6BE3A4; box-shadow: 0 0 8px rgba(107,227,164,0.3); }
+      
+      /* ✦ Компактная кнопка */
+      .habit-mark-btn { margin-top: auto; width: 100%; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; background: #fff; color: #000; transition: 0.2s; }
       .habit-mark-btn.done { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); }
     </style>
     <div class="page-header">
