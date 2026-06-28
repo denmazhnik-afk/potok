@@ -23,7 +23,7 @@ function buildPlanPage() {
           <div class="mc-name ${isCur?'is-current-name':''}">${isCur ? '● ' : ''}${MONTHS_RU[m]}</div>
           <div class="mc-year">${y}</div>
         </div>
-        <div class="mc-goals">${totalG > 0 ? ${ICONS.target} + ' ' + totalG + ' ' + (totalG === 1 ? 'цель' : totalG < 5 ? 'цели' : 'целей') : '—'}</div>
+        <div class="mc-goals">${totalG > 0 ? ICONS.target + ' ' + totalG + ' ' + (totalG === 1 ? 'цель' : totalG < 5 ? 'цели' : 'целей') : '—'}</div>
         <div class="mc-bar"><div class="mc-bar-fill" style="width:${pct}%"></div></div>
         <div class="mc-bottom">
           <div class="mc-pct">${totalG > 0 ? Math.round(pct) + '%' : ''}</div>
