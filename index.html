@@ -30,14 +30,17 @@
   <!-- Sidebar (desktop, >768px) -->
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-title">✦</div>
-    <a class="sidebar-btn" data-view="plan" onclick="navTo('plan')">
-      <span class="sidebar-icon">📅</span>
+    <a class="sidebar-btn" data-view="habits" onclick="navTo('habits')">
+      <span class="sidebar-icon">🔄</span>
     </a>
     <a class="sidebar-btn" data-view="home" onclick="navTo('home')">
       <span class="sidebar-icon">🏠</span>
     </a>
+    <a class="sidebar-btn" data-view="plan" onclick="navTo('plan')">
+      <span class="sidebar-icon">📅</span>
+    </a>
     <a class="sidebar-btn" data-view="ideas" onclick="navTo('ideas')">
-      <span class="sidebar-icon">💡</span>
+      <span class="sidebar-icon">📁</span>
     </a>
   </nav>
 
@@ -57,16 +60,20 @@
 
   <!-- Tab bar (mobile, ≤768px) -->
   <nav class="tabbar" id="tabbar">
-    <a class="tabbar-btn" data-view="plan" onclick="navTo('plan')">
-      <span class="tabbar-icon">📅</span>
-      <span class="tabbar-label">План</span>
+    <a class="tabbar-btn" data-view="habits" onclick="navTo('habits')">
+      <span class="tabbar-icon">🔄</span>
+      <span class="tabbar-label">Привычки</span>
     </a>
     <a class="tabbar-btn" data-view="home" onclick="navTo('home')">
       <span class="tabbar-icon">🏠</span>
       <span class="tabbar-label">Главная</span>
     </a>
+    <a class="tabbar-btn" data-view="plan" onclick="navTo('plan')">
+      <span class="tabbar-icon">📅</span>
+      <span class="tabbar-label">План</span>
+    </a>
     <a class="tabbar-btn" data-view="ideas" onclick="navTo('ideas')">
-      <span class="tabbar-icon">💡</span>
+      <span class="tabbar-icon">📁</span>
       <span class="tabbar-label">Проекты</span>
     </a>
   </nav>

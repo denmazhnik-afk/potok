@@ -219,12 +219,14 @@ function navTo(section) {
   if (section === 'plan') openMonthDetail(ACT_Y, ACT_M);
   else if (section === 'home') goHome();
   else if (section === 'ideas') openIdeas();
+  else if (section === 'habits') openHabits();
 }
 
 function updateNav() {
   const section = view === 'home' ? 'home'
     : (view === 'ideas' || view === 'idea-detail') ? 'ideas'
     : (view === 'plan' || view === 'month-detail') ? 'plan'
+    : (view === 'habits') ? 'habits'
     : '';
 
   document.querySelectorAll('.sidebar-btn, .tabbar-btn').forEach(function(btn) {
