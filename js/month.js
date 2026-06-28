@@ -101,7 +101,7 @@ function buildMonthDetail() {
       const dlBadge = t.deadline ? `<span class="task-deadline-badge ${t.done ? 'done' : ''}">${formatDateDisplay(t.deadline)}</span>` : '';
       const urgentCls = isUrgent ? 'urgent-row' : '';
       const urgentBtn = isUrgent ? 'active' : '';
-      const ideaTag = t.fromIdea ? `<span class="idea-tag" title="Из проекта">${esc(t.ideaEmoji || '📁')}</span>` : '';
+      const ideaTag = t.fromIdea ? `<span class="idea-tag" title="Из проекта" style="display:inline-flex; align-items:center; margin-right:4px;">${ICONS[t.ideaEmoji] || ICONS.folder}</span>` : '';
       const realIdx = t.fromIdea ? -1 : dd.tasks.findIndex(x => x.text === t.text);
       const dragAttrs = realIdx >= 0
         ? ` draggable="true" data-real-idx="${realIdx}" ondragstart="monthDragStart(event,${d},${realIdx})" ondragover="monthDragOver(event)" ondrop="monthDrop(event,${d},${realIdx})" ondragend="monthDragEnd(event)"`
