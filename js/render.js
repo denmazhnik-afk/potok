@@ -432,11 +432,11 @@ function scrollToDay(d) {
 // ==================== BIND EVENTS ====================
 function bindEvents() {
   const bindings = [
-    ['habitInput', addHabit],
+    ['dayTaskInput', quickAddDayTask],
     ['newGoalInp', confirmAddGoal],
     ['balAmtIn', null],
     ['incAmtIn', null],
-    ['dlTaskInput', addDeadlineTask],
+    ['habitInput', addHabit],
   ];
 
   bindings.forEach(([id, fn]) => {
