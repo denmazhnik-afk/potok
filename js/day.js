@@ -26,7 +26,7 @@ function buildDayPage() {
       <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleDayTask(${i})"></div>
       <span class="task-name ${t.done ? 'struck' : ''}">${ideaTag}${esc(t.text)}</span>
       ${dlBadge}
-      <button class="task-urgent-btn ${urgentBtn}" onclick="toggleDayTaskUrgent(${i})" title="Срочно">⚡</button>
+      <button class="task-urgent-btn ${urgentBtn}" onclick="toggleDayTaskUrgent(${i})" title="Срочно">${ICONS.lightning}</button>
       <button class="task-del" onclick="deleteDayTask(${i})" title="${t.fromIdea ? 'Убрать из дня' : 'Удалить'}">×</button>
     </li>`;
   });
@@ -98,11 +98,11 @@ function buildDayPage() {
           ${buildRing(pct, 80, pct===100?'#6BE3A4':pct>60?'#60A5FA':'#F2C063', `${done}/${total}`)}
           ${buildRing(Math.round(water.cups/6*100), 80, '#60A5FA', `${water.cups*500}мл`)}
           <div style="flex:1">
-            <div class="section-eyebrow">💧 Вода (цель 3 л / 6 стаканов)</div>
+            <div class="section-eyebrow">${ICONS.waterFull} Вода (цель 3 л / 6 стаканов)</div>
             <div class="water-day">
               <div class="water-cups-large">
                 ${Array.from({length:6}, (_,i) =>
-                  `<button class="cup-btn ${i < water.cups ? 'filled' : ''}" onclick="toggleWaterCup(${i})">${i < water.cups ? '💧' : '○'}</button>`
+                  `<button class="cup-btn ${i < water.cups ? 'filled' : ''}" onclick="toggleWaterCup(${i})">${i < water.cups ? ICONS.waterFull : ICONS.waterEmpty}</button>`
                 ).join('')}
               </div>
             </div>
@@ -111,7 +111,7 @@ function buildDayPage() {
       </div>
 
       <div class="section-card">
-        <div class="section-eyebrow">✅ Задачи на день</div>
+        <div class="section-eyebrow">${ICONS.task} Задачи на день</div>
         <ul class="task-list">${tasksHTML}</ul>
         ${addRow}
         ${pushBtn}
@@ -119,7 +119,7 @@ function buildDayPage() {
 
       <div class="day-note-grid">
         <div class="section-card" style="margin-bottom:0">
-          <div class="section-eyebrow">😊 Настроение</div>
+          <div class="section-eyebrow">${ICONS.smile} Настроение</div>
           <div class="mood-picker">
             ${moodHTML}
           </div>
