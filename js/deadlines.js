@@ -38,7 +38,7 @@ function buildHabitsPage() {
           <div class="habit-header">
             <div class="habit-name">${esc(h.name)}</div>
             <div class="habit-actions">
-              <button class="habit-icon-btn" onclick="cycleHabitColor(${h.id})" title="Изменить цвет">🎨</button>
+              <button class="habit-icon-btn" onclick="cycleHabitColor(${h.id})" title="Изменить цвет">${ICONS.palette}</button>
               <button class="habit-icon-btn" onclick="deleteHabit(${h.id})" title="Удалить">✕</button>
             </div>
           </div>

@@ -103,7 +103,7 @@ function buildHome() {
         </div>
 
         <div class="day-tasks-col">
-          <div class="section-eyebrow" style="margin-bottom:8px">✅ Задачи <span class="badge badge-green">${doneT}/${totalT}</span></div>
+          <div class="section-eyebrow" style="margin-bottom:8px">${ICONS.task} Задачи <span class="badge badge-green">${doneT}/${totalT}</span></div>
           ${dayTasksHTML}
         </div>
 
