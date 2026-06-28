@@ -45,12 +45,12 @@ function buildSleepPage() {
         </div>
         <div class="sleep-day-fields">
           <label class="sleep-day-field">
-            <span class="sleep-day-label">🌙 Лёг</span>
+            <span class="sleep-day-label">${ICONS.moon} Лёг</span>
             <input type="time" class="sleep-day-input" value="${day.sl.bed || ''}"
               onblur="saveSleepForDay(${day.y},${day.m},${day.d},'bed',this.value)">
           </label>
           <label class="sleep-day-field">
-            <span class="sleep-day-label">☀️ Встал</span>
+            <span class="sleep-day-label">${ICONS.sun} Встал</span>
             <input type="time" class="sleep-day-input" value="${day.sl.wake || ''}"
               onblur="saveSleepForDay(${day.y},${day.m},${day.d},'wake',this.value)">
           </label>
@@ -81,7 +81,7 @@ function buildSleepPage() {
   return `
     <div class="page-header">
       <button class="back-btn" onclick="goHome()">← Назад</button>
-      <h2 class="page-heading">😴 Трекер сна</h2>
+      <h2 class="page-heading">${ICONS.moon} Трекер сна</h2>
     </div>
 
     <div class="section-card" style="margin-bottom:16px">
