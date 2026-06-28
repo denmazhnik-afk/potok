@@ -216,10 +216,12 @@ function openIdeaDetail(id) {
 
 // ==================== SIDEBAR / TABBAR NAV ====================
 function navTo(section) {
-  if (section === 'plan') openMonthDetail(ACT_Y, ACT_M);
-  else if (section === 'home') goHome();
-  else if (section === 'ideas') openIdeas();
-  else if (section === 'habits') openHabits();
+  if (section === 'home') {
+    goHome();
+  } else {
+    view = section;
+    render();
+  }
 }
 
 function updateNav() {
