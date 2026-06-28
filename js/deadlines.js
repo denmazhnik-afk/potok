@@ -7,6 +7,9 @@ const HABIT_COLORS = [
   '#253327',        // 3: Приглушенный зеленый (мята)
   '#222f3d',        // 4: Глубокий синий
   '#31263d',        // 5: Ежевичный
+  '#304b4f',
+  '#7c3e3e',
+  '#7c3e6c',
   '#3d2633'         // 6: Пыльно-розовый
 ];
 
@@ -80,7 +83,7 @@ function buildHabitsPage() {
     </style>
     <div class="page-header">
       <button class="back-btn" onclick="goHome()">← Назад</button>
-      <h2 class="page-heading">🔄 Привычки</h2>
+      <h2 class="page-heading">${ICONS.refresh} Привычки</h2>
     </div>
     <div class="section-card" style="margin-bottom:16px">
       <div class="add-row">

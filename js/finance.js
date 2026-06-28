@@ -9,9 +9,9 @@ function buildFinancePage() {
   const totalInc = inc.reduce((s,e) => s + e.amount, 0);
 
   const tabs = `<div class="nav-tabs">
-    <button class="nav-tab ${tab==='balance'?'active':''}" onclick="setFinTab('balance')">💰 Баланс</button>
-    <button class="nav-tab ${tab==='income'?'active':''}" onclick="setFinTab('income')">📈 Доходы</button>
-    <button class="nav-tab ${tab==='wishlist'?'active':''}" onclick="setFinTab('wishlist')">✨ Вишлист</button>
+    <button class="nav-tab ${tab==='balance'?'active':''}" onclick="setFinTab('balance')">${ICONS.wallet} Баланс</button>
+    <button class="nav-tab ${tab==='income'?'active':''}" onclick="setFinTab('income')">${ICONS.trendingUp} Доходы</button>
+    <button class="nav-tab ${tab==='wishlist'?'active':''}" onclick="setFinTab('wishlist')">${ICONS.sparkles} Вишлист</button>
   </div>`;
 
   let content = '';
