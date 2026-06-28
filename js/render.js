@@ -179,8 +179,7 @@ function openDay() {
 }
 
 function openPlan() {
-  view = 'plan'; viewData = {};
-  resetUI(); render();
+  openMonthDetail(ACT_Y, ACT_M);
 }
 
 function openMonthDetail(y, m) {
@@ -218,6 +217,8 @@ function openIdeaDetail(id) {
 function navTo(section) {
   if (section === 'home') {
     goHome();
+  } else if (section === 'plan') {
+    openMonthDetail(ACT_Y, ACT_M);
   } else {
     view = section;
     render();
