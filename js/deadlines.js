@@ -46,7 +46,7 @@ function buildHabitsPage() {
             ${squaresHTML}
           </div>
           <button class="habit-mark-btn" onclick="toggleHabit(${h.id})">
-            <div class="check-circle ${isDoneToday ? 'done' : ''}">✓</div>
+            ${isDoneToday ? '<div class="check-circle done">✓</div>' : 'Выполнить'}
           </button>
         </div>
       `;
@@ -72,7 +72,7 @@ function buildHabitsPage() {
       .habit-square.today-done { background: #fff; } /* Яркий белый для выполненного сегодня */
       
       /* Темная кнопка с круглым чекмарком */
-      .habit-mark-btn { margin-top: auto; width: 100%; padding: 8px; border-radius: 12px; border: none; cursor: pointer; background: rgba(0,0,0,0.25); display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+      .habit-mark-btn { margin-top: auto; width: 100%; height: 42px; border-radius: 12px; border: none; cursor: pointer; background: rgba(0,0,0,0.25); color: #fff; font-size: 15px; font-weight: 700; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
       .habit-mark-btn:active { transform: scale(0.97); }
       
       .check-circle { width: 26px; height: 26px; border-radius: 50%; background: #fff; color: #000; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 14px; transition: 0.3s; }
