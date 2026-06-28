@@ -180,7 +180,28 @@ function buildHome() {
       <div class="panel-arrow">→</div>
     </div>
 
-    <div class="panel panel-finance" onclick="openFinance()">
+    <div class="panel panel-finance" onclick="openHabits()">
+      <div class="panel-inner">
+        <div class="panel-eyebrow">Трекер привычек</div>
+        <div class="panel-title">Привычки</div>
+        ${(() => {
+          if (typeof getHabits !== 'function') return ''; // Защита для старого кэша
+          const habs = getHabits();
+          if (habs.length === 0) return `<div class="empty-state" style="padding:12px 0;font-size:13px">Нет привычек</div>`;
+          const today = activeDateStr();
+          const doneCount = habs.filter(h => h.history && h.history[today]).length;
+          const pct = Math.round((doneCount / Math.max(habs.length, 1)) * 100);
+          return `
+            <div style="font-size: 24px; font-weight: 800; margin: 10px 0;">${doneCount} / ${habs.length}</div>
+            <div style="font-size: 13px; color: var(--text-tertiary); margin-bottom: 8px;">Выполнено сегодня</div>
+            <div class="mc-bar"><div class="mc-bar-fill" style="width:${pct}%"></div></div>
+          `;
+        })()}
+      </div>
+      <div class="panel-arrow">→</div>
+    </div>
+
+    <div class="panel panel-deadlines" onclick="openFinance()">
       <div class="panel-inner">
         <div class="panel-eyebrow">Финансы</div>
         <div class="panel-title">Деньги</div>
@@ -197,32 +218,6 @@ function buildHome() {
             <canvas class="sparkline-canvas" id="homeSparkline" width="140" height="50"></canvas>
           </div>
         </div>
-      </div>
-      <div class="panel-arrow">→</div>
-    </div>
-
-    <div class="panel panel-ideas" onclick="openIdeas()">
-      <div class="panel-inner">
-        <div class="panel-eyebrow">База идей</div>
-        <div class="panel-title">Проекты</div>
-        ${(() => {
-          const ideas = getIdeas();
-          if (ideas.length === 0) {
-            return `<div class="empty-state" style="padding:12px 0;font-size:13px">Нет проектов</div>`;
-          }
-          let html = '';
-          ideas.slice(0, 3).forEach(p => {
-            const total = p.tasks.length;
-            const done = p.tasks.filter(t => t.done).length;
-            const pct = total > 0 ? Math.round(done / Math.max(total, 1) * 100) : 0;
-            html += `<div class="idea-mini">
-              <span class="idea-mini-emoji">${p.emoji || '📁'}</span>
-              <span class="idea-mini-name">${esc(p.name)}</span>
-              <span class="idea-mini-pct">${done}/${total}</span>
-            </div>`;
-          });
-          return html;
-        })()}
       </div>
       <div class="panel-arrow">→</div>
     </div>
