@@ -23,7 +23,7 @@ function buildHome() {
     dayTasksHTML = `<div class="empty-state" style="padding:8px 0">Нет задач на сегодня</div>`;
   } else {
     preview.forEach((t, i) => {
-      const folderIcon = t.ideaEmoji === '📁' || !t.ideaEmoji ? ICONS.folder : esc(t.ideaEmoji) + ' ';
+      const folderIcon = ICONS[t.ideaEmoji] || ICONS.folder;
       const iconHtml = t.fromIdea ? `<span style="opacity:0.5">${folderIcon}</span>` : '';
       dayTasksHTML += `<div class="day-task-mini" onclick="toggleTodayTask(${i})" style="cursor:pointer"
         draggable="true" data-idx="${i}" data-flip-id="ht-${flipKey(t.text)}"
@@ -218,7 +218,7 @@ function buildHome() {
             const done = p.tasks.filter(t => t.done).length;
             const pct = total > 0 ? Math.round(done / Math.max(total, 1) * 100) : 0;
             html += `<div class="idea-mini">
-              <span class="idea-mini-emoji" style="display:flex;align-items:center">${p.emoji === '📁' || !p.emoji ? ICONS.folder : esc(p.emoji)}</span>
+              <span class="idea-mini-emoji" style="display:flex;align-items:center">${ICONS[p.emoji] || ICONS.folder}</span>
               <span class="idea-mini-name">${esc(p.name)}</span>
               <span class="idea-mini-pct">${done}/${total}</span>
             </div>`;
