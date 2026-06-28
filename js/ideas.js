@@ -174,7 +174,7 @@ function buildIdeaDetail() {
 const PROJECT_ICONS_LIST = ['folder', 'rocket', 'code', 'briefcase', 'book', 'camera', 'video', 'monitor', 'music', 'heart', 'activity', 'globe', 'tool', 'megaphone', 'shopping', 'star', 'coffee', 'cpu', 'users', 'pen'];
 
 function buildEmojiPicker(ideaId) {
-  let html = `<div class="emoji-picker" id="emojiPicker" style="display: flex; flex-wrap: wrap; gap: 8px;">`;
+  let html = `<div class="emoji-picker" id="emojiPicker" style="display: none; flex-wrap: wrap; gap: 8px; margin-top: 16px;">`;
   PROJECT_ICONS_LIST.forEach(key => {
     html += `<div class="emoji-option" style="cursor:pointer; display:inline-flex; padding:8px; border-radius:8px; transition:0.2s; color: var(--text-primary);" 
       onclick="changeIdeaEmoji('${esc(ideaId)}', '${key}')" title="${key}">
@@ -187,7 +187,9 @@ function buildEmojiPicker(ideaId) {
 
 function toggleEmojiPicker() {
   const picker = document.getElementById('emojiPicker');
-  if (picker) picker.classList.toggle('open');
+  if (picker) {
+    picker.style.display = picker.style.display === 'none' ? 'flex' : 'none';
+  }
 }
 
 function changeIdeaEmoji(id, emoji) {
