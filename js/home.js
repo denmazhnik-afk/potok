@@ -23,13 +23,15 @@ function buildHome() {
     dayTasksHTML = `<div class="empty-state" style="padding:8px 0">Нет задач на сегодня</div>`;
   } else {
     preview.forEach((t, i) => {
+      const folderIcon = t.ideaEmoji === '📁' || !t.ideaEmoji ? ICONS.folder : esc(t.ideaEmoji) + ' ';
+      const iconHtml = t.fromIdea ? `<span style="opacity:0.5">${folderIcon}</span>` : '';
       dayTasksHTML += `<div class="day-task-mini" onclick="toggleTodayTask(${i})" style="cursor:pointer"
         draggable="true" data-idx="${i}" data-flip-id="ht-${flipKey(t.text)}"
         ondragstart="homeDragStart(event,${i})" ondragover="homeDragOver(event)"
         ondrop="homeDrop(event,${i})" ondragend="homeDragEnd(event)">
         <span class="task-drag" title="Перетащить">⋮⋮</span>
         <div class="mini-check ${t.done ? 'done' : ''}">${t.done ? '✓' : ''}</div>
-        <span class="mini-task-text ${t.done ? 'completed' : ''}">${t.fromIdea ? '<span style="opacity:0.5;font-size:10px">' + esc(t.ideaEmoji || '📁') + '</span> ' : ''}${esc(t.text)}</span>
+        <span class="mini-task-text ${t.done ? 'completed' : ''}">${iconHtml}${esc(t.text)}</span>
       </div>`;
     });
     if (allTasks.length > 3) {
@@ -83,7 +85,7 @@ function buildHome() {
             const s = getStreak();
             const abs = Math.abs(s);
             const active = s > 0;
-            return `<div class="streak-badge ${active ? 'active' : 'pending'}">🔥 ${abs} дн.</div>`;
+            return `<div class="streak-badge ${active ? 'active' : 'pending'}">${ICONS.fire}${abs} дн.</div>`;
           })()}
         </div>
 
@@ -95,7 +97,7 @@ function buildHome() {
         <div class="water-cups">
           ${Array.from({length:6}, (_,i) =>
             `<div class="water-cup ${i < water.cups ? 'filled' : ''}" onclick="toggleWaterCup(${i})">
-              ${i < water.cups ? '💧' : '○'}
+              ${i < water.cups ? ICONS.waterFull : ICONS.waterEmpty}
             </div>`).join('')}
           <div class="water-info">${water.cups * 500} мл / 3000 мл</div>
         </div>
@@ -166,8 +168,8 @@ function buildHome() {
                   <div class="sleep-mini-lbl">Сегодня</div>
                 </div>
                 <div class="sleep-mini-times">
-                  <span>🌙 ${sl.bed}</span>
-                  <span>☀️ ${sl.wake}</span>
+                  <span>${ICONS.moon}${sl.bed}</span>
+                  <span>${ICONS.sun}${sl.wake}</span>
                 </div>
                 <div class="sleep-mini-quality" style="color:${sl.quality >= 8 ? 'var(--green)' : sl.quality >= 5 ? 'var(--blue)' : 'var(--red)'}">Качество: ${sl.quality}/10</div>
               </div>
@@ -216,7 +218,7 @@ function buildHome() {
             const done = p.tasks.filter(t => t.done).length;
             const pct = total > 0 ? Math.round(done / Math.max(total, 1) * 100) : 0;
             html += `<div class="idea-mini">
-              <span class="idea-mini-emoji">${p.emoji || '📁'}</span>
+              <span class="idea-mini-emoji" style="display:flex;align-items:center">${p.emoji === '📁' || !p.emoji ? ICONS.folder : esc(p.emoji)}</span>
               <span class="idea-mini-name">${esc(p.name)}</span>
               <span class="idea-mini-pct">${done}/${total}</span>
             </div>`;
