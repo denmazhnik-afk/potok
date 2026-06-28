@@ -26,7 +26,7 @@ function buildIdeasPage() {
   return `
     <div class="page-header">
       <button class="back-btn" onclick="goHome()">← Назад</button>
-      <h2 class="page-heading">${ICONS.lightbulb} База идей</h2>
+      <h2 class="page-heading"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px; margin-right:8px"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> Проекты</h2>
       <button class="btn-primary" onclick="startAddIdea()">+ Проект</button>
     </div>
     <div class="ideas-grid">
