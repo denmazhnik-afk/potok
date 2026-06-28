@@ -23,7 +23,7 @@ function buildPlanPage() {
           <div class="mc-name ${isCur?'is-current-name':''}">${isCur ? '● ' : ''}${MONTHS_RU[m]}</div>
           <div class="mc-year">${y}</div>
         </div>
-        <div class="mc-goals">${totalG > 0 ? '🎯 ' + totalG + ' ' + (totalG === 1 ? 'цель' : totalG < 5 ? 'цели' : 'целей') : '—'}</div>
+        <div class="mc-goals">${totalG > 0 ? '${ICONS.target} ' + totalG + ' ' + (totalG === 1 ? 'цель' : totalG < 5 ? 'цели' : 'целей') : '—'}</div>
         <div class="mc-bar"><div class="mc-bar-fill" style="width:${pct}%"></div></div>
         <div class="mc-bottom">
           <div class="mc-pct">${totalG > 0 ? Math.round(pct) + '%' : ''}</div>
@@ -64,8 +64,8 @@ function buildMonthDetail() {
         <div class="goal-circle ${g.done ? 'filled' : ''}" onclick="toggleGoal(${i})">${g.done ? '✓' : ''}</div>
         <span class="goal-text ${g.done ? 'struck' : ''}">${esc(g.text) || '<em style="color:var(--text-tertiary)">Без названия</em>'}</span>
         <div class="inline-btns">
-          <button class="ibtn" onclick="startEditGoal(${i})">✏️</button>
-          <button class="ibtn" onclick="deleteGoal(${i})">🗑️</button>
+          <button class="ibtn" onclick="startEditGoal(${i})">${ICONS.edit}</button>
+          <button class="ibtn" onclick="deleteGoal(${i})">${ICONS.trash}</button>
         </div>
       </div>`;
     }
@@ -115,7 +115,7 @@ function buildMonthDetail() {
         <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleMonthTask(${d},${ti})"></div>
         <span class="task-name ${t.done ? 'struck' : ''}">${ideaTag}${esc(t.text)}</span>
         ${dlBadge}
-        <button class="task-urgent-btn ${urgentBtn}" onclick="toggleMonthTaskUrgent(${d},${ti})" title="Срочно">⚡</button>
+        <button class="task-urgent-btn ${urgentBtn}" onclick="toggleMonthTaskUrgent(${d},${ti})" title="Срочно">${ICONS.lightning}</button>
         <button class="task-del" onclick="deleteMonthTask(${d},${ti})" title="${t.fromIdea ? 'Убрать из дня' : 'Удалить'}">×</button>
       </li>`;
     });
@@ -155,15 +155,15 @@ function buildMonthDetail() {
   <div class="page-header">
     <button class="back-btn" onclick="openPlan()">← Назад</button>
     <h2 class="page-heading">${MONTHS_RU[m]} ${y}</h2>
-    ${isCur ? `<div class="days-left-tag">⏳ Ещё ${daysLeft} дн.</div>` : ''}
+    ${isCur ? `<div class="days-left-tag">${ICONS.hourglass} Ещё ${daysLeft} дн.</div>` : ''}
   </div>
 
-  ${isCur ? `<button class="today-jump-btn" onclick="scrollToDay(${ACT_D})">📍 Перейти к сегодня</button>` : ''}
+  ${isCur ? `<button class="today-jump-btn" onclick="scrollToDay(${ACT_D})">${ICONS.pin} Перейти к сегодня</button>` : ''}
 
   <div class="month-detail-layout">
     <div>
       <div class="section-card">
-        <div class="section-eyebrow">🎯 Цели на месяц</div>
+        <div class="section-eyebrow">${ICONS.target} Цели на месяц</div>
         ${goalsHTML}
       </div>
       <div class="section-card">${notesHTML}</div>
