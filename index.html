@@ -24,6 +24,110 @@
   <link rel="stylesheet" href="css/finance.css">
   <link rel="stylesheet" href="css/deadlines.css">
   <link rel="stylesheet" href="css/ideas.css">
+  <style>
+    /* ✦ НОВЫЙ ДИЗАЙН ПЛАВАЮЩЕЙ ПАНЕЛИ (Мобилка) ✦ */
+    @media (max-width: 768px) {
+      /* Даем место снизу, чтобы контент не прятался за новой панелью */
+      body {
+        padding-bottom: 110px !important; 
+      }
+      
+      #tabbar {
+        position: fixed !important;
+        /* env(safe-area-inset-bottom) автоматически приподнимает панель над полоской iPhone */
+        bottom: calc(16px + env(safe-area-inset-bottom)) !important; 
+        left: 20px !important;
+        right: 20px !important;
+        height: 64px !important;
+        background: rgba(28, 28, 30, 0.85) !important; /* Тёмно-серый полупрозрачный */
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 32px !important; /* Идеальная форма пилюли */
+        display: flex !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        padding: 0 8px !important;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+        z-index: 1000;
+      }
+
+      .tabbar-btn {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        color: #636366 !important; /* Цвет неактивных иконок (серый iOS) */
+        text-decoration: none;
+        border-radius: 50%;
+        transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      /* Прячем текст на мобилках для чистоты дизайна (как в доке iOS) */
+      .tabbar-label {
+        display: none !important;
+      }
+
+      .tabbar-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      /* ✦ АКТИВНОЕ СОСТОЯНИЕ ✦ */
+      .tabbar-btn.active {
+        color: #fff !important; /* Белая иконка при нажатии */
+      }
+
+      .tabbar-btn.active .tabbar-icon {
+        transform: translateY(-2px); /* Иконка элегантно приподнимается */
+      }
+
+      /* Аккуратная точка под иконкой (как в Telegram) */
+      .tabbar-btn::after {
+        content: '';
+        position: absolute;
+        bottom: 8px;
+        width: 4px;
+        height: 4px;
+        background: currentColor;
+        border-radius: 50%;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .tabbar-btn.active::after {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      /* Легкий круглый фон позади активной иконки */
+      .tabbar-btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.5);
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .tabbar-btn.active::before {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+  </style>
 </head>
 <body>
 
