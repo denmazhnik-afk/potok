@@ -14,20 +14,31 @@ function buildDayPage() {
   allTasks.forEach((t, i) => {
     const hasDeadline = t.deadline && !t.done;
     const isUrgent = t.urgent && !t.done;
-    const dlBadge = t.deadline ? `<span class="task-deadline-badge ${t.done ? 'done' : ''}">${formatDateDisplay(t.deadline)}</span>` : '';
+    const dlBadge = t.deadline ? `<span class="task-deadline-badge ${t.done ? 'done' : ''}">${ICONS.calendar} ${formatDateDisplay(t.deadline)}</span>` : '';
     const urgentCls = isUrgent ? 'urgent-row' : '';
     const urgentBtn = isUrgent ? 'active' : '';
     const ideaTag = t.fromIdea ? `<span class="idea-tag" title="Из проекта" style="display:inline-flex; align-items:center; margin-right:4px;">${ICONS[t.ideaEmoji] || ICONS.folder}</span>` : '';
+    
+    // Блок с молнией и датой (только если задача не выполнена)
+    let footerHTML = '';
+    if (!t.done && (isUrgent || t.deadline || true)) { // Всегда создаем подвал, если есть кнопки
+      footerHTML = `<div class="task-footer-row">
+        <button class="task-urgent-btn ${urgentBtn}" onclick="toggleDayTaskUrgent(${i})" title="Срочно">${ICONS.lightning}</button>
+        ${dlBadge}
+      </div>`;
+    }
+
     tasksHTML += `<li class="task-item ${t.done ? 'done-row' : ''} ${hasDeadline ? 'deadline-row' : ''} ${urgentCls}"
       draggable="true" data-idx="${i}" data-flip-id="dt-${flipKey(t.text)}"
       ondragstart="dayDragStart(event,${i})" ondragover="dayDragOver(event)"
       ondrop="dayDrop(event,${i})" ondragend="dayDragEnd(event)">
-      <span class="task-drag" title="Перетащить">⋮⋮</span>
-      <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleDayTask(${i})"></div>
-      <span class="task-name ${t.done ? 'struck' : ''}">${ideaTag}${esc(t.text)}</span>
-      ${dlBadge}
-      <button class="task-urgent-btn ${urgentBtn}" onclick="toggleDayTaskUrgent(${i})" title="Срочно">${ICONS.lightning}</button>
-      <button class="task-del" onclick="deleteDayTask(${i})" title="${t.fromIdea ? 'Убрать из дня' : 'Удалить'}">×</button>
+      <div class="task-main-row">
+        <span class="task-drag" title="Перетащить">⋮⋮</span>
+        <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleDayTask(${i})"></div>
+        <span class="task-name ${t.done ? 'struck' : ''}">${ideaTag}${esc(t.text)}</span>
+        <button class="task-del" onclick="deleteDayTask(${i})" title="${t.fromIdea ? 'Убрать из дня' : 'Удалить'}">×</button>
+      </div>
+      ${footerHTML}
     </li>`;
   });
   if (!tasksHTML) tasksHTML = `<li class="empty-state">Нет задач — добавьте первую</li>`;

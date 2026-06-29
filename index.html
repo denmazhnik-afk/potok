@@ -124,19 +124,21 @@
     }
 
     /* =========================================================
-       2. ИДЕАЛЬНОЕ ПОЗИЦИОНИРОВАНИЕ ЗАДАЧ (Молния и Дата)
+       2. ИДЕАЛЬНАЯ СТРУКТУРА ЗАДАЧ (ДВЕ СТРОКИ)
     ========================================================= */
-    
     * {
       -webkit-tap-highlight-color: transparent !important;
     }
 
-    /* Подготовка карточки */
+    /* Карточка задачи - теперь это колонка (верхняя и нижняя часть) */
     .task-item {
-      position: relative !important; 
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 12px 14px !important;
+      gap: 10px !important;
+      background: transparent;
+      position: relative !important;
       min-height: unset !important;
-      padding-top: 14px !important;
-      padding-bottom: 40px !important; /* Место под молнию и дату */
     }
     
     .task-item:active, .task-item:focus {
@@ -144,79 +146,89 @@
       transform: none !important;
     }
 
-    /* ✦ Молния (Жестко слева внизу) ✦ */
-    .task-urgent-btn {
-      position: absolute !important;
-      top: auto !important;     
-      bottom: 3px !important;   
-      left: 32px !important;    /* На телефоне под текстом */
-      right: auto !important;
-      transform: none !important;
-      margin: 0 !important;
-      width: 34px !important;   
-      height: 34px !important;
-      padding: 0 !important;
+    /* ✦ ВЕРХНЯЯ СТРОКА: Чекбокс, текст, крестик ✦ */
+    .task-main-row {
       display: flex !important;
+      align-items: flex-start !important;
+      width: 100% !important;
+      gap: 12px !important;
+    }
+
+    .task-main-row .task-name {
+      flex: 1 1 0% !important;
+      min-width: 0 !important; /* Разрешает перенос длинного текста */
+      word-wrap: break-word !important;
+      line-height: 1.4 !important;
+      margin-top: 2px !important;
+    }
+    
+    .task-main-row .task-cb, .task-main-row .task-drag, .task-main-row .task-del, .task-main-row .ibtn {
+      flex-shrink: 0 !important;
+    }
+
+    /* ✦ НИЖНЯЯ СТРОКА: Молния и Календарь ✦ */
+    .task-footer-row {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 8px !important;
+      padding-left: 36px !important; /* Отступ ровно под начало текста на телефоне */
+    }
+
+    /* ✦ СТИЛИ МОЛНИИ ✦ */
+    .task-urgent-btn {
+      position: static !important; 
+      display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
-      color: #52525b !important; 
-      background: none !important;
+      height: 26px !important;
+      padding: 0 10px !important;
+      background: rgba(255,255,255,0.06) !important;
+      border-radius: 6px !important;
+      font-size: 11px !important;
+      font-weight: 700 !important;
+      color: #52525b !important;
       border: none !important;
-      outline: none !important;
-      z-index: 10 !important;
       cursor: pointer !important;
+      transform: none !important;
+      margin: 0 !important;
     }
-
-    .task-urgent-btn svg {
-      width: 15px !important;
-      height: 15px !important;
-    }
-
+    .task-urgent-btn svg { width: 14px !important; height: 14px !important; }
     .task-urgent-btn.active {
       color: #FBBF24 !important; 
+      background: rgba(251, 191, 36, 0.1) !important;
     }
 
-    /* ✦ Дата дедлайна (Красная, в одну линию с молнией) ✦ */
+    /* ✦ СТИЛИ ДАТЫ (Красный фон и текст) ✦ */
     .task-deadline-badge {
-      position: absolute !important;
-      top: auto !important;       
-      bottom: 8px !important;     
-      right: auto !important;     
-      left: 68px !important;      /* Сразу за молнией */
-      transform: none !important; 
-      margin: 0 !important;
+      position: static !important; 
       display: inline-flex !important;
-      flex-direction: row !important;
       align-items: center !important;
       justify-content: center !important;
       gap: 6px !important;
-      white-space: nowrap !important; 
-      background: rgba(239, 68, 68, 0.1) !important; /* Легкий красный фон */
-      padding: 0 8px !important;
-      height: 24px !important;
+      height: 26px !important;
+      padding: 0 10px !important;
+      background: rgba(239, 68, 68, 0.1) !important;
       border-radius: 6px !important;
       font-size: 11px !important;
       font-weight: 700 !important;
       color: #EF4444 !important; /* Красный текст */
-      z-index: 5 !important;
-      box-sizing: border-box !important;
+      transform: none !important;
+      margin: 0 !important;
+      white-space: nowrap !important;
     }
-
     .task-deadline-badge svg {
-      width: 13px !important;
-      height: 13px !important;
+      width: 13px !important; 
+      height: 13px !important; 
       stroke: #EF4444 !important; /* Красная иконка */
       opacity: 0.9 !important;
       margin: 0 !important;
     }
 
-    /* Адаптация под компьютер */
+    /* Адаптация под компьютер (сдвиг из-за иконки перетаскивания) */
     @media (min-width: 768px) {
-      .task-urgent-btn {
-        left: 64px !important; 
-      }
-      .task-deadline-badge {
-        left: 100px !important; 
+      .task-footer-row {
+        padding-left: 62px !important; 
       }
     }
 

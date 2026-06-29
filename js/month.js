@@ -108,11 +108,10 @@ function buildMonthDetail() {
     const isToday = isCur && d === ACT_D;
     const wd = WEEKDAYS_FULL[new Date(y, m, d).getDay()];
 
-    let tasksHTML = '';
-    dayAllTasks.forEach((t, ti) => {
+    let tasksHTML = '';dayAllTasks.forEach((t, ti) => {
       const hasDeadline = t.deadline && !t.done;
       const isUrgent = t.urgent && !t.done;
-      const dlBadge = t.deadline ? `<span class="task-deadline-badge ${t.done ? 'done' : ''}">${formatDateDisplay(t.deadline)}</span>` : '';
+      const dlBadge = t.deadline ? `<span class="task-deadline-badge ${t.done ? 'done' : ''}">${ICONS.calendar} ${formatDateDisplay(t.deadline)}</span>` : '';
       const urgentCls = isUrgent ? 'urgent-row' : '';
       const urgentBtn = isUrgent ? 'active' : '';
       const ideaTag = t.fromIdea ? `<span class="idea-tag" title="Из проекта" style="display:inline-flex; align-items:center; margin-right:4px;">${ICONS[t.ideaEmoji] || ICONS.folder}</span>` : '';
@@ -123,14 +122,24 @@ function buildMonthDetail() {
       const dragHandle = realIdx >= 0
         ? `<span class="task-drag" title="Перетащить">⋮⋮</span>`
         : '';
+        
+      let footerHTML = '';
+      if (!t.done) {
+        footerHTML = `<div class="task-footer-row">
+          <button class="task-urgent-btn ${urgentBtn}" onclick="toggleMonthTaskUrgent(${d},${ti})" title="Срочно">${ICONS.lightning}</button>
+          ${dlBadge}
+        </div>`;
+      }
+
       tasksHTML += `<li class="task-item ${t.done ? 'done-row' : ''} ${hasDeadline ? 'deadline-row' : ''} ${urgentCls}"${dragAttrs}
         data-flip-id="mt-${d}-${flipKey(t.text)}">
-        ${dragHandle}
-        <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleMonthTask(${d},${ti})"></div>
-        <span class="task-name ${t.done ? 'struck' : ''}">${ideaTag}${esc(t.text)}</span>
-        ${dlBadge}
-        <button class="task-urgent-btn ${urgentBtn}" onclick="toggleMonthTaskUrgent(${d},${ti})" title="Срочно">${ICONS.lightning}</button>
-        <button class="task-del" onclick="deleteMonthTask(${d},${ti})" title="${t.fromIdea ? 'Убрать из дня' : 'Удалить'}">×</button>
+        <div class="task-main-row">
+          ${dragHandle}
+          <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleMonthTask(${d},${ti})"></div>
+          <span class="task-name ${t.done ? 'struck' : ''}">${ideaTag}${esc(t.text)}</span>
+          <button class="task-del" onclick="deleteMonthTask(${d},${ti})" title="${t.fromIdea ? 'Убрать из дня' : 'Удалить'}">×</button>
+        </div>
+        ${footerHTML}
       </li>`;
     });
     if (!tasksHTML) tasksHTML = `<li class="empty-state" style="padding:6px 0">Нет задач</li>`;
