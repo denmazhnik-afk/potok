@@ -135,17 +135,31 @@ function drawSleepChart(id, data) {
     const x = i * gap + gap / 2 - barW / 2;
     const y = H - bH - 14;
 
-    const quality = d.quality || 5;
+    const quality = d.quality || 0;
     const grad = ctx.createLinearGradient(0, y, 0, H - 14);
-    if (quality >= 8) {
-      grad.addColorStop(0, 'rgba(107,227,164,0.9)');
-      grad.addColorStop(1, 'rgba(107,227,164,0.15)');
-    } else if (quality >= 5) {
-      grad.addColorStop(0, 'rgba(96,165,250,0.9)');
-      grad.addColorStop(1, 'rgba(96,165,250,0.15)');
+    
+    if (quality > 0) {
+      if (quality <= 2) {
+        // 1-2: Красный
+        grad.addColorStop(0, 'rgba(239, 68, 68, 0.9)');
+        grad.addColorStop(1, 'rgba(239, 68, 68, 0.15)');
+      } else if (quality <= 5) {
+        // 3-5: Оранжевый/Желтый
+        grad.addColorStop(0, 'rgba(245, 158, 11, 0.9)');
+        grad.addColorStop(1, 'rgba(245, 158, 11, 0.15)');
+      } else if (quality <= 8) {
+        // 6-8: Синий
+        grad.addColorStop(0, 'rgba(59, 130, 246, 0.9)');
+        grad.addColorStop(1, 'rgba(59, 130, 246, 0.15)');
+      } else {
+        // 9-10: Зеленый
+        grad.addColorStop(0, 'rgba(16, 185, 129, 0.9)');
+        grad.addColorStop(1, 'rgba(16, 185, 129, 0.15)');
+      }
     } else {
-      grad.addColorStop(0, 'rgba(239,68,68,0.9)');
-      grad.addColorStop(1, 'rgba(239,68,68,0.15)');
+      // Нет оценки: Серый
+      grad.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+      grad.addColorStop(1, 'rgba(255, 255, 255, 0.05)');
     }
 
     ctx.fillStyle = grad;
