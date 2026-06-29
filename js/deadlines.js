@@ -39,11 +39,13 @@ function buildHabitsPage() {
       listHTML += `
         <div class="habit-card" style="background-color: ${bgColor}">
           <div class="habit-header">
-            <div class="habit-name">${esc(h.name)}</div>
-            <div class="habit-actions">
-              ${getHabitStreak(h) > 0 ? `<div style="display:flex; align-items:center; color:#F97316; font-size:11px; font-weight:800; background:rgba(249,115,22,0.15); padding:0 6px; height:24px; border-radius:6px; white-space:nowrap;">${ICONS.fire}${getHabitStreak(h)} дн.</div>` : ''}
-              <button class="habit-icon-btn" onclick="cycleHabitColor(${h.id})" title="Изменить цвет">${ICONS.palette}</button>
-              <button class="habit-icon-btn" onclick="deleteHabit(${h.id})" title="Удалить">✕</button>
+            <div class="habit-name" style="flex:1; padding-right:8px;">${esc(h.name)}</div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+              <div class="habit-actions">
+                <button class="habit-icon-btn" onclick="cycleHabitColor(${h.id})" title="Изменить цвет">${ICONS.palette}</button>
+                <button class="habit-icon-btn" onclick="deleteHabit(${h.id})" title="Удалить">✕</button>
+              </div>
+              ${getHabitStreak(h) > 0 ? `<div style="display:flex; align-items:center; justify-content:center; color:#F97316; font-size:11px; font-weight:800; background:rgba(249,115,22,0.15); padding:0 6px; height:22px; border-radius:6px; white-space:nowrap;">${ICONS.fire}${getHabitStreak(h)} дн.</div>` : ''}
             </div>
           </div>
           <div class="habit-grid-14">
