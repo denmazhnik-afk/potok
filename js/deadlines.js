@@ -40,8 +40,8 @@ function buildHabitsPage() {
         <div class="habit-card" style="background-color: ${bgColor}">
           <div class="habit-header">
             <div class="habit-name">${esc(h.name)}</div>
- 	    <div class="habit-actions">
-              ${getHabitStreak(h) > 0 ? `<div style="display:flex; align-items:center; gap:4px; color:#F97316; font-size:12px; font-weight:700; background:rgba(249,115,22,0.15); padding:2px 8px; border-radius:12px; margin-left:auto; margin-right:8px;">${ICONS.fire}${getHabitStreak(h)} дн.</div>` : ''}
+            <div class="habit-actions">
+              ${getHabitStreak(h) > 0 ? `<div style="display:flex; align-items:center; color:#F97316; font-size:11px; font-weight:800; background:rgba(249,115,22,0.15); padding:0 6px; height:24px; border-radius:6px; white-space:nowrap;">${ICONS.fire}${getHabitStreak(h)} дн.</div>` : ''}
               <button class="habit-icon-btn" onclick="cycleHabitColor(${h.id})" title="Изменить цвет">${ICONS.palette}</button>
               <button class="habit-icon-btn" onclick="deleteHabit(${h.id})" title="Удалить">✕</button>
             </div>
