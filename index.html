@@ -28,7 +28,6 @@
        1. ПЛАВАЮЩАЯ ПАНЕЛЬ НАВИГАЦИИ (ТЕЛЕФОН)
     ========================================================= */
     @media (max-width: 768px) {
-      /* Даем место снизу, чтобы контент не прятался за панелью */
       body {
         padding-bottom: 110px !important; 
       }
@@ -128,17 +127,16 @@
        2. ИДЕАЛЬНОЕ ПОЗИЦИОНИРОВАНИЕ ЗАДАЧ (Молния и Дата)
     ========================================================= */
     
-    /* Убиваем серое мигание при клике на всём сайте */
     * {
       -webkit-tap-highlight-color: transparent !important;
     }
 
-    /* Позиционирование карточки (создаем надежное место снизу) */
+    /* Подготовка карточки */
     .task-item {
       position: relative !important; 
       min-height: unset !important;
       padding-top: 14px !important;
-      padding-bottom: 42px !important; /* Гарантированное пустое пространство внизу */
+      padding-bottom: 40px !important; /* Место под молнию и дату */
     }
     
     .task-item:active, .task-item:focus {
@@ -146,12 +144,15 @@
       transform: none !important;
     }
 
-    /* Молния (Аккуратно стоит слева внизу) */
+    /* ✦ Молния (Жестко слева внизу) ✦ */
     .task-urgent-btn {
       position: absolute !important;
       top: auto !important;     
-      bottom: 4px !important;   
-      left: 40px !important;    /* Под текстом на телефоне */
+      bottom: 3px !important;   
+      left: 32px !important;    /* На телефоне под текстом */
+      right: auto !important;
+      transform: none !important;
+      margin: 0 !important;
       width: 34px !important;   
       height: 34px !important;
       padding: 0 !important;
@@ -175,39 +176,44 @@
       color: #FBBF24 !important; 
     }
 
-    /* Дата дедлайна (В одну линию сразу после молнии) */
+    /* ✦ Дата дедлайна (Красная, в одну линию с молнией) ✦ */
     .task-deadline-badge {
       position: absolute !important;
       top: auto !important;       
-      bottom: 9px !important;     
-      right: auto !important;     /* Никакой привязки вправо! */
-      left: 74px !important;      /* Стоит правее молнии */
+      bottom: 8px !important;     
+      right: auto !important;     
+      left: 68px !important;      /* Сразу за молнией */
       transform: none !important; 
+      margin: 0 !important;
       display: inline-flex !important;
       flex-direction: row !important;
       align-items: center !important;
       justify-content: center !important;
       gap: 6px !important;
       white-space: nowrap !important; 
-      background: rgba(255,255,255,0.06) !important;
-      padding: 4px 10px !important;
-      border-radius: 8px !important;
+      background: rgba(239, 68, 68, 0.1) !important; /* Легкий красный фон */
+      padding: 0 8px !important;
+      height: 24px !important;
+      border-radius: 6px !important;
       font-size: 11px !important;
-      font-weight: 600 !important;
-      color: #a1a1aa !important;
+      font-weight: 700 !important;
+      color: #EF4444 !important; /* Красный текст */
       z-index: 5 !important;
+      box-sizing: border-box !important;
     }
 
     .task-deadline-badge svg {
-      width: 14px !important;
-      height: 14px !important;
-      opacity: 0.8 !important;
+      width: 13px !important;
+      height: 13px !important;
+      stroke: #EF4444 !important; /* Красная иконка */
+      opacity: 0.9 !important;
+      margin: 0 !important;
     }
 
-    /* Адаптация под компьютер (Сдвигаем всё вправо из-за иконки ⋮⋮) */
+    /* Адаптация под компьютер */
     @media (min-width: 768px) {
       .task-urgent-btn {
-        left: 66px !important; 
+        left: 64px !important; 
       }
       .task-deadline-badge {
         left: 100px !important; 
@@ -333,16 +339,16 @@
     
   </nav>
 
-  <script src="js/state.js?v=5"></script>
-  <script src="js/date-picker.js?v=5"></script>
-  <script src="js/charts.js?v=5"></script>
-  <script src="js/home.js?v=5"></script>
-  <script src="js/day.js?v=5"></script>
-  <script src="js/month.js?v=5"></script>
-  <script src="js/finance.js?v=5"></script>
-  <script src="js/deadlines.js?v=5"></script>
-  <script src="js/ideas.js?v=5"></script>
-  <script src="js/sleep.js?v=5"></script>
-  <script src="js/render.js?v=5"></script>
+  <script src="js/state.js?v=6"></script>
+  <script src="js/date-picker.js?v=6"></script>
+  <script src="js/charts.js?v=6"></script>
+  <script src="js/home.js?v=6"></script>
+  <script src="js/day.js?v=6"></script>
+  <script src="js/month.js?v=6"></script>
+  <script src="js/finance.js?v=6"></script>
+  <script src="js/deadlines.js?v=6"></script>
+  <script src="js/ideas.js?v=6"></script>
+  <script src="js/sleep.js?v=6"></script>
+  <script src="js/render.js?v=6"></script>
 </body>
 </html>
