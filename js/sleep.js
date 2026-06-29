@@ -9,7 +9,7 @@ function buildSleepPage() {
   let found = 0;
   let attempts = 0;
 
-  // Ищем 14 дней. Берем только те, где есть записи + Сегодня + добавленные вручную
+  // Ищем 14 дней
   while (found < 14 && attempts < 150) {
     const d = new Date(ACT_Y, ACT_M, ACT_D - i);
     const y = d.getFullYear(), m = d.getMonth(), dd = d.getDate();
@@ -32,13 +32,19 @@ function buildSleepPage() {
     attempts++;
   }
 
-  // Данные для графика
-  const chartData = days.slice().reverse().map(day => ({
+  // ✦ РАЗВОРАЧИВАЕМ МАССИВ: теперь даты идут строго сверху вниз (хронологически) ✦
+  days.reverse();
+
+  // Данные для графика (уже в правильном порядке)
+  const chartData = days.map(day => ({
     date: day.dateStr,
     mins: day.dur,
     quality: day.sl.quality
   }));
   window.sleepChartData = chartData;
+
+  // Красивая иконка часов вместо стрелочек обновления
+  const clockIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
 
   let daysHTML = '';
   days.forEach(day => {
@@ -58,30 +64,30 @@ function buildSleepPage() {
     }
 
     daysHTML += `
-      <div class="sleep-day-card" style="background:var(--surface); border:1px solid rgba(255,255,255,0.05); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:12px;">
+      <div class="sleep-day-card" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:12px;">
         
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <div style="font-weight:800; font-size:15px; display:flex; align-items:center; gap:8px;">
-            ${day.isToday ? '<div style="width:8px; height:8px; background:var(--blue); border-radius:50%; box-shadow:0 0 8px var(--blue);" title="Сегодня"></div>' : ''}
+            ${day.isToday ? '<div style="width:8px; height:8px; background:var(--green); border-radius:50%; box-shadow:0 0 8px var(--green);" title="Сегодня"></div>' : ''}
             ${day.dateFull}, <span style="color:var(--text-tertiary); font-weight:600;">${day.wd}</span>
           </div>
           ${day.hasData ? `<button onclick="clearSleepForDay(${day.y},${day.m},${day.d})" style="background:none; border:none; color:#636366; font-size:20px; padding:0 4px; cursor:pointer;" title="Очистить день">×</button>` : ''}
         </div>
 
         <div style="display:flex; gap:8px;">
-          <label style="flex:1; background:rgba(0,0,0,0.2); padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.03);">
+          <label style="flex:1; background:rgba(0,0,0,0.25); padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.02);">
             <span style="font-size:11px; color:var(--text-tertiary); display:flex; align-items:center; gap:4px; margin-bottom:4px; font-weight:600;">${ICONS.moon} Лёг</span>
             <input type="time" style="width:100%; background:none; border:none; color:#fff; font-size:16px; font-weight:800; outline:none;" value="${day.sl.bed || ''}" onblur="saveSleepForDay(${day.y},${day.m},${day.d},'bed',this.value)">
           </label>
-          <label style="flex:1; background:rgba(0,0,0,0.2); padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.03);">
+          <label style="flex:1; background:rgba(0,0,0,0.25); padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.02);">
             <span style="font-size:11px; color:var(--text-tertiary); display:flex; align-items:center; gap:4px; margin-bottom:4px; font-weight:600;">${ICONS.sun} Встал</span>
             <input type="time" style="width:100%; background:none; border:none; color:#fff; font-size:16px; font-weight:800; outline:none;" value="${day.sl.wake || ''}" onblur="saveSleepForDay(${day.y},${day.m},${day.d},'wake',this.value)">
           </label>
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
-          <div style="color:var(--text-tertiary); font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px;">
-            ${ICONS.refresh} ${durStr}
+          <div style="color:var(--text-tertiary); font-size:14px; font-weight:700; display:flex; align-items:center; gap:6px;">
+            ${clockIcon} ${durStr}
           </div>
           <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-tertiary); font-weight:700;">
             Качество: 
@@ -114,7 +120,6 @@ function buildSleepPage() {
 
   return `
     <style>
-      /* Сетка: 1 колонка на телефоне, 2 колонки на ПК */
       .sleep-days-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
       @media(min-width: 768px) { .sleep-days-grid { grid-template-columns: 1fr 1fr; } }
     </style>
@@ -124,10 +129,6 @@ function buildSleepPage() {
         <button class="back-btn" onclick="goHome()">← Назад</button>
         <h2 class="page-heading">${ICONS.moon} Сон</h2>
       </div>
-      <label class="btn-secondary" style="position:relative; display:inline-flex; align-items:center; padding:6px 12px; cursor:pointer; font-size:13px; font-weight:700; margin:0;">
-        + Добавить
-        <input type="date" onchange="addManualSleep(this.value)" style="opacity:0; position:absolute; width:100%; height:100%; left:0; top:0; cursor:pointer;">
-      </label>
     </div>
 
     <div class="section-card" style="margin-bottom:20px">
@@ -150,10 +151,16 @@ function buildSleepPage() {
       </div>
     </div>
 
-    <div class="sleep-nav">
-      <button class="btn-secondary" onclick="sleepNav(-7)">← 7 дн.</button>
-      <button class="btn-secondary" onclick="sleepNav('today')">Сегодня</button>
-      <button class="btn-secondary" onclick="sleepNav(7)">7 дн. →</button>
+    <div class="sleep-nav" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div style="display:flex; gap:8px;">
+        <button class="btn-secondary" onclick="sleepNav(-7)">← 7 дн.</button>
+        <button class="btn-secondary" onclick="sleepNav('today')">Сегодня</button>
+        <button class="btn-secondary" onclick="sleepNav(7)">7 дн. →</button>
+      </div>
+      <label class="btn-primary" style="position:relative; display:inline-flex; align-items:center; padding:8px 16px; cursor:pointer; font-size:13px; font-weight:700; margin:0; border-radius:8px;">
+        + Добавить
+        <input type="date" onchange="addManualSleep(this.value)" style="opacity:0; position:absolute; width:100%; height:100%; left:0; top:0; cursor:pointer;">
+      </label>
     </div>
 
     <div class="sleep-days-grid" style="margin-top:20px;">
@@ -185,13 +192,11 @@ function clearSleepForDay(y, m, d) {
 }
 
 function toggleQuality(key) {
-  // Открываем или закрываем панель качества
   window.editingQualityKey = window.editingQualityKey === key ? null : key;
   render();
 }
 
 function addManualSleep(val) {
-  // Вызывается, когда пользователь выбрал дату в верхнем календаре
   if (!val) return;
   const [y, m, d] = val.split('-');
   window._manualSleepDate = `${parseInt(y)}-${parseInt(m)-1}-${parseInt(d)}`;
