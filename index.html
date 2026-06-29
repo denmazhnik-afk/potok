@@ -128,41 +128,41 @@
       }
     }
 
-    /* ✦ Идеальное позиционирование и цвета молнии ✦ */
+    /* Убиваем серое мигание при клике на всём сайте раз и навсегда */
+    * {
+      -webkit-tap-highlight-color: transparent !important;
+    }
+
+    /* ✦ Идеальное позиционирование карточек ✦ */
     .task-item {
       position: relative !important; 
       padding-top: 14px !important;
       padding-bottom: 36px !important;
-      -webkit-tap-highlight-color: transparent !important; /* Убирает серое мигание карточки на iOS */
     }
     
+    /* ✦ Огромная кнопка для пальца, но иконка стоит на старом месте ✦ */
     .task-urgent-btn {
       position: absolute !important;
-      left: 16px !important;
-      bottom: 12px !important;
+      left: 1px !important;     /* Сдвигаем влево, чтобы компенсировать размер кнопки */
+      bottom: -3px !important;  /* Сдвигаем вниз */
+      width: 44px !important;   /* Реальный огромный размер для пальца */
+      height: 44px !important;
       padding: 0 !important;
-      width: 16px !important;
-      height: 16px !important;
       display: flex !important;
       align-items: center !important;
-      justify-content: flex-start !important;
+      justify-content: center !important; /* Центрируем маленькую молнию внутри 44x44 */
       color: #52525b !important; 
-      opacity: 1 !important; 
       background: none !important;
       border: none !important;
       outline: none !important;
-      z-index: 10 !important; /* Выносит кнопку строго на передний план */
-      touch-action: manipulation !important; /* Убирает задержку клика на телефонах */
+      z-index: 10 !important;
+      cursor: pointer !important;
     }
 
-    /* ✦ Невидимая широкая зона для пальца (44x44px) ✦ */
-    .task-urgent-btn::after {
-      content: '' !important;
-      position: absolute !important;
-      top: -14px !important;
-      bottom: -14px !important;
-      left: -14px !important;
-      right: -14px !important;
+    /* Жестко фиксируем размер самой иконки */
+    .task-urgent-btn svg {
+      width: 14px !important;
+      height: 14px !important;
     }
 
     .task-urgent-btn.active {
