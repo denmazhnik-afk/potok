@@ -155,7 +155,7 @@ function buildHome() {
           `;
         })()}
       </div>
-      <div class="panel-arrow">→</div>
+      <div class="panel-arrow">${ICONS.arrowRight}</div>
     </div>
 
     <div class="panel panel-sleep" onclick="openSleep()">
@@ -184,7 +184,7 @@ function buildHome() {
           }
         })()}
       </div>
-      <div class="panel-arrow">→</div>
+      <div class="panel-arrow">${ICONS.arrowRight}</div>
     </div>
 
     <div class="panel panel-finance" onclick="openFinance()">
@@ -205,7 +205,7 @@ function buildHome() {
           </div>
         </div>
       </div>
-      <div class="panel-arrow">→</div>
+      <div class="panel-arrow">${ICONS.arrowRight}</div>
     </div>
 
     <div class="panel panel-ideas" onclick="openIdeas()">
@@ -231,7 +231,7 @@ function buildHome() {
           return html;
         })()}
       </div>
-      <div class="panel-arrow">→</div>
+      <div class="panel-arrow">${ICONS.arrowRight}</div>
     </div>
   </div>`;
 }
