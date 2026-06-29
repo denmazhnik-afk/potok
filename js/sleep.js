@@ -62,13 +62,15 @@ function buildSleepPage() {
       else { qColor = 'var(--green)'; qBg = 'rgba(16,185,129,0.15)'; }
     }
 
-    // ✦ СТИЛИСТИКА АКТИВНОЙ КАРТОЧКИ (как в Планировщике) ✦
+    // ✦ НАСТОЯЩИЙ НЕОН ДЛЯ СЕГОДНЯШНЕГО ДНЯ ✦
     const cardStyle = day.isToday 
-      ? 'background:rgba(255,255,255,0.06); border:1px solid var(--green); box-shadow:0 0 16px rgba(107,227,164,0.1);' 
+      ? 'background:rgba(107,227,164,0.05); border:1px solid rgba(107,227,164,0.5); box-shadow:0 0 24px rgba(107,227,164,0.25), inset 0 0 12px rgba(107,227,164,0.1);' 
       : 'background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08);';
       
-    const titleColor = day.isToday ? 'color:var(--green);' : 'color:#fff;';
-    const dotHtml = day.isToday ? '<div style="width:12px; height:12px; background:var(--green); border-radius:50%;"></div>' : '';
+    // Неоновое свечение для текста и точки
+    const titleColor = day.isToday ? 'color:var(--green); text-shadow: 0 0 12px rgba(107,227,164,0.5);' : 'color:#fff;';
+    const wdColor = day.isToday ? 'color:var(--green); opacity:0.8; text-shadow: 0 0 12px rgba(107,227,164,0.5);' : 'color:var(--text-tertiary);';
+    const dotHtml = day.isToday ? `<div style="width:8px; height:8px; background:var(--green); border-radius:50%; box-shadow: 0 0 8px var(--green), 0 0 16px var(--green);" title="Сегодня"></div>` : '';
 
     daysHTML += `
       <div class="sleep-day-card" style="${cardStyle} border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:12px; transition:0.3s;">
@@ -76,7 +78,7 @@ function buildSleepPage() {
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <div style="font-weight:800; font-size:15px; display:flex; align-items:center; gap:8px; ${titleColor}">
             ${dotHtml}
-            ${day.dateFull}, <span style="color:var(--text-tertiary); font-weight:600;">${day.wd}</span>
+            ${day.dateFull}, <span style="${wdColor} font-weight:600;">${day.wd}</span>
           </div>
           ${day.hasData ? `<button onclick="clearSleepForDay(${day.y},${day.m},${day.d})" style="background:none; border:none; color:#636366; font-size:20px; padding:0 4px; cursor:pointer;" title="Очистить день">×</button>` : ''}
         </div>
@@ -158,19 +160,20 @@ function buildSleepPage() {
       </div>
     </div>
 
-    <div class="sleep-nav" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-      <div style="display:flex; gap:8px;">
-        <button class="btn-secondary" onclick="sleepNav(-7)">← 7 дн.</button>
-        <button class="btn-secondary" onclick="sleepNav('today')">Сегодня</button>
-        <button class="btn-secondary" onclick="sleepNav(7)">7 дн. →</button>
+    <div class="sleep-nav" style="display:flex; flex-direction:column; align-items:center; gap:12px; margin-bottom:24px;">
+      <div style="display:flex; justify-content:center; gap:8px; width:100%;">
+        <button class="btn-secondary" style="flex:1; max-width:100px;" onclick="sleepNav(-7)">← 7 дн.</button>
+        <button class="btn-secondary" style="flex:1; max-width:100px;" onclick="sleepNav('today')">Сегодня</button>
+        <button class="btn-secondary" style="flex:1; max-width:100px;" onclick="sleepNav(7)">7 дн. →</button>
       </div>
-      <label class="btn-primary" style="position:relative; display:inline-flex; align-items:center; padding:8px 16px; cursor:pointer; font-size:13px; font-weight:700; margin:0; border-radius:8px;">
-        + Добавить
-        <input type="date" onchange="addManualSleep(this.value)" style="opacity:0; position:absolute; width:100%; height:100%; left:0; top:0; cursor:pointer;">
-      </label>
+      
+      <div class="btn-primary" style="position:relative; display:flex; justify-content:center; align-items:center; width:100%; max-width:316px; padding:10px 16px; font-size:14px; font-weight:700; border-radius:10px; overflow:hidden; cursor:pointer;">
+        + Добавить запись
+        <input type="date" onchange="addManualSleep(this.value)" onclick="this.showPicker && this.showPicker()" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; box-sizing:border-box;">
+      </div>
     </div>
 
-    <div class="sleep-days-grid" style="margin-top:20px;">
+    <div class="sleep-days-grid">
       ${daysHTML || '<div class="empty-state" style="grid-column: 1 / -1; padding: 40px 0;">Нет записей</div>'}
     </div>
   `;
