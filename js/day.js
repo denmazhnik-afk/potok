@@ -14,19 +14,18 @@ function buildDayPage() {
   allTasks.forEach((t, i) => {
     const hasDeadline = t.deadline && !t.done;
     const isUrgent = t.urgent && !t.done;
-    const dlBadge = t.deadline ? `<span class="task-deadline-badge ${t.done ? 'done' : ''}">${ICONS.calendar} ${formatDateDisplay(t.deadline)}</span>` : '';
     const urgentCls = isUrgent ? 'urgent-row' : '';
     const urgentBtn = isUrgent ? 'active' : '';
     const ideaTag = t.fromIdea ? `<span class="idea-tag" title="Из проекта" style="display:inline-flex; align-items:center; margin-right:4px;">${ICONS[t.ideaEmoji] || ICONS.folder}</span>` : '';
     
-    // Блок с молнией и датой (только если задача не выполнена)
-    let footerHTML = '';
+    let bottomItems = '';
     if (!t.done) {
-      footerHTML = `<div class="task-bottom-row">
-        <button class="task-urgent-btn ${urgentBtn}" onclick="toggleDayTaskUrgent(${i})" title="Срочно">${ICONS.lightning}</button>
-        ${dlBadge}
-      </div>`;
+      bottomItems += `<button class="task-urgent-btn ${urgentBtn}" onclick="toggleDayTaskUrgent(${i})" title="Срочно">${ICONS.lightning}</button>`;
     }
+    if (t.deadline) {
+      bottomItems += `<span class="task-deadline-badge ${t.done ? 'done' : ''}">${ICONS.calendar} ${formatDateDisplay(t.deadline)}</span>`;
+    }
+    let footerHTML = bottomItems ? `<div class="task-bottom-row">${bottomItems}</div>` : '';
 
     tasksHTML += `<li class="task-item ${t.done ? 'done-row' : ''} ${hasDeadline ? 'deadline-row' : ''} ${urgentCls}"
       draggable="true" data-idx="${i}" data-flip-id="dt-${flipKey(t.text)}"

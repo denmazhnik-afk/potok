@@ -57,18 +57,24 @@ function buildIdeaDetail() {
     const isUrgent = t.urgent && !t.done;
     const urgentCls = isUrgent ? 'urgent-row' : '';
     const urgentBtn = isUrgent ? 'active' : '';
-    const dateBadge = t.scheduledDate
-      ? `<span class="task-deadline-badge ${t.done ? 'done' : ''}">${ICONS.calendar} ${formatDateDisplay(t.scheduledDate)}</span>`
-      : '';
 
-    let footerHTML = '';
+    // Собираем нижний ряд (Молния + Календарь)
+    let bottomItems = '';
     if (!t.done) {
-      footerHTML = `<div class="task-bottom-row">
-        <button class="task-urgent-btn ${urgentBtn}" onclick="toggleIdeaTaskUrgent('${esc(idea.id)}',${i})" title="Срочно">${ICONS.lightning}</button>
-        ${dateBadge}
-      </div>`;
+      bottomItems += `<button class="task-urgent-btn ${urgentBtn}" onclick="toggleIdeaTaskUrgent('${esc(idea.id)}',${i})" title="Срочно">${ICONS.lightning}</button>`;
+    }
+    
+    if (t.scheduledDate) {
+      // Если дата есть — показываем красную плашку (и делаем её кликабельной!)
+      bottomItems += `<span class="task-deadline-badge ${t.done ? 'done' : ''}" style="cursor:pointer;" onclick="setIdeaTaskDate('${esc(idea.id)}',${i})" title="Изменить дату">${ICONS.calendar} ${formatDateDisplay(t.scheduledDate)}</span>`;
+    } else if (!t.done) {
+      // Если даты нет — показываем серую кнопку календаря рядом с молнией
+      bottomItems += `<button class="task-urgent-btn" onclick="setIdeaTaskDate('${esc(idea.id)}',${i})" title="Добавить дату">${ICONS.calendar}</button>`;
     }
 
+    let footerHTML = bottomItems ? `<div class="task-bottom-row">${bottomItems}</div>` : '';
+
+    // Обрати внимание: мы НАВСЕГДА удалили <button class="ibtn"> из верхней строки!
     const itemHTML = `
       <div class="task-item ${t.done ? 'done-row' : ''} ${urgentCls}"
         draggable="true" data-idx="${i}" data-flip-id="idea-${esc(idea.id)}-${i}"
@@ -79,7 +85,6 @@ function buildIdeaDetail() {
         <span class="task-drag" title="Перетащить">⋮⋮</span>
         <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleIdeaTask('${esc(idea.id)}',${i})"></div>
         <span class="task-name ${t.done ? 'struck' : ''}">${esc(t.text)}</span>
-        <button class="ibtn" onclick="setIdeaTaskDate('${esc(idea.id)}',${i})" title="Дата">${ICONS.calendar}</button>
         <button class="task-del" onclick="deleteIdeaTask('${esc(idea.id)}',${i})">×</button>
         ${footerHTML}
       </div>
