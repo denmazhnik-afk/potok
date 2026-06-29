@@ -8,6 +8,10 @@ function buildHome() {
   const waterPct = Math.round((water.cups / 6) * 100);
   const taskPct = totalT > 0 ? Math.round(doneT/totalT*100) : 0;
 
+  const habs = typeof getHabits === 'function' ? getHabits() : [];
+  const doneHabs = habs.filter(h => h.history && h.history[activeDateStr()]).length;
+  const habitPct = habs.length > 0 ? Math.round((doneHabs / habs.length) * 100) : 0;
+
   const md = getMonthData(ACT_Y, ACT_M);
   const totalG = md.goals.length;
   const doneG = md.goals.filter(g => g.done).length;
@@ -61,7 +65,7 @@ function buildHome() {
   <div class="home-grid">
     <div class="panel panel-day">
       <div class="panel-inner">
-        <div class="panel-eyebrow">Сегодня — ${WEEKDAYS_FULL[new Date(ACT_Y, ACT_M, ACT_D).getDay()]}, ${ACT_D} ${MONTHS_RU[ACT_M]}</div>
+        <div class="panel-eyebrow">Сегодня — ${WEEKDAYS_FULL[new Date(ACT_Y, ACT_M, ACT_D).getDay()].toLowerCase()}, ${ACT_D} ${MONTHS_GEN[ACT_M]}</div>
 
         ${(() => {
           const lvl = getLevel();
@@ -89,9 +93,10 @@ function buildHome() {
           })()}
         </div>
 
-        <div class="rings-row">
+        <div class="rings-row" style="display:flex; justify-content:space-around; margin-bottom: 24px;">
           ${buildRing(taskPct, 70, '#6BE3A4', 'Задачи')}
           ${buildRing(waterPct, 70, '#60A5FA', 'Вода')}
+          ${buildRing(habitPct, 70, '#F97316', 'Привычки')}
         </div>
 
         <div class="water-cups">
@@ -129,7 +134,7 @@ function buildHome() {
           </div>
         </div>
       </div>
-      <div class="panel-arrow">→</div>
+      <div class="panel-arrow">${ICONS.arrowRight}</div>
     </div>
 
     <div class="panel panel-habits" onclick="openHabits()">
@@ -244,7 +249,7 @@ function buildRing(pct, size, color, label) {
         stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/>
       <text class="ring-text" x="${size/2}" y="${size/2}" dy="0.35em" transform="rotate(90 ${size/2} ${size/2})">${pct}%</text>
     </svg>
-    <div class="ring-label">${label}</div>
+    <div class="ring-label" style="margin-top: 10px; font-weight: 600;">${label}</div>
   </div>`;
 }
 
