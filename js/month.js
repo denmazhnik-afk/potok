@@ -108,7 +108,8 @@ function buildMonthDetail() {
     const isToday = isCur && d === ACT_D;
     const wd = WEEKDAYS_FULL[new Date(y, m, d).getDay()];
 
-    let tasksHTML = '';dayAllTasks.forEach((t, ti) => {
+    let tasksHTML = '';
+    dayAllTasks.forEach((t, ti) => {
       const hasDeadline = t.deadline && !t.done;
       const isUrgent = t.urgent && !t.done;
       const dlBadge = t.deadline ? `<span class="task-deadline-badge ${t.done ? 'done' : ''}">${ICONS.calendar} ${formatDateDisplay(t.deadline)}</span>` : '';
@@ -122,10 +123,10 @@ function buildMonthDetail() {
       const dragHandle = realIdx >= 0
         ? `<span class="task-drag" title="Перетащить">⋮⋮</span>`
         : '';
-        
+
       let footerHTML = '';
       if (!t.done) {
-        footerHTML = `<div class="task-footer-row">
+        footerHTML = `<div class="task-bottom-row">
           <button class="task-urgent-btn ${urgentBtn}" onclick="toggleMonthTaskUrgent(${d},${ti})" title="Срочно">${ICONS.lightning}</button>
           ${dlBadge}
         </div>`;
@@ -133,12 +134,10 @@ function buildMonthDetail() {
 
       tasksHTML += `<li class="task-item ${t.done ? 'done-row' : ''} ${hasDeadline ? 'deadline-row' : ''} ${urgentCls}"${dragAttrs}
         data-flip-id="mt-${d}-${flipKey(t.text)}">
-        <div class="task-main-row">
-          ${dragHandle}
-          <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleMonthTask(${d},${ti})"></div>
-          <span class="task-name ${t.done ? 'struck' : ''}">${ideaTag}${esc(t.text)}</span>
-          <button class="task-del" onclick="deleteMonthTask(${d},${ti})" title="${t.fromIdea ? 'Убрать из дня' : 'Удалить'}">×</button>
-        </div>
+        ${dragHandle}
+        <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleMonthTask(${d},${ti})"></div>
+        <span class="task-name ${t.done ? 'struck' : ''}">${ideaTag}${esc(t.text)}</span>
+        <button class="task-del" onclick="deleteMonthTask(${d},${ti})" title="${t.fromIdea ? 'Убрать из дня' : 'Удалить'}">×</button>
         ${footerHTML}
       </li>`;
     });

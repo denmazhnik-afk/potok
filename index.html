@@ -124,27 +124,15 @@
     }
 
     /* =========================================================
-       2. ИДЕАЛЬНАЯ СТРУКТУРА ЗАДАЧ (ДВЕ СТРОКИ)
-    ========================================================= */
-    /* =========================================================
-       2. ИДЕАЛЬНАЯ СТРУКТУРА ЗАДАЧ (ДВЕ СТРОКИ)
+       2. ИДЕАЛЬНАЯ СТРУКТУРА ЗАДАЧ (БЕЗ ПОЛОМОК)
     ========================================================= */
     * {
       -webkit-tap-highlight-color: transparent !important;
     }
 
-    /* Карточка задачи - теперь это колонка (верхняя и нижняя часть) */
+    /* Возвращаем оригинальную карточку, просто добавляем отступ снизу */
     .task-item {
-      display: flex !important;
-      flex-direction: column !important;
-      padding: 12px 14px !important;
-      gap: 10px !important;
-      background: rgba(255,255,255,0.02) !important; /* Легкий фон карточки */
-      border: 1px solid rgba(255,255,255,0.05) !important;
-      border-radius: 12px !important;
-      position: relative !important;
-      min-height: unset !important;
-      margin-bottom: 10px !important;
+      padding-bottom: 40px !important; 
     }
     
     .task-item:active, .task-item:focus {
@@ -152,56 +140,21 @@
       transform: none !important;
     }
 
-    /* ✦ ВЕРХНЯЯ СТРОКА: Чекбокс, текст, крестик ✦ */
-    .task-main-row {
-      display: flex !important;
-      flex-direction: row !important;
-      align-items: flex-start !important;
-      width: 100% !important;
-      gap: 12px !important;
-    }
-
-    /* 🔥 ВОТ ОНО: УБИВАЕМ СТАРОЕ ПОЗИЦИОНИРОВАНИЕ ИЗ BASE.CSS 🔥 */
-    .task-main-row .task-drag,
-    .task-main-row .task-cb,
-    .task-main-row .task-del,
-    .task-main-row .ibtn {
-      position: relative !important;
-      left: auto !important;
-      right: auto !important;
-      top: auto !important;
-      bottom: auto !important;
-      transform: none !important;
-      margin: 0 !important;
-    }
-
-    .task-main-row .task-cb {
-      margin-top: 2px !important; /* Ровняем галочку по первой строке текста */
-    }
-
-    .task-main-row .task-name {
-      flex: 1 1 0% !important;
-      min-width: 0 !important; 
-      word-wrap: break-word !important;
-      line-height: 1.4 !important;
-      padding: 0 !important; /* Убираем старый отступ слева */
-      margin: 0 !important;
-      white-space: normal !important;
-    }
-
-    /* ✦ НИЖНЯЯ СТРОКА: Молния и Календарь ✦ */
-    .task-footer-row {
+    /* ✦ НОВЫЙ КОНТЕЙНЕР ТОЛЬКО ДЛЯ МОЛНИИ И ДАТЫ ✦ */
+    .task-bottom-row {
+      position: absolute !important;
+      bottom: 6px !important;
+      left: 42px !important; /* Ровно под текстом на телефоне */
       display: flex !important;
       flex-direction: row !important;
       align-items: center !important;
       gap: 8px !important;
-      padding-left: 36px !important; /* Сдвигаем кнопки ровно под текст на телефоне */
+      z-index: 5 !important;
     }
 
-    /* ✦ СТИЛИ МОЛНИИ ✦ */
+    /* Сбрасываем кнопки, чтобы они аккуратно лежали внутри контейнера */
     .task-urgent-btn {
-      position: relative !important; 
-      left: auto !important; right: auto !important; top: auto !important; bottom: auto !important;
+      position: static !important;
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
@@ -209,25 +162,20 @@
       padding: 0 10px !important;
       background: rgba(255,255,255,0.06) !important;
       border-radius: 6px !important;
-      font-size: 11px !important;
-      font-weight: 700 !important;
       color: #52525b !important;
       border: none !important;
+      margin: 0 !important;
       cursor: pointer !important;
       transform: none !important;
-      margin: 0 !important;
-      width: auto !important;
     }
-    .task-urgent-btn svg { width: 14px !important; height: 14px !important; margin: 0 !important; }
+    .task-urgent-btn svg { width: 14px !important; height: 14px !important; }
     .task-urgent-btn.active {
       color: #FBBF24 !important; 
       background: rgba(251, 191, 36, 0.1) !important;
     }
 
-    /* ✦ СТИЛИ ДАТЫ (Красный фон и текст) ✦ */
     .task-deadline-badge {
-      position: relative !important; 
-      left: auto !important; right: auto !important; top: auto !important; bottom: auto !important;
+      position: static !important;
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
@@ -239,24 +187,24 @@
       font-size: 11px !important;
       font-weight: 700 !important;
       color: #EF4444 !important; 
-      transform: none !important;
       margin: 0 !important;
       white-space: nowrap !important;
+      transform: none !important;
     }
     .task-deadline-badge svg {
       width: 13px !important; 
       height: 13px !important; 
       stroke: #EF4444 !important; 
-      opacity: 0.9 !important;
       margin: 0 !important;
     }
 
-    /* Адаптация под компьютер (сдвиг из-за иконки перетаскивания) */
+    /* На ПК сдвигаем нижний ряд правее из-за иконки перетаскивания ⋮⋮ */
     @media (min-width: 768px) {
-      .task-footer-row {
-        padding-left: 60px !important; /* Учитываем ширину иконки ⋮⋮ на ПК */
+      .task-bottom-row {
+        left: 68px !important; 
       }
     }
+
     /* =========================================================
        3. СТИЛИ ДЛЯ СНА (Для совместимости с sleep.js)
     ========================================================= */

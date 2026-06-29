@@ -21,8 +21,8 @@ function buildDayPage() {
     
     // Блок с молнией и датой (только если задача не выполнена)
     let footerHTML = '';
-    if (!t.done && (isUrgent || t.deadline || true)) { // Всегда создаем подвал, если есть кнопки
-      footerHTML = `<div class="task-footer-row">
+    if (!t.done) {
+      footerHTML = `<div class="task-bottom-row">
         <button class="task-urgent-btn ${urgentBtn}" onclick="toggleDayTaskUrgent(${i})" title="Срочно">${ICONS.lightning}</button>
         ${dlBadge}
       </div>`;
@@ -32,12 +32,10 @@ function buildDayPage() {
       draggable="true" data-idx="${i}" data-flip-id="dt-${flipKey(t.text)}"
       ondragstart="dayDragStart(event,${i})" ondragover="dayDragOver(event)"
       ondrop="dayDrop(event,${i})" ondragend="dayDragEnd(event)">
-      <div class="task-main-row">
-        <span class="task-drag" title="Перетащить">⋮⋮</span>
-        <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleDayTask(${i})"></div>
-        <span class="task-name ${t.done ? 'struck' : ''}">${ideaTag}${esc(t.text)}</span>
-        <button class="task-del" onclick="deleteDayTask(${i})" title="${t.fromIdea ? 'Убрать из дня' : 'Удалить'}">×</button>
-      </div>
+      <span class="task-drag" title="Перетащить">⋮⋮</span>
+      <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleDayTask(${i})"></div>
+      <span class="task-name ${t.done ? 'struck' : ''}">${ideaTag}${esc(t.text)}</span>
+      <button class="task-del" onclick="deleteDayTask(${i})" title="${t.fromIdea ? 'Убрать из дня' : 'Удалить'}">×</button>
       ${footerHTML}
     </li>`;
   });

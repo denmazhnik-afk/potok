@@ -60,10 +60,10 @@ function buildIdeaDetail() {
     const dateBadge = t.scheduledDate
       ? `<span class="task-deadline-badge ${t.done ? 'done' : ''}">${ICONS.calendar} ${formatDateDisplay(t.scheduledDate)}</span>`
       : '';
-      
+
     let footerHTML = '';
     if (!t.done) {
-      footerHTML = `<div class="task-footer-row">
+      footerHTML = `<div class="task-bottom-row">
         <button class="task-urgent-btn ${urgentBtn}" onclick="toggleIdeaTaskUrgent('${esc(idea.id)}',${i})" title="Срочно">${ICONS.lightning}</button>
         ${dateBadge}
       </div>`;
@@ -76,13 +76,11 @@ function buildIdeaDetail() {
         ondragover="ideaDragOver(event)"
         ondrop="ideaDrop(event,'${esc(idea.id)}',${i})"
         ondragend="ideaDragEnd(event)">
-        <div class="task-main-row">
-          <span class="task-drag" title="Перетащить">⋮⋮</span>
-          <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleIdeaTask('${esc(idea.id)}',${i})"></div>
-          <span class="task-name ${t.done ? 'struck' : ''}">${esc(t.text)}</span>
-          <button class="ibtn" onclick="setIdeaTaskDate('${esc(idea.id)}',${i})" title="Дата">${ICONS.calendar}</button>
-          <button class="task-del" onclick="deleteIdeaTask('${esc(idea.id)}',${i})">×</button>
-        </div>
+        <span class="task-drag" title="Перетащить">⋮⋮</span>
+        <div class="task-cb ${t.done ? 'checked' : ''}" onclick="toggleIdeaTask('${esc(idea.id)}',${i})"></div>
+        <span class="task-name ${t.done ? 'struck' : ''}">${esc(t.text)}</span>
+        <button class="ibtn" onclick="setIdeaTaskDate('${esc(idea.id)}',${i})" title="Дата">${ICONS.calendar}</button>
+        <button class="task-del" onclick="deleteIdeaTask('${esc(idea.id)}',${i})">×</button>
         ${footerHTML}
       </div>
     `;
