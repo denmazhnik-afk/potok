@@ -127,15 +127,25 @@
         transform: translate(-50%, -50%) scale(1);
       }
     }
-    /* ✦ Сдвигаем молнию ровно под галочку ✦ */
-    .task-urgent-btn {
-      position: absolute !important;
-      left: 16px !important; /* Выравниваем по центру галочки */
-      bottom: 6px !important;
+
+    /* ✦ Идеальное позиционирование и цвета молнии ✦ */
+    .task-item {
+      position: relative !important; /* Удерживает молнию внутри карточки */
+      padding-bottom: 28px !important; 
     }
     
-    .task-item {
-      padding-bottom: 28px !important; /* Даем чуть больше места снизу, чтобы текст не наезжал на молнию */
+    .task-urgent-btn {
+      position: absolute !important;
+      left: 16px !important; /* Ровно под галочкой */
+      bottom: 4px !important;
+      color: #52525b !important; /* Тускло-серый, когда задача НЕ срочная */
+      opacity: 1 !important; /* Делаем видимой всегда */
+      display: flex !important;
+      background: none !important;
+    }
+
+    .task-urgent-btn.active {
+      color: #FBBF24 !important; /* Желтый при нажатии */
     }
   </style>
 </head>
