@@ -168,6 +168,61 @@
     .task-urgent-btn.active {
       color: #FBBF24 !important; 
     }
+    /* ✦ Убиваем любые остаточные выделения карточек на iOS ✦ */
+    .task-item:active, .task-item:focus {
+      background-color: transparent !important;
+      transform: none !important;
+    }
+
+    /* ✦ Переносим Календарь (дедлайн) вправо, чтобы он не сливался с молнией ✦ */
+    .task-deadline-badge {
+      position: absolute !important;
+      right: 44px !important; /* Ставим слева от крестика удаления */
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      background: rgba(255,255,255,0.08) !important;
+      padding: 4px 8px !important;
+      border-radius: 6px !important;
+      font-size: 11px !important;
+    }
+
+    /* ✦ Эстетика нового трекера сна ✦ */
+    .sleep-card {
+      background: transparent;
+      margin-bottom: 24px;
+    }
+    .sleep-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      font-size: 14px;
+      color: #fff;
+    }
+    .sleep-del {
+      background: none; border: none; color: #636366; font-size: 18px; padding: 0; cursor: pointer;
+    }
+    .sleep-times {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 0;
+      border-top: 1px dashed rgba(255,255,255,0.15);
+      border-bottom: 1px dashed rgba(255,255,255,0.15);
+      margin-bottom: 10px;
+    }
+    .sleep-arrow { color: #636366; font-weight: 400; font-size: 12px; letter-spacing: -1px; }
+    .sleep-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .sleep-qual { font-weight: 600; display:flex; align-items:center; gap: 6px; }
+    .sleep-edit-btn { background: none; border: none; font-size: 14px; cursor: pointer; padding: 4px; opacity: 0.7; }
   </style>
 </head>
 <body>
