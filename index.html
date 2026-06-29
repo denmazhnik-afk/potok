@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <!-- Настройки для PWA и превращения в приложение на iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Поток">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#050506">
 
-  <!-- Ссылка на иконку (нужно будет добавить картинку) -->
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="manifest" href="manifest.json">
 
@@ -24,26 +22,28 @@
   <link rel="stylesheet" href="css/finance.css">
   <link rel="stylesheet" href="css/deadlines.css">
   <link rel="stylesheet" href="css/ideas.css">
+  
   <style>
-    /* ✦ НОВЫЙ ДИЗАЙН ПЛАВАЮЩЕЙ ПАНЕЛИ (Мобилка) ✦ */
+    /* =========================================================
+       1. ПЛАВАЮЩАЯ ПАНЕЛЬ НАВИГАЦИИ (ТЕЛЕФОН)
+    ========================================================= */
     @media (max-width: 768px) {
-      /* Даем место снизу, чтобы контент не прятался за новой панелью */
+      /* Даем место снизу, чтобы контент не прятался за панелью */
       body {
         padding-bottom: 110px !important; 
       }
       
       #tabbar {
         position: fixed !important;
-        /* env(safe-area-inset-bottom) автоматически приподнимает панель над полоской iPhone */
         bottom: calc(16px + env(safe-area-inset-bottom)) !important; 
         left: 20px !important;
         right: 20px !important;
         height: 64px !important;
-        background: rgba(28, 28, 30, 0.85) !important; /* Тёмно-серый полупрозрачный */
+        background: rgba(28, 28, 30, 0.85) !important; 
         backdrop-filter: blur(20px) !important;
         -webkit-backdrop-filter: blur(20px) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 32px !important; /* Идеальная форма пилюли */
+        border-radius: 32px !important; 
         display: flex !important;
         justify-content: space-around !important;
         align-items: center !important;
@@ -60,13 +60,12 @@
         justify-content: center;
         width: 50px;
         height: 50px;
-        color: #636366 !important; /* Цвет неактивных иконок (серый iOS) */
+        color: #636366 !important; 
         text-decoration: none;
         border-radius: 50%;
         transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
       }
 
-      /* Прячем текст на мобилках для чистоты дизайна (как в доке iOS) */
       .tabbar-label {
         display: none !important;
       }
@@ -79,16 +78,14 @@
         transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
       }
 
-      /* ✦ АКТИВНОЕ СОСТОЯНИЕ ✦ */
       .tabbar-btn.active {
-        color: #fff !important; /* Белая иконка при нажатии */
+        color: #fff !important;
       }
 
       .tabbar-btn.active .tabbar-icon {
-        transform: translateY(-2px); /* Иконка элегантно приподнимается */
+        transform: translateY(-2px); 
       }
 
-      /* Аккуратная точка под иконкой (как в Telegram) */
       .tabbar-btn::after {
         content: '';
         position: absolute;
@@ -107,7 +104,6 @@
         transform: scale(1);
       }
 
-      /* Легкий круглый фон позади активной иконки */
       .tabbar-btn::before {
         content: '';
         position: absolute;
@@ -128,51 +124,36 @@
       }
     }
 
-    /* Убиваем серое мигание при клике на всём сайте раз и навсегда */
+    /* =========================================================
+       2. ИДЕАЛЬНОЕ ПОЗИЦИОНИРОВАНИЕ ЗАДАЧ (Молния и Дата)
+    ========================================================= */
+    
+    /* Убиваем серое мигание при клике на всём сайте */
     * {
       -webkit-tap-highlight-color: transparent !important;
     }
 
-    /* ✦ Позиционирование карточки ✦ */
+    /* Позиционирование карточки (создаем надежное место снизу) */
     .task-item {
       position: relative !important; 
-      min-height: 64px !important; /* Гарантируем место для молнии снизу */
+      min-height: unset !important;
       padding-top: 14px !important;
-      padding-bottom: 14px !important; /* Аккуратные одинаковые отступы */
+      padding-bottom: 42px !important; /* Гарантированное пустое пространство внизу */
     }
     
-    /* ✦ Убиваем любые остаточные выделения карточек на iOS ✦ */
     .task-item:active, .task-item:focus {
       background-color: transparent !important;
       transform: none !important;
     }
 
-    /* ✦ Дата дедлайна (Запрещаем перенос строки!) ✦ */
-    .task-deadline-badge {
-      position: absolute !important;
-      right: 44px !important; /* Отступ от крестика удаления */
-      top: 50% !important;
-      transform: translateY(-50%) !important;
-      display: flex !important;
-      flex-direction: row !important; /* Иконка и текст строго в одну линию */
-      align-items: center !important;
-      justify-content: center !important;
-      gap: 6px !important;
-      white-space: nowrap !important; /* ЗАПРЕЩАЕМ ПЕРЕНОС ИКОНКИ НАД ТЕКСТОМ */
-      background: rgba(255,255,255,0.08) !important;
-      padding: 6px 10px !important;
-      border-radius: 8px !important;
-      font-size: 12px !important;
-      z-index: 5 !important;
-    }
-
-    /* ✦ Выравнивание молнии ДЛЯ ТЕЛЕФОНА ✦ */
+    /* Молния (Аккуратно стоит слева внизу) */
     .task-urgent-btn {
       position: absolute !important;
-      left: 6px !important;     /* Ровно под чекбоксом на телефоне */
-      top: 32px !important;     /* Жестко прибиваем сверху, чтобы не прыгала от длины текста */
-      width: 44px !important;   
-      height: 44px !important;
+      top: auto !important;     
+      bottom: 4px !important;   
+      left: 40px !important;    /* Под текстом на телефоне */
+      width: 34px !important;   
+      height: 34px !important;
       padding: 0 !important;
       display: flex !important;
       align-items: center !important;
@@ -186,25 +167,56 @@
     }
 
     .task-urgent-btn svg {
-      width: 14px !important;
-      height: 14px !important;
+      width: 15px !important;
+      height: 15px !important;
     }
 
     .task-urgent-btn.active {
       color: #FBBF24 !important; 
     }
 
-    /* ✦ Выравнивание молнии ДЛЯ КОМПЬЮТЕРА ✦ */
+    /* Дата дедлайна (В одну линию сразу после молнии) */
+    .task-deadline-badge {
+      position: absolute !important;
+      top: auto !important;       
+      bottom: 9px !important;     
+      right: auto !important;     /* Никакой привязки вправо! */
+      left: 74px !important;      /* Стоит правее молнии */
+      transform: none !important; 
+      display: inline-flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 6px !important;
+      white-space: nowrap !important; 
+      background: rgba(255,255,255,0.06) !important;
+      padding: 4px 10px !important;
+      border-radius: 8px !important;
+      font-size: 11px !important;
+      font-weight: 600 !important;
+      color: #a1a1aa !important;
+      z-index: 5 !important;
+    }
+
+    .task-deadline-badge svg {
+      width: 14px !important;
+      height: 14px !important;
+      opacity: 0.8 !important;
+    }
+
+    /* Адаптация под компьютер (Сдвигаем всё вправо из-за иконки ⋮⋮) */
     @media (min-width: 768px) {
       .task-urgent-btn {
-        left: 32px !important; /* На ПК сдвигаем правее из-за иконки перетаскивания (⋮⋮) */
+        left: 66px !important; 
       }
       .task-deadline-badge {
-        right: 52px !important; /* На ПК крестик чуть больше, даем воздуху */
+        left: 100px !important; 
       }
     }
 
-    /* ✦ Эстетика нового трекера сна ✦ */
+    /* =========================================================
+       3. СТИЛИ ДЛЯ СНА (Для совместимости с sleep.js)
+    ========================================================= */
     .sleep-card {
       background: transparent;
       margin-bottom: 24px;
@@ -245,7 +257,6 @@
 </head>
 <body>
 
-  <!-- Sidebar (desktop, >768px) -->
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-title">✦</div>
     
@@ -290,7 +301,6 @@
 
   <button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-  <!-- Tab bar (mobile, ≤768px) -->
   <nav class="tabbar" id="tabbar">
     
     <a class="tabbar-btn" data-view="habits" onclick="navTo('habits')">
