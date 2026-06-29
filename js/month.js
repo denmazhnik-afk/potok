@@ -1,37 +1,51 @@
+window.currentPlanYear = window.currentPlanYear || ACT_Y;
+
+function setPlanYear(y) {
+  window.currentPlanYear = parseInt(y);
+  render();
+}
+
 // ==================== PLAN PAGE ====================
 function buildPlanPage() {
+  window.currentPlanYear = window.currentPlanYear || ACT_Y;
+  
   let html = `
-  <div class="page-header">
-    <button class="back-btn" onclick="goHome()">← Назад</button>
-    <h2 class="page-heading">Планировщик</h2>
+  <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button class="back-btn" onclick="goHome()">← Назад</button>
+      <h2 class="page-heading">Планировщик</h2>
+    </div>
+    <select onchange="setPlanYear(this.value)" style="background:rgba(255,255,255,0.05); color:#fff; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:6px 12px; font-size:14px; font-weight:600; cursor:pointer; outline:none; -webkit-appearance:none; text-align:center;">
+      ${YEARS.map(y => `<option value="${y}" style="color:#000;" ${y === window.currentPlanYear ? 'selected' : ''}>${y} год</option>`).join('')}
+    </select>
   </div>
   <div class="months-grid" id="monthsGrid">`;
 
-  YEARS.forEach(y => {
-    for (let m = 0; m < 12; m++) {
-      const dim = getDays(y, m);
-      const isCur = y === ACT_Y && m === ACT_M;
-      const isPast = y < ACT_Y || (y === ACT_Y && m < ACT_M);
-      const md = getMonthData(y, m);
-      const totalG = md.goals.length;
-      const doneG = md.goals.filter(g => g.done).length;
-      const pct = totalG > 0 ? doneG/totalG*100 : 0;
-      const daysLeft = isCur ? dim - ACT_D : (isPast ? 0 : dim);
+  // Теперь мы не перебираем YEARS, а берем только выбранный год
+  const y = window.currentPlanYear;
+  for (let m = 0; m < 12; m++) {
+    const dim = getDays(y, m);
+    const isCur = y === ACT_Y && m === ACT_M;
+    const isPast = y < ACT_Y || (y === ACT_Y && m < ACT_M);
+    const md = getMonthData(y, m);
+    const totalG = md.goals.length;
+    const doneG = md.goals.filter(g => g.done).length;
+    const pct = totalG > 0 ? doneG/totalG*100 : 0;
+    const daysLeft = isCur ? dim - ACT_D : (isPast ? 0 : dim);
 
-      html += `<div class="month-card ${isCur?'is-current':''} ${isPast?'is-past':''}" ${isCur?'id="currentMonthCard"':''} onclick="openMonthDetail(${y},${m})">
-        <div class="mc-top">
-          <div class="mc-name ${isCur?'is-current-name':''}">${isCur ? '● ' : ''}${MONTHS_RU[m]}</div>
-          <div class="mc-year">${y}</div>
-        </div>
-        <div class="mc-goals">${totalG > 0 ? ICONS.target + ' ' + totalG + ' ' + (totalG === 1 ? 'цель' : totalG < 5 ? 'цели' : 'целей') : '—'}</div>
-        <div class="mc-bar"><div class="mc-bar-fill" style="width:${pct}%"></div></div>
-        <div class="mc-bottom">
-          <div class="mc-pct">${totalG > 0 ? Math.round(pct) + '%' : ''}</div>
-          <div class="mc-days">${dim} дн.${isCur ? ' · осталось ' + daysLeft : ''}</div>
-        </div>
-      </div>`;
-    }
-  });
+    html += `<div class="month-card ${isCur?'is-current':''} ${isPast?'is-past':''}" ${isCur?'id="currentMonthCard"':''} onclick="openMonthDetail(${y},${m})">
+      <div class="mc-top">
+        <div class="mc-name ${isCur?'is-current-name':''}">${isCur ? '● ' : ''}${MONTHS_RU[m]}</div>
+        <div class="mc-year">${y}</div>
+      </div>
+      <div class="mc-goals">${totalG > 0 ? ICONS.target + ' ' + totalG + ' ' + (totalG === 1 ? 'цель' : totalG < 5 ? 'цели' : 'целей') : '—'}</div>
+      <div class="mc-bar"><div class="mc-bar-fill" style="width:${pct}%"></div></div>
+      <div class="mc-bottom">
+        <div class="mc-pct">${totalG > 0 ? Math.round(pct) + '%' : ''}</div>
+        <div class="mc-days">${dim} дн.${isCur ? ' · осталось ' + daysLeft : ''}</div>
+      </div>
+    </div>`;
+  }
 
   html += '</div>';
   return html;
@@ -138,7 +152,7 @@ function buildMonthDetail() {
     daysHTML += `<div class="day-card ${isToday?'today':''}" id="dc-${d}">
       <div>
         <div class="day-date">
-          ${d} ${MONTHS_SHORT[m]}<span class="day-weekday-tag">, ${wd}</span>
+          ${d} ${MONTHS_GEN[m]}<span class="day-weekday-tag">, ${wd}</span>
           ${dd.mood > 0 ? `<span class="day-mood-badge" style="color:${getMoodColor(dd.mood)}">${getMoodEmoji(dd.mood)} ${dd.mood}/5</span>` : ''}
         </div>
         <ul class="task-list">${tasksHTML}</ul>

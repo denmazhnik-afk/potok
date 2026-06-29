@@ -73,7 +73,7 @@ function buildDayPage() {
   return `
   <div class="page-header">
     <button class="back-btn" onclick="goHome()">← Назад</button>
-    <h2 class="page-heading">Сегодня — ${ACT_D} ${MONTHS_RU[ACT_M]}</h2>
+    <h2 class="page-heading">Сегодня — ${ACT_D} ${MONTHS_GEN[ACT_M]}</h2>
     <div class="days-left-tag">Ещё ${getDays(ACT_Y, ACT_M) - ACT_D} дн.</div>
   </div>
 
