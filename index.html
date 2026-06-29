@@ -131,25 +131,38 @@
     /* ✦ Идеальное позиционирование и цвета молнии ✦ */
     .task-item {
       position: relative !important; 
-      padding-top: 14px !important;    /* Равномерный верхний отступ */
-      padding-bottom: 36px !important; /* Увеличенный нижний, чтобы молнии было свободно */
+      padding-top: 14px !important;
+      padding-bottom: 36px !important;
+      -webkit-tap-highlight-color: transparent !important; /* Убирает серое мигание карточки на iOS */
     }
     
     .task-urgent-btn {
       position: absolute !important;
-      left: 16px !important;    /* Строго под левый край квадратика галочки */
-      bottom: 12px !important;  /* Одинаковый визуальный отступ снизу */
-      padding: 0 !important;    /* Полностью убираем невидимую рамку */
-      width: 16px !important;   /* Жесткий размер ровно под иконку */
+      left: 16px !important;
+      bottom: 12px !important;
+      padding: 0 !important;
+      width: 16px !important;
       height: 16px !important;
       display: flex !important;
       align-items: center !important;
-      justify-content: flex-start !important; /* Прижимаем иконку влево внутри своей микро-рамки */
+      justify-content: flex-start !important;
       color: #52525b !important; 
       opacity: 1 !important; 
       background: none !important;
       border: none !important;
       outline: none !important;
+      z-index: 10 !important; /* Выносит кнопку строго на передний план */
+      touch-action: manipulation !important; /* Убирает задержку клика на телефонах */
+    }
+
+    /* ✦ Невидимая широкая зона для пальца (44x44px) ✦ */
+    .task-urgent-btn::after {
+      content: '' !important;
+      position: absolute !important;
+      top: -14px !important;
+      bottom: -14px !important;
+      left: -14px !important;
+      right: -14px !important;
     }
 
     .task-urgent-btn.active {
