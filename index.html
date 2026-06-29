@@ -130,22 +130,30 @@
 
     /* ✦ Идеальное позиционирование и цвета молнии ✦ */
     .task-item {
-      position: relative !important; /* Удерживает молнию внутри карточки */
-      padding-bottom: 28px !important; 
+      position: relative !important; 
+      padding-top: 14px !important;    /* Равномерный верхний отступ */
+      padding-bottom: 36px !important; /* Увеличенный нижний, чтобы молнии было свободно */
     }
     
     .task-urgent-btn {
       position: absolute !important;
-      left: 16px !important; /* Ровно под галочкой */
-      bottom: 4px !important;
-      color: #52525b !important; /* Тускло-серый, когда задача НЕ срочная */
-      opacity: 1 !important; /* Делаем видимой всегда */
+      left: 16px !important;    /* Строго под левый край квадратика галочки */
+      bottom: 12px !important;  /* Одинаковый визуальный отступ снизу */
+      padding: 0 !important;    /* Полностью убираем невидимую рамку */
+      width: 16px !important;   /* Жесткий размер ровно под иконку */
+      height: 16px !important;
       display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important; /* Прижимаем иконку влево внутри своей микро-рамки */
+      color: #52525b !important; 
+      opacity: 1 !important; 
       background: none !important;
+      border: none !important;
+      outline: none !important;
     }
 
     .task-urgent-btn.active {
-      color: #FBBF24 !important; /* Желтый при нажатии */
+      color: #FBBF24 !important; 
     }
   </style>
 </head>
