@@ -143,8 +143,8 @@
     /* ✦ Огромная кнопка для пальца, но иконка стоит на старом месте ✦ */
     .task-urgent-btn {
       position: absolute !important;
-      left: 1px !important;     /* Сдвигаем влево, чтобы компенсировать размер кнопки */
-      bottom: -3px !important;  /* Сдвигаем вниз */
+      left: 4px !important;     /* Было 1px, теперь 4px для идеального центра */
+      bottom: -4px !important;  /* Было -3px, теперь -4px */
       width: 44px !important;   /* Реальный огромный размер для пальца */
       height: 44px !important;
       padding: 0 !important;
@@ -177,7 +177,7 @@
     /* ✦ Переносим Календарь (дедлайн) вправо, чтобы он не сливался с молнией ✦ */
     .task-deadline-badge {
       position: absolute !important;
-      right: 44px !important; /* Ставим слева от крестика удаления */
+      right: 58px !important; /* Было 44px. 58px отодвинет плашку от крестика на ПК */
       top: 50% !important;
       transform: translateY(-50%) !important;
       background: rgba(255,255,255,0.08) !important;
