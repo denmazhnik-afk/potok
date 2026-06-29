@@ -32,10 +32,10 @@ function buildSleepPage() {
     attempts++;
   }
 
-  // ✦ РАЗВОРАЧИВАЕМ МАССИВ: теперь даты идут строго сверху вниз (хронологически) ✦
+  // Разворачиваем массив
   days.reverse();
 
-  // Данные для графика (уже в правильном порядке)
+  // Данные для графика
   const chartData = days.map(day => ({
     date: day.dateStr,
     mins: day.dur,
@@ -43,7 +43,6 @@ function buildSleepPage() {
   }));
   window.sleepChartData = chartData;
 
-  // Красивая иконка часов вместо стрелочек обновления
   const clockIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
 
   let daysHTML = '';
@@ -63,12 +62,20 @@ function buildSleepPage() {
       else { qColor = 'var(--green)'; qBg = 'rgba(16,185,129,0.15)'; }
     }
 
+    // ✦ СТИЛИСТИКА АКТИВНОЙ КАРТОЧКИ (как в Планировщике) ✦
+    const cardStyle = day.isToday 
+      ? 'background:rgba(255,255,255,0.06); border:1px solid var(--green); box-shadow:0 0 16px rgba(107,227,164,0.1);' 
+      : 'background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08);';
+      
+    const titleColor = day.isToday ? 'color:var(--green);' : 'color:#fff;';
+    const dotHtml = day.isToday ? '<div style="width:12px; height:12px; background:var(--green); border-radius:50%;"></div>' : '';
+
     daysHTML += `
-      <div class="sleep-day-card" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:12px;">
+      <div class="sleep-day-card" style="${cardStyle} border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:12px; transition:0.3s;">
         
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div style="font-weight:800; font-size:15px; display:flex; align-items:center; gap:8px;">
-            ${day.isToday ? '<div style="width:8px; height:8px; background:var(--green); border-radius:50%; box-shadow:0 0 8px var(--green);" title="Сегодня"></div>' : ''}
+          <div style="font-weight:800; font-size:15px; display:flex; align-items:center; gap:8px; ${titleColor}">
+            ${dotHtml}
             ${day.dateFull}, <span style="color:var(--text-tertiary); font-weight:600;">${day.wd}</span>
           </div>
           ${day.hasData ? `<button onclick="clearSleepForDay(${day.y},${day.m},${day.d})" style="background:none; border:none; color:#636366; font-size:20px; padding:0 4px; cursor:pointer;" title="Очистить день">×</button>` : ''}
