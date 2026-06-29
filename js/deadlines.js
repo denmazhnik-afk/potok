@@ -45,7 +45,7 @@ function buildHabitsPage() {
                 <button class="habit-icon-btn" onclick="cycleHabitColor(${h.id})" title="Изменить цвет">${ICONS.palette}</button>
                 <button class="habit-icon-btn" onclick="deleteHabit(${h.id})" title="Удалить">✕</button>
               </div>
-              ${getHabitStreak(h) > 0 ? `<div style="display:flex; align-items:center; justify-content:center; color:#F97316; font-size:11px; font-weight:800; background:rgba(249,115,22,0.15); padding:0 6px; height:22px; border-radius:6px; white-space:nowrap;">${ICONS.fire}${getHabitStreak(h)} дн.</div>` : ''}
+              ${getHabitStreak(h) > 0 ? `<div style="display:flex; align-items:center; justify-content:center; color:#F97316; font-size:11px; font-weight:800; background:rgba(249,115,22,0.15); padding:0 6px; height:22px; border-radius:6px; white-space:nowrap;">${ICONS.fire}${getHabitStreak(h)}</div>` : ''}
             </div>
           </div>
           <div class="habit-grid-14">
@@ -66,7 +66,7 @@ function buildHabitsPage() {
       
       .habit-card { border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; transition: background 0.3s; }
       .habit-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 8px; }
-      .habit-name { font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.02em; word-break: break-word; line-height: 1.2; }
+      .habit-name { font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -0.02em; overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; line-height: 1.2; }
       
       .habit-actions { display: flex; gap: 6px; align-items: center; }
       .habit-icon-btn { background: none; border: none; color: var(--text-tertiary); font-size: 14px; padding: 0; cursor: pointer; transition: 0.2s; }
