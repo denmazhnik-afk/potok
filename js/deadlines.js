@@ -40,6 +40,7 @@ function buildHabitsPage() {
         <div class="habit-card" style="background-color: ${bgColor}">
           <div class="habit-header">
             <div class="habit-name">${esc(h.name)}</div>
+            ${getHabitStreak(h) > 0 ? `<div style="display:flex; align-items:center; gap:4px; color:#F97316; font-size:12px; font-weight:700; background:rgba(249,115,22,0.15); padding:2px 8px; border-radius:12px; margin-left:auto; margin-right:8px;">${ICONS.fire}${getHabitStreak(h)} дн.</div>` : ''}
             <div class="habit-actions">
               <button class="habit-icon-btn" onclick="cycleHabitColor(${h.id})" title="Изменить цвет">${ICONS.palette}</button>
               <button class="habit-icon-btn" onclick="deleteHabit(${h.id})" title="Удалить">✕</button>
@@ -152,4 +153,29 @@ function toggleHabit(id) {
 
   saveHabits(habits);
   render();
+}
+
+function getHabitStreak(habit) {
+  if (!habit || !habit.history) return 0;
+  let streak = 0;
+  let d = new Date(ACT_Y, ACT_M, ACT_D);
+  
+  // Функция для создания строки даты в формате YYYY-MM-DD
+  const dateStr = () => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  
+  // Если сегодня не выполнено, проверяем, было ли выполнено вчера
+  if (!habit.history[dateStr()]) {
+    d.setDate(d.getDate() - 1);
+  }
+  
+  // Считаем дни подряд
+  for (let i = 0; i < 365; i++) {
+    if (habit.history[dateStr()]) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return streak;
 }
