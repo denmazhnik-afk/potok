@@ -167,10 +167,9 @@ function buildSleepPage() {
         <button class="btn-secondary" style="flex:1; max-width:100px;" onclick="sleepNav(7)">7 дн. →</button>
       </div>
       
-      <div class="btn-primary" style="position:relative; display:flex; justify-content:center; align-items:center; width:100%; max-width:316px; padding:10px 16px; font-size:14px; font-weight:700; border-radius:10px; overflow:hidden; cursor:pointer;">
+      <button class="btn-primary" onclick="openSleepDatePicker()" style="width:100%; max-width:316px; padding:10px 16px; font-size:14px; font-weight:700; border-radius:10px; cursor:pointer;">
         + Добавить запись
-        <input type="date" onchange="addManualSleep(this.value)" onclick="this.showPicker && this.showPicker()" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; box-sizing:border-box;">
-      </div>
+      </button>
     </div>
 
     <div class="sleep-days-grid">
@@ -211,4 +210,18 @@ function addManualSleep(val) {
   const [y, m, d] = val.split('-');
   window._manualSleepDate = `${parseInt(y)}-${parseInt(m)-1}-${parseInt(d)}`;
   render();
+}
+
+function openSleepDatePicker() {
+  // Получаем сегодняшний день для календаря по умолчанию
+  const todayDate = `${ACT_Y}-${String(ACT_M + 1).padStart(2, '0')}-${String(ACT_D).padStart(2, '0')}`;
+  
+  openDatePicker({
+    date: todayDate,
+    title: 'Выберите дату',
+    onSave: (val) => {
+      addManualSleep(val);
+    },
+    onClear: () => {}
+  });
 }
