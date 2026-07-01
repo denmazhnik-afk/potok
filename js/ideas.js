@@ -415,19 +415,17 @@ function addIdeaGoal(ideaId) {
   if (!idea) return;
   if (!idea.goals) idea.goals = [];
 
-  // Берем месяц из глобальной переменной модалки
   const monthVal = window._newGoalMonthVal || ''; 
   const goalId = 'ig_' + Date.now();
 
   idea.goals.push({ id: goalId, text, done: false, month: monthVal });
   saveIdeas(ideas);
 
-  // Добавляем цель в выбранный месяц
   if (monthVal) {
     const [y, m] = monthVal.split('-').map(Number);
     const md = getMonthData(y, m);
     md.goals.push({
-      text: `[${idea.emoji || '📁'} ${idea.name}] ${text}`,
+      text: text, // ✦ ТЕПЕРЬ ПЕРЕДАЕМ ТОЛЬКО ЧИСТЫЙ ТЕКСТ (без ломаного префикса) ✦
       done: false,
       ideaGoalId: goalId,
       ideaId: ideaId
@@ -435,7 +433,7 @@ function addIdeaGoal(ideaId) {
     saveMonthData(y, m, md);
   }
   
-  window._newGoalMonthVal = ''; // Сбрасываем после добавления
+  window._newGoalMonthVal = ''; 
   render();
 }
 

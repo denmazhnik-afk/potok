@@ -61,6 +61,19 @@ function buildMonthDetail() {
 
   let goalsHTML = '<div class="goals-list">';
   md.goals.forEach((g, i) => {
+    let goalText = esc(g.text) || '<em style="color:var(--text-tertiary)">Без названия</em>';
+
+    // ✦ ДИНАМИЧЕСКИ ДОСТАЕМ ИКОНКУ ПРОЕКТА ✦
+    if (g.ideaId) {
+      const ideas = getIdeas();
+      const idea = ideas.find(p => p.id === g.ideaId);
+      if (idea) {
+        // Очищаем старые забагованные названия вида "[rocket проект] "
+        let cleanText = g.text.replace(/^\[.*?\]\s*/, '');
+        goalText = `<span class="idea-tag" style="display:inline-flex; align-items:center; margin-right:6px; color:var(--text-secondary); background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; font-size:11px;">${ICONS[idea.emoji] || ICONS.folder} ${esc(idea.name)}</span> ${esc(cleanText)}`;
+      }
+    }
+
     if (uiState.editingGoal === i) {
       goalsHTML += `<div class="goal-item">
         <div class="goal-circle ${g.done ? 'filled' : ''}">${g.done ? '✓' : ''}</div>
@@ -76,7 +89,7 @@ function buildMonthDetail() {
         ondrop="goalDrop(event,${i})" ondragend="goalDragEnd(event)">
         <span class="task-drag goal-drag" title="Перетащить">⋮⋮</span>
         <div class="goal-circle ${g.done ? 'filled' : ''}" onclick="toggleGoal(${i})">${g.done ? '✓' : ''}</div>
-        <span class="goal-text ${g.done ? 'struck' : ''}">${esc(g.text) || '<em style="color:var(--text-tertiary)">Без названия</em>'}</span>
+        <span class="goal-text ${g.done ? 'struck' : ''}">${goalText}</span>
         <div class="inline-btns">
           <button class="ibtn" onclick="startEditGoal(${i})">${ICONS.edit}</button>
           <button class="ibtn" onclick="deleteGoal(${i})">${ICONS.trash}</button>
@@ -205,22 +218,53 @@ function toggleMonthTask(d, ti) {
   const t = allTasks[ti];
   if (!t) return;
 
-  if (t.fromIdea && t.ideaId && t.ideaTaskId) {
-    toggleTaskDone(y, m, d, ti, true, t.ideaTaskId, t.ideaId);
-  } else {
-    const dd = getDayData(y, m, d);
-    const realIdx = dd.tasks.findIndex(x => x.text === t.text);
-    if (realIdx >= 0) toggleTaskDone(y, m, d, realIdx, false, null, null);
+  if (t.fromIdea && t.ideaId) {
+    const ideas = getIdeas();
+    const idea = ideas.find(p => p.id === t.ideaId);
+    if (idea) {
+      const task = idea.tasks.find(x => x.id === (t.ideaTaskId || t.id));
+      if (task) {
+        task.done = !task.done;
+        saveIdeas(ideas);
+        render();
+        return;
+      }
+    }
   }
-  render();
+
+  const dd = getDayData(y, m, d);
+  const realIdx = dd.tasks.findIndex(x => x.text === t.text);
+  if (realIdx >= 0) {
+    dd.tasks[realIdx].done = !dd.tasks[realIdx].done;
+    saveDayData(y, m, d, dd);
+    render();
+  }
 }
 
 function toggleMonthTaskUrgent(d, ti) {
   const {y, m} = viewData;
+  const allTasks = getDayTasksWithIdeas(y, m, d);
+  const t = allTasks[ti];
+  if (!t) return;
+
+  if (t.fromIdea && t.ideaId) {
+    const ideas = getIdeas();
+    const idea = ideas.find(p => p.id === t.ideaId);
+    if (idea) {
+      const task = idea.tasks.find(x => x.id === (t.ideaTaskId || t.id));
+      if (task) {
+        task.urgent = !task.urgent;
+        saveIdeas(ideas);
+        render();
+        return;
+      }
+    }
+  }
+
   const dd = getDayData(y, m, d);
-  if (dd.tasks[ti]) {
-    dd.tasks[ti].urgent = !dd.tasks[ti].urgent;
-    sortTasks(dd.tasks);
+  const realIdx = dd.tasks.findIndex(x => x.text === t.text);
+  if (realIdx >= 0) {
+    dd.tasks[realIdx].urgent = !dd.tasks[realIdx].urgent;
     saveDayData(y, m, d, dd);
     render();
   }
@@ -233,24 +277,29 @@ function deleteMonthTask(d, ti) {
   if (!t) return;
 
   if (t.fromIdea && t.ideaId) {
+    if (!confirm('Убрать эту задачу проекта из плана на этот день?')) return;
     const ideas = getIdeas();
     const idea = ideas.find(p => p.id === t.ideaId);
     if (idea) {
-      const task = idea.tasks.find(x => x.id === t.ideaTaskId);
+      const task = idea.tasks.find(x => x.id === (t.ideaTaskId || t.id));
       if (task) {
         task.scheduledDate = null;
         saveIdeas(ideas);
+        render();
+        return;
       }
     }
-  } else {
+  }
+
+  if (confirm('Удалить задачу?')) {
     const dd = getDayData(y, m, d);
     const realIdx = dd.tasks.findIndex(x => x.text === t.text);
     if (realIdx >= 0) {
       dd.tasks.splice(realIdx, 1);
       saveDayData(y, m, d, dd);
+      render();
     }
   }
-  render();
 }
 
 function startMonthTask(d) {
