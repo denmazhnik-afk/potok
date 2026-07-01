@@ -241,6 +241,37 @@ function toggleMonthTask(d, ti) {
   }
 }
 
+function toggleMonthTask(d, ti) {
+  const {y, m} = viewData;
+  const allTasks = getDayTasksWithIdeas(y, m, d);
+  const t = allTasks[ti];
+  if (!t) return;
+
+  if (t.fromIdea && t.ideaId) {
+    const ideas = getIdeas();
+    const idea = ideas.find(p => p.id === t.ideaId);
+    if (idea) {
+      const task = idea.tasks.find(x => x.id === (t.ideaTaskId || t.id));
+      if (task) {
+        task.done = !task.done;
+        sortIdeaTasks(idea.tasks); // 🔥 СОРТИРОВКА
+        saveIdeas(ideas);
+        render();
+        return;
+      }
+    }
+  }
+
+  const dd = getDayData(y, m, d);
+  const realIdx = dd.tasks.findIndex(x => x.text === t.text);
+  if (realIdx >= 0) {
+    dd.tasks[realIdx].done = !dd.tasks[realIdx].done;
+    sortTasks(dd.tasks); // 🔥 СОРТИРОВКА
+    saveDayData(y, m, d, dd);
+    render();
+  }
+}
+
 function toggleMonthTaskUrgent(d, ti) {
   const {y, m} = viewData;
   const allTasks = getDayTasksWithIdeas(y, m, d);
@@ -254,6 +285,7 @@ function toggleMonthTaskUrgent(d, ti) {
       const task = idea.tasks.find(x => x.id === (t.ideaTaskId || t.id));
       if (task) {
         task.urgent = !task.urgent;
+        sortIdeaTasks(idea.tasks); // 🔥 СОРТИРОВКА
         saveIdeas(ideas);
         render();
         return;
@@ -265,40 +297,9 @@ function toggleMonthTaskUrgent(d, ti) {
   const realIdx = dd.tasks.findIndex(x => x.text === t.text);
   if (realIdx >= 0) {
     dd.tasks[realIdx].urgent = !dd.tasks[realIdx].urgent;
+    sortTasks(dd.tasks); // 🔥 СОРТИРОВКА
     saveDayData(y, m, d, dd);
     render();
-  }
-}
-
-function deleteMonthTask(d, ti) {
-  const {y, m} = viewData;
-  const allTasks = getDayTasksWithIdeas(y, m, d);
-  const t = allTasks[ti];
-  if (!t) return;
-
-  if (t.fromIdea && t.ideaId) {
-    if (!confirm('Убрать эту задачу проекта из плана на этот день?')) return;
-    const ideas = getIdeas();
-    const idea = ideas.find(p => p.id === t.ideaId);
-    if (idea) {
-      const task = idea.tasks.find(x => x.id === (t.ideaTaskId || t.id));
-      if (task) {
-        task.scheduledDate = null;
-        saveIdeas(ideas);
-        render();
-        return;
-      }
-    }
-  }
-
-  if (confirm('Удалить задачу?')) {
-    const dd = getDayData(y, m, d);
-    const realIdx = dd.tasks.findIndex(x => x.text === t.text);
-    if (realIdx >= 0) {
-      dd.tasks.splice(realIdx, 1);
-      saveDayData(y, m, d, dd);
-      render();
-    }
   }
 }
 
