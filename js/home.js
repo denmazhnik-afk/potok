@@ -42,7 +42,10 @@ function buildHome() {
   const bal = getFinBalance();
   const inc = getFinIncome();
   const lastBal = bal.length > 0 ? bal[bal.length-1].amount : 0;
-  const todayInc = inc.filter(e => e.date === activeDateStr()).reduce((s,e) => s + e.amount, 0);
+  // Получаем текущий месяц в формате YYYY-MM
+  const currentMonthPrefix = activeDateStr().substring(0, 7);
+  // Считаем все доходы, чья дата начинается с этого месяца
+  const monthInc = inc.filter(e => e.date.startsWith(currentMonthPrefix)).reduce((s,e) => s + e.amount, 0);
 
   let dayTasksHTML = '';
   const preview = allTasks.slice(0, 3);
@@ -230,8 +233,8 @@ function buildHome() {
               <div class="finance-lbl" style="font-size:12px; color:var(--text-tertiary); margin-top:6px;">Баланс</div>
             </div>
             <div class="finance-stat">
-              <div class="finance-num" style="color:var(--green); font-family:var(--mono); font-size:24px; font-weight:700;">${todayInc > 0 ? '+' + fmtRub(todayInc) : '+0 ₽'}</div>
-              <div class="finance-lbl" style="font-size:12px; color:var(--text-tertiary); margin-top:6px;">Сегодня</div>
+              <div class="finance-num" style="color:var(--green); font-family:var(--mono); font-size:24px; font-weight:700;">${monthInc > 0 ? '+' + fmtRub(monthInc) : '+0 ₽'}</div>
+              <div class="finance-lbl" style="font-size:12px; color:var(--text-tertiary); margin-top:6px;">За месяц</div>
             </div>
           </div>
           
