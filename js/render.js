@@ -229,6 +229,7 @@ function updateNav() {
     : (view === 'ideas' || view === 'idea-detail') ? 'ideas'
     : (view === 'plan' || view === 'month-detail') ? 'plan'
     : (view === 'habits') ? 'habits'
+    : (view === 'finance') ? 'finance'
     : '';
 
   document.querySelectorAll('.sidebar-btn, .tabbar-btn').forEach(function(btn) {
