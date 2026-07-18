@@ -1,3 +1,26 @@
+// ==================== FINANCE DATA PATCH ====================
+// Переопределяем старые функции, чтобы Главная страница брала данные из новой базы транзакций
+window.getFinBalance = function() {
+  const txs = localStore['flow_transactions'] || [];
+  // Сортируем транзакции по дате (и по ID для порядка), чтобы правильно построить график
+  const sorted = [...txs].sort((a, b) => a.date.localeCompare(b.date) || a.id - b.id);
+  
+  let currentBal = 0;
+  const history = [];
+  
+  sorted.forEach(t => {
+    currentBal += (t.type === 'income' ? t.amount : -t.amount);
+    history.push({ amount: currentBal, date: t.date });
+  });
+  
+  return history.length ? history : [{ amount: 0, date: new Date().toISOString().split('T')[0] }];
+};
+
+window.getFinIncome = function() {
+  const txs = localStore['flow_transactions'] || [];
+  // Возвращаем только реальные доходы, исключая технические корректировки
+  return txs.filter(t => t.type === 'income' && t.category !== 'Корректировка');
+};
 // ==================== HOME ====================
 function buildHome() {
   const allTasks = getDayTasksWithIdeas(ACT_Y, ACT_M, ACT_D);
