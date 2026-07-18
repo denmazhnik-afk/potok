@@ -217,7 +217,7 @@
 }
 
 .tx-amount.income { color: var(--green); }
-.tx-amount.expense { color: var(--text-primary); }
+.tx-amount.expense { color: var(--red); }
 
 .entry-del {
   position: absolute;

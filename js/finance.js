@@ -15,17 +15,17 @@ const svgIcon = (path) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentC
 
 const FIN_CATEGORIES = {
   income: [
-    { name: 'Заработок', icon: svgIcon('<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>') },
-    { name: 'Переводы', icon: svgIcon('<line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>') },
-    { name: 'Проекты', icon: svgIcon('<path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>') }
+    { name: 'Заработок', icon: svgIcon('<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>') }, // Портфель
+    { name: 'Переводы', icon: svgIcon('<line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>') }, // Бумажный самолетик
+    { name: 'Проекты', icon: svgIcon('<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>') } // Молния (идеально для проектов)
   ],
   expense: [
-    { name: 'Еда', icon: svgIcon('<path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1"></path>') },
-    { name: 'Подписки', icon: svgIcon('<rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line>') },
-    { name: 'Транспорт', icon: svgIcon('<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><path d="M9 17h6"></path><circle cx="17" cy="17" r="2"></circle>') },
-    { name: 'Развлечения', icon: svgIcon('<polygon points="5 3 19 12 5 21 5 3"></polygon>') },
-    { name: 'Прочее', icon: svgIcon('<circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>') },
-    { name: 'Корректировка', icon: svgIcon('<polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>') }
+    { name: 'Еда', icon: svgIcon('<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line>') }, // Стаканчик кофе
+    { name: 'Подписки', icon: svgIcon('<polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>') }, // Цикл/Обновление
+    { name: 'Транспорт', icon: svgIcon('<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>') }, // Стрелка навигатора
+    { name: 'Развлечения', icon: svgIcon('<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>') }, // Монитор
+    { name: 'Прочее', icon: svgIcon('<circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle>') }, // Три точки
+    { name: 'Корректировка', icon: svgIcon('<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line>') } // Плюс в круге
   ]
 };
 // ==================== NAVIGATION INTERCEPTOR ====================
