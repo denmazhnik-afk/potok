@@ -195,7 +195,7 @@ let uiState = {
   editingGoal: -1,
   addingTask: {},
   editingNote: null,
-  finTab: 'balance',
+  finTab: 'summary',
   addingWish: false,
 };
 

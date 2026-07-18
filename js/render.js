@@ -238,7 +238,7 @@ function updateNav() {
 }
 
 function resetUI() {
-  uiState = { addingGoal:false, editingGoal:-1, addingTask:{}, editingNote:null, finTab: uiState.finTab||'balance', addingWish:false, ideaDoneExpanded: null, ideaAddDate: null };
+  uiState = { addingGoal:false, editingGoal:-1, addingTask:{}, editingNote:null, finTab: uiState.finTab||'summary', addingWish:false, ideaDoneExpanded: null, ideaAddDate: null };
 }
 
 // ==================== SCROLL TO TOP ====================

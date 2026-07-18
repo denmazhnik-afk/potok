@@ -49,8 +49,23 @@ const FIN_CATEGORIES = {
 };
 
 // Генератор графика
+// Константная палитра для твоих категорий
+const CATEGORY_COLORS = {
+  'Еда': '#EF4444',        // Красный
+  'Подписки': '#EC4899',   // Розовый
+  'Транспорт': '#3B82F6',  // Синий
+  'Развлечения': '#8B5CF6',// Фиолетовый
+  'Прочее': '#64748B'      // Серый
+};
+
+// Функция для получения цвета
+function getFixedColor(catName) {
+  return CATEGORY_COLORS[catName] || '#9CA3AF'; // Нейтральный цвет для неизвестных категорий
+}
+
+// Генератор графика
 function buildExpenseChart(txs) {
-  const colors = ['#EF4444', '#F59E0B', '#3B82F6', '#8B5CF6', '#10B981', '#EC4899'];
+  // Фильтруем расходы и убираем корректировки
   const expTxs = txs.filter(t => t.type === 'expense' && t.category !== 'Корректировка');
   const totalExp = expTxs.reduce((s, t) => s + t.amount, 0);
 
@@ -63,9 +78,12 @@ function buildExpenseChart(txs) {
   let legendHTML = '';
   let currentPercent = 0;
   
-  Object.entries(expCats).sort((a,b) => b[1] - a[1]).forEach(([cat, amt], index) => {
+  // Сортируем по убыванию трат и отрисовываем
+  Object.entries(expCats).sort((a,b) => b[1] - a[1]).forEach(([cat, amt]) => {
     const percent = (amt / totalExp) * 100;
-    const color = colors[index % colors.length];
+    
+    // БЕРЕМ НАШ ФИКСИРОВАННЫЙ ЦВЕТ
+    const color = getFixedColor(cat);
     
     gradientStops.push(`${color} ${currentPercent}% ${currentPercent + percent}%`);
     currentPercent += percent;
