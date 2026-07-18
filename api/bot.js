@@ -90,7 +90,7 @@ export default async function handler(req, res) {
     await reply(`✅ Записано: ${category} ${amount} ₽\n(${type === 'income' ? '🟢 Доход' : '🔴 Расход'})`);
 
   } catch (error) {
-    await reply(`⚠️ Ошибка: ${error.message}`);
+    await reply(`⚠️ Ошибка: ${error.message}\n🔍 Искал по пути: [${FILE_PATH}]`);
   }
 
   return res.status(200).send('OK');
