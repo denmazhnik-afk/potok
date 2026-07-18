@@ -1,108 +1,230 @@
-/* ====== FINANCE PAGE ====== */
-.finance-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  align-items: start;
+/* ====== PREMIUM FINANCE LAYOUT ====== */
+.fin-balance-block {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 20px 0;
 }
 
-.chart-canvas {
-  width: 100%;
-  height: 180px;
-  display: block;
+.fin-balance-label {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
 }
 
-.finance-entry-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-
-.finance-entry {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.05);
-}
-
-.entry-date { font-family: var(--mono); font-size: 11px; color: var(--text-tertiary); }
-.entry-src { font-size: 13px; color: var(--text-secondary); flex: 1; margin: 0 10px; }
-.entry-amount {
+.fin-balance-amount {
   font-family: var(--mono);
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 42px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.04em;
+  margin-bottom: 16px;
 }
 
-.entry-amount.income { color: var(--green); }
-.entry-amount.balance { color: var(--blue); }
-
-.entry-del {
-  background: none; border: none; color: var(--text-tertiary);
-  cursor: pointer; font-size: 14px; padding: 2px 6px;
-  opacity: 0; transition: all 0.2s; margin-left: 4px;
-}
-
-.finance-entry:hover .entry-del { opacity: 1; }
-.entry-del:hover { color: var(--red); }
-
-/* ====== WISHLIST ====== */
-.wish-list { display: flex; flex-direction: column; gap: 8px; }
-
-.wish-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.05);
+/* ====== WISHLIST WIDGET ====== */
+.fin-wish-widget {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin: 0 auto;
+  max-width: 400px;
+  cursor: pointer;
   transition: all 0.2s;
 }
 
-.wish-item:hover { background: rgba(255,255,255,0.055); }
+.fin-wish-widget:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
 
-.wish-emoji { font-size: 18px; flex-shrink: 0; }
-.wish-name { flex: 1; font-size: 14px; color: var(--text-secondary); }
-.wish-price {
-  font-family: var(--mono);
-  font-size: 13px;
+.fin-wish-widget-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.fin-wish-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.fin-wish-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--purple));
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+/* ====== ACTION BUTTONS ====== */
+.fin-action-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.fin-action-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  font-size: 15px;
   font-weight: 700;
-  color: var(--purple);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #fff;
+}
+
+.fin-action-btn.income {
+  background: rgba(107, 227, 164, 0.15);
+  color: var(--green);
+}
+
+.fin-action-btn.expense {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--red);
+}
+
+.fin-action-btn:active {
+  transform: scale(0.97);
+}
+
+/* ====== CATEGORY PICKER ====== */
+.fin-cat-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.fin-cat-btn {
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fin-cat-btn.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* ====== TRANSACTION LIST ====== */
+.tx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tx-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 12px;
+  background: transparent;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.tx-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tx-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-right: 12px;
+}
+
+.tx-info {
+  flex: 1;
+}
+
+.tx-cat {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.tx-note {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.tx-amount {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 700;
   white-space: nowrap;
 }
 
-.wish-del {
-  background: none; border: none; color: var(--text-tertiary);
-  cursor: pointer; font-size: 16px; padding: 2px 6px;
-  opacity: 0; transition: all 0.2s;
+.tx-amount.income { color: var(--green); }
+.tx-amount.expense { color: var(--text-primary); }
+
+.entry-del {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  background: var(--bg);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s;
 }
 
-.wish-item:hover .wish-del { opacity: 1; }
-.wish-del:hover { color: var(--red); }
-
-/* ====== RESPONSIVE ====== */
-@media (max-width: 768px) {
-  .finance-layout {
-    grid-template-columns: 1fr;
-  }
-  .finance-entry {
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-  .entry-del {
-    opacity: 0.5;
-  }
+.tx-item:hover .entry-del {
+  opacity: 1;
 }
 
-/* ====== RESPONSIVE ====== */
-@media (max-width: 768px) {
-  .finance-layout {
-    grid-template-columns: 1fr;
-  }
-  .finance-entry {
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-  .entry-del {
-    opacity: 0.5;
-  }
+/* ====== WISHLIST ====== */
+.wish-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.wish-item .wish-info {
+  flex: 1;
+  margin-left: 12px;
+}
+
+.wish-name {
+  font-size: 15px;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.wish-price {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--purple);
+  font-weight: 700;
 }
