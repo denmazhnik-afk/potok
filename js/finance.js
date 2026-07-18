@@ -392,3 +392,41 @@ function deleteWish(i) {
   saveWishlist(wish);
   render();
 }
+// ==================== IOS SHORTCUTS INTEGRATION ====================
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(window.location.search);
+  const amount = parseFloat(params.get('amount'));
+  const type = params.get('type'); // 'income' или 'expense'
+  
+  if (amount && (type === 'income' || type === 'expense')) {
+    // Если категория не передана, ставим дефолтную
+    const cat = params.get('cat') || (type === 'income' ? 'Заработок' : 'Прочее');
+    const note = params.get('note') || 'С телефона';
+    
+    // Получаем текущие транзакции
+    const txs = getTransactions();
+    txs.push({
+      id: Date.now(),
+      type: type,
+      category: cat,
+      amount: amount,
+      note: note,
+      date: new Date().toISOString().split('T')[0]
+    });
+    
+    // Сохраняем в общее хранилище
+    saveTransactions(txs);
+    
+    // Очищаем адресную строку, чтобы операция не добавилась дважды при обновлении
+    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+    window.history.replaceState({path: newUrl}, '', newUrl);
+    
+    // Сбрасываем вкладку на 'summary' и открываем финансы[cite: 9]
+    setTimeout(() => {
+      if (typeof navTo === 'function') {
+        uiState.finTab = 'summary';
+        navTo('finance');
+      }
+    }, 100);
+  }
+});
