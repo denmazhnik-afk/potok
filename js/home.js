@@ -187,25 +187,36 @@ function buildHome() {
       <div class="panel-arrow">${ICONS.arrowRight}</div>
     </div>
 
-    <div class="panel panel-finance" onclick="openFinance()">
-      <div class="panel-inner">
-        <div class="panel-eyebrow">Финансы</div>
-        <div class="panel-title">Деньги</div>
-        <div class="finance-mini">
-          <div class="finance-stat">
-            <div class="finance-num">${lastBal > 0 ? fmtRub(lastBal) : '—'}</div>
-            <div class="finance-lbl">Баланс</div>
+    <div class="panel panel-finance" onclick="openFinance()" style="position: relative;">
+      <div class="panel-inner" style="padding-bottom: 8px;">
+        <!-- Верхняя строка с заголовком и стрелкой -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="panel-eyebrow" style="text-transform:uppercase; letter-spacing:1px; font-size:10px; margin-bottom:12px;">Финансы</div>
+          <div style="width:26px; height:26px; border-radius:50%; border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.3); font-size:14px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </div>
-          <div class="finance-stat">
-            <div class="finance-num" style="color:var(--green)">${todayInc > 0 ? '+' + fmtRub(todayInc) : '—'}</div>
-            <div class="finance-lbl">Сегодня</div>
+        </div>
+        
+        <div class="panel-title" style="margin-bottom: 16px; font-size: 22px; font-weight: 700;">Деньги</div>
+        
+        <!-- Значения и график -->
+        <div class="finance-mini" style="display: flex; justify-content: space-between; align-items: flex-end;">
+          <div class="finance-stats-group" style="display: flex; gap: 20px;">
+            <div class="finance-stat">
+              <div class="finance-num" style="color:var(--green); font-family:var(--mono); font-size:24px; font-weight:700;">${lastBal > 0 ? fmtRub(lastBal) : '0 ₽'}</div>
+              <div class="finance-lbl" style="font-size:12px; color:var(--text-tertiary); margin-top:6px;">Баланс</div>
+            </div>
+            <div class="finance-stat">
+              <div class="finance-num" style="color:var(--green); font-family:var(--mono); font-size:24px; font-weight:700;">${todayInc > 0 ? '+' + fmtRub(todayInc) : '+0 ₽'}</div>
+              <div class="finance-lbl" style="font-size:12px; color:var(--text-tertiary); margin-top:6px;">Сегодня</div>
+            </div>
           </div>
-          <div class="sparkline-wrap">
-            <canvas class="sparkline-canvas" id="homeSparkline" width="140" height="50"></canvas>
+          
+          <div class="sparkline-wrap" style="width: 80px; height: 40px; flex: none;">
+            <canvas class="sparkline-canvas" id="homeSparkline" width="80" height="40"></canvas>
           </div>
         </div>
       </div>
-      <div class="panel-arrow">${ICONS.arrowRight}</div>
     </div>
 
     <div class="panel panel-ideas" onclick="openIdeas()">

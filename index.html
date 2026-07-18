@@ -252,7 +252,14 @@
 
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-title">✦</div>
-    
+
+    <a class="sidebar-btn" data-view="finance" onclick="navTo('finance')">
+      <span class="sidebar-icon">
+        <!-- Иконка купюры/кошелька -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+      </span>
+    </a>
+
     <a class="sidebar-btn" data-view="habits" onclick="navTo('habits')">
       <span class="sidebar-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
@@ -295,7 +302,13 @@
   <button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
   <nav class="tabbar" id="tabbar">
-    
+    <a class="tabbar-btn" data-view="finance" onclick="navTo('finance')">
+      <span class="tabbar-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+      </span>
+      <span class="tabbar-label">Финансы</span>
+    </a>
+
     <a class="tabbar-btn" data-view="habits" onclick="navTo('habits')">
       <span class="tabbar-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>

@@ -1,4 +1,3 @@
-// ==================== CHARTS ====================
 function drawSparkline(id, data, color) {
   const canvas = document.getElementById(id);
   if (!canvas || data.length < 2) return;
@@ -6,6 +5,16 @@ function drawSparkline(id, data, color) {
   const W = canvas.offsetWidth || 140;
   const H = canvas.offsetHeight || 50;
   canvas.width = W; canvas.height = H;
+
+  // Если это график финансов на главной — жестко задаем синий цвет в стиле Apple
+  let strokeColor = color;
+  let fillBase = color;
+  if (id === 'homeSparkline') {
+    strokeColor = 'rgba(59, 130, 246, 1)'; // Ярко-синий цвет линии
+    fillBase = 'rgba(59, 130, 246, 0.5)';  // База для нижнего градиента
+  } else {
+    fillBase = color.replace(')', ',0.4)').replace('rgb','rgba');
+  }
 
   const min = Math.min(...data) * 0.95;
   const max = Math.max(...data) * 1.05;
@@ -17,9 +26,10 @@ function drawSparkline(id, data, color) {
 
   ctx.clearRect(0,0,W,H);
   const grad = ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0, color.replace(')', ',0.4)').replace('rgb','rgba'));
+  grad.addColorStop(0, fillBase);
   grad.addColorStop(1, 'rgba(0,0,0,0)');
 
+  // Заливка под графиком
   ctx.beginPath();
   ctx.moveTo(points[0][0], H);
   ctx.lineTo(points[0][0], points[0][1]);
@@ -29,14 +39,14 @@ function drawSparkline(id, data, color) {
   ctx.fillStyle = grad;
   ctx.fill();
 
+  // Сама линия
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
   points.forEach(p => ctx.lineTo(p[0], p[1]));
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 1.5;
+  ctx.strokeStyle = strokeColor;
+  ctx.lineWidth = id === 'homeSparkline' ? 2.5 : 1.5; // Делаем линию чуть жирнее
   ctx.stroke();
 }
-
 function drawChart(id, data, field, color, unit) {
   if (data.length < 1) return;
   drawSparkline(id, data.map(e => e[field]), color);
