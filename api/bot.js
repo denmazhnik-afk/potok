@@ -1,4 +1,49 @@
-try {
+export default async function handler(req, res) {
+  // Бот реагирует только на POST-запросы от Telegram
+  if (req.method !== 'POST') return res.status(200).send('OK');
+
+  const message = req.body.message;
+  if (!message || !message.text) return res.status(200).send('OK');
+
+  const chatId = message.chat.id.toString();
+  const text = message.text.trim();
+
+  const BOT_TOKEN = process.env.TG_BOT_TOKEN;
+  const MY_CHAT_ID = process.env.TG_CHAT_ID;
+  const YA_TOKEN = process.env.YANDEX_TOKEN;
+  const FILE_PATH = process.env.YANDEX_FILE_PATH;
+
+  // Функция для отправки ответа в ТГ
+  const reply = async (msg) => {
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: msg })
+    });
+  };
+
+  // Проверка: отвечаем только тебе
+  if (chatId !== MY_CHAT_ID) {
+    await reply('⛔️ Доступ запрещен.');
+    return res.status(200).send('OK');
+  }
+
+  // Разбираем текст. Формат: "Категория Сумма Комментарий" (например, "Еда 500 Макдак")
+  const match = text.match(/^([а-яА-Яa-zA-Z]+)\s+(\d+(?:\.\d+)?)(.*)$/);
+  if (!match) {
+    await reply('❌ Неверный формат.\nПиши так: Категория Сумма [Комментарий]\nПример: Еда 500 Обед');
+    return res.status(200).send('OK');
+  }
+
+  const category = match[1];
+  const amount = parseFloat(match[2]);
+  const note = match[3].trim() || 'Через Telegram';
+
+  // Определяем тип (доход или расход) по категории
+  const incomeCategories = ['Заработок', 'Переводы', 'Проекты'];
+  const type = incomeCategories.includes(category) ? 'income' : 'expense';
+
+  try {
     // 1. Запрашиваем ссылку на скачивание файла
     const dlRes = await fetch(`https://cloud-api.yandex.net/v1/disk/resources/download?path=${encodeURIComponent(FILE_PATH)}`, {
       headers: { Authorization: `OAuth ${YA_TOKEN}` }
