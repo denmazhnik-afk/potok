@@ -135,9 +135,22 @@ function buildFinancePage() {
   let content = '';
 
   if (tab === 'summary') {
+    // 1. Инициализация выбранного месяца (по умолчанию текущий)
+    if (!uiState.finMonth) {
+      const d = new Date();
+      uiState.finMonth = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    }
+    const currentMonth = uiState.finMonth;
+    const [yStr, mStr] = currentMonth.split('-');
+    const monthName = MONTHS_RU[parseInt(mStr) - 1]; // Берем название из state.js
+    
+    // 2. Фильтруем транзакции только для выбранного месяца
+    const monthTxs = txs.filter(t => t.date.startsWith(currentMonth));
+
+    // 3. Глобальный баланс остается общим
     const balanceHTML = `
       <div class="fin-balance-block">
-        <div class="fin-balance-label">Текущий баланс</div>
+        <div class="fin-balance-label">Общий баланс</div>
         <div class="fin-balance-amount">${fmtRub(balance)}</div>
         <button class="set-balance-btn" onclick="setExactBalance()">
           ${svgIcon('<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>')} Изменить
@@ -155,6 +168,33 @@ function buildFinancePage() {
       </div>
     `;
 
+    // 4. Панель навигации по месяцам
+    const monthNavHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 8px 16px; border-radius: 12px; margin-bottom: 24px;">
+        <button style="background:none; border:none; color:var(--text-secondary); font-size:18px; cursor:pointer; padding:4px 12px;" onclick="changeFinMonth(-1)">←</button>
+        <div style="font-size: 15px; font-weight: 600; color: #fff; text-transform: capitalize;">${monthName} ${yStr}</div>
+        <button style="background:none; border:none; color:var(--text-secondary); font-size:18px; cursor:pointer; padding:4px 12px;" onclick="changeFinMonth(1)">→</button>
+      </div>
+    `;
+
+    // 5. Статистика за месяц
+    const mInc = monthTxs.filter(t => t.type === 'income' && t.category !== 'Корректировка').reduce((s,t)=>s+t.amount,0);
+    const mExp = monthTxs.filter(t => t.type === 'expense' && t.category !== 'Корректировка').reduce((s,t)=>s+t.amount,0);
+
+    const monthStatsHTML = `
+      <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+        <div style="flex:1; background: rgba(107, 227, 164, 0.05); border: 1px solid rgba(107, 227, 164, 0.15); padding: 12px; border-radius: 12px; text-align: center;">
+          <div style="font-size:11px; color:var(--green); text-transform:uppercase; margin-bottom:4px; font-weight:600">Заработано</div>
+          <div style="font-family:var(--mono); font-size:16px; font-weight:700; color:#fff;">+${fmtRub(mInc)}</div>
+        </div>
+        <div style="flex:1; background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.15); padding: 12px; border-radius: 12px; text-align: center;">
+          <div style="font-size:11px; color:var(--red); text-transform:uppercase; margin-bottom:4px; font-weight:600">Потрачено</div>
+          <div style="font-family:var(--mono); font-size:16px; font-weight:700; color:#fff;">-${fmtRub(mExp)}</div>
+        </div>
+      </div>
+    `;
+
+    // 6. Кнопки добавления
     let actionHTML = '';
     if (uiState.addingTx) {
       const type = uiState.addingTx; 
@@ -185,69 +225,45 @@ function buildFinancePage() {
       `;
     }
 
-    const chartHTML = buildExpenseChart(txs);
+    // 7. График передаем ТОЛЬКО за выбранный месяц
+    const chartHTML = buildExpenseChart(monthTxs);
 
-    let txHTML = txs.slice().reverse().slice(0, 30).map(t => {
+    // 8. Список операций ТОЛЬКО за выбранный месяц
+    let txHTML = monthTxs.slice().reverse().map(t => {
       const isInc = t.type === 'income';
       const catObj = FIN_CATEGORIES[t.type].find(c => c.name === t.category) || FIN_CATEGORIES[t.type][0];
       
+      // Форматируем дату для отображения
+      const [y, m, d] = t.date.split('-');
+      const displayDate = `${d}.${m}`;
+
       return `
       <div class="tx-item">
         <div class="tx-icon">${catObj.icon}</div>
         <div class="tx-info">
           <div class="tx-cat">${esc(t.category)}</div>
-          <div class="tx-note">${esc(t.note) || t.date}</div>
+          <div class="tx-note">${esc(t.note) || displayDate}</div>
         </div>
         <div class="tx-amount ${isInc ? 'income' : 'expense'}">${isInc ? '+' : '-'}${fmtRub(t.amount)}</div>
         <button class="entry-del" onclick="deleteTx(${t.id})">×</button>
       </div>`;
-    }).join('') || `<div class="empty-state">Нет операций</div>`;
+    }).join('') || `<div class="empty-state" style="margin-top:20px; color:var(--text-tertiary); text-align:center;">Нет операций в этом месяце</div>`;
 
     content = `
       <div class="fin-desktop-grid">
         <div class="fin-col-left">
           ${balanceHTML}
+          ${monthNavHTML}
+          ${monthStatsHTML}
           ${actionHTML}
           ${chartHTML}
         </div>
         <div class="fin-col-right">
-          <div class="section-eyebrow" style="margin-bottom: 12px;">Последние операции</div>
+          <div class="section-eyebrow" style="margin-bottom: 12px; text-transform:uppercase;">Операции за месяц</div>
           <div class="tx-list">${txHTML}</div>
         </div>
       </div>
     `;
-  }
-
-  if (tab === 'wishlist') {
-    let wishItems = wish.map((w, i) => `
-      <div class="wish-item ${w.done ? 'done' : ''}">
-        <div class="wish-emoji">${esc(w.emoji||'🎁')}</div>
-        <div class="wish-info">
-          <div class="wish-name">${esc(w.name)}</div>
-          <div class="wish-price">${fmtRub(w.price)}</div>
-        </div>
-        <button class="entry-del" onclick="deleteWish(${i})" style="opacity:1">×</button>
-      </div>`).join('') || `<div class="empty-state">Список желаний пуст</div>`;
-
-    const addWish = uiState.addingWish
-      ? `<div class="add-row" style="flex-wrap:wrap;margin-top:14px;padding-top:14px;">
-          <input class="add-input" id="wishEmoIn" placeholder="Emoji" style="max-width:60px">
-          <input class="add-input" id="wishNameIn" placeholder="Название желания" style="flex:2">
-          <input class="add-input" id="wishPriceIn" type="number" placeholder="Цена (₽)">
-          <button class="btn-primary" onclick="confirmAddWish()">Добавить</button>
-          <button class="btn-secondary" onclick="cancelAddWish()">✕</button>
-        </div>`
-      : `<button class="btn-primary" style="width:100%;margin-top:14px" onclick="startAddWish()">+ Добавить желание</button>`;
-
-    content = `
-      <div class="fin-desktop-grid">
-        <div class="fin-col-center">
-          <div class="section-card" style="background: transparent; padding: 0; box-shadow: none;">
-            <div class="wish-list">${wishItems}</div>
-            ${addWish}
-          </div>
-        </div>
-      </div>`;
   }
 
   return `
@@ -260,6 +276,19 @@ function buildFinancePage() {
 }
 
 // ==================== FINANCE HANDLERS ====================
+function changeFinMonth(delta) {
+  if (!uiState.finMonth) {
+    const d = new Date();
+    uiState.finMonth = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  }
+  let [y, m] = uiState.finMonth.split('-').map(Number);
+  m += delta;
+  if (m < 1) { m = 12; y--; }
+  if (m > 12) { m = 1; y++; }
+  uiState.finMonth = `${y}-${String(m).padStart(2, '0')}`;
+  render();
+}
+
 function setFinTab(t) {
   uiState.finTab = t; 
   uiState.addingTx = null;
