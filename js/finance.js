@@ -1,3 +1,19 @@
+// ==================== NAVIGATION PATCH ====================
+// Заставляем приложение всегда открывать Сводку при переходе в Финансы
+if (typeof window !== 'undefined' && !window.finNavPatched) {
+  window.finNavPatched = true;
+  const originalNav = window.navTo;
+  if (originalNav) {
+    window.navTo = function(view) {
+      if (view === 'finance') {
+        uiState.finTab = 'summary'; 
+        uiState.addingTx = null;
+      }
+      originalNav(view);
+    };
+  }
+}
+
 // ==================== FINANCE DATA HELPERS ====================
 function getTransactions() {
   return JSON.parse(localStorage.getItem('flow_transactions') || '[]');
@@ -10,33 +26,72 @@ function getFinBalanceNum() {
   return txs.reduce((sum, t) => t.type === 'income' ? sum + t.amount : sum - t.amount, 0);
 }
 
-// Генератор красивых тонких иконок
 const svgIcon = (path) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
 
 const FIN_CATEGORIES = {
   income: [
-    { name: 'Заработок', icon: svgIcon('<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>') }, // Портфель
-    { name: 'Переводы', icon: svgIcon('<line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>') }, // Бумажный самолетик
-    { name: 'Проекты', icon: svgIcon('<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>') } // Молния (идеально для проектов)
+    { name: 'Заработок', icon: svgIcon('<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>') },
+    { name: 'Переводы', icon: svgIcon('<line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>') },
+    { name: 'Проекты', icon: svgIcon('<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>') }
   ],
   expense: [
-    { name: 'Еда', icon: svgIcon('<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line>') }, // Стаканчик кофе
-    { name: 'Подписки', icon: svgIcon('<polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>') }, // Цикл/Обновление
-    { name: 'Транспорт', icon: svgIcon('<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>') }, // Стрелка навигатора
-    { name: 'Развлечения', icon: svgIcon('<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>') }, // Монитор
-    { name: 'Прочее', icon: svgIcon('<circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle>') }, // Три точки
-    { name: 'Корректировка', icon: svgIcon('<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line>') } // Плюс в круге
+    { name: 'Еда', icon: svgIcon('<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line>') },
+    { name: 'Подписки', icon: svgIcon('<polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>') },
+    { name: 'Транспорт', icon: svgIcon('<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>') },
+    { name: 'Развлечения', icon: svgIcon('<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>') },
+    { name: 'Прочее', icon: svgIcon('<circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle>') },
+    { name: 'Корректировка', icon: svgIcon('<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line>') }
   ]
 };
-// ==================== NAVIGATION INTERCEPTOR ====================
-// Принудительно открываем Сводку при клике с главной страницы
-window.openFinance = function() {
-  uiState.finTab = 'summary';
-  uiState.addingTx = null;
-  navTo('finance');
-};
 
-// ==================== FINANCE DATA HELPERS ====================
+// Генератор графика
+function buildExpenseChart(txs) {
+  const colors = ['#EF4444', '#F59E0B', '#3B82F6', '#8B5CF6', '#10B981', '#EC4899'];
+  const expTxs = txs.filter(t => t.type === 'expense' && t.category !== 'Корректировка');
+  const totalExp = expTxs.reduce((s, t) => s + t.amount, 0);
+
+  if (totalExp === 0) return ''; // Не показываем, если нет расходов
+
+  const expCats = {};
+  expTxs.forEach(t => { expCats[t.category] = (expCats[t.category] || 0) + t.amount; });
+  
+  let gradientStops = [];
+  let legendHTML = '';
+  let currentPercent = 0;
+  
+  Object.entries(expCats).sort((a,b) => b[1] - a[1]).forEach(([cat, amt], index) => {
+    const percent = (amt / totalExp) * 100;
+    const color = colors[index % colors.length];
+    
+    gradientStops.push(`${color} ${currentPercent}% ${currentPercent + percent}%`);
+    currentPercent += percent;
+    
+    const catObj = FIN_CATEGORIES.expense.find(c => c.name === cat) || { icon: svgIcon('') };
+    legendHTML += `
+      <div class="fin-legend-item">
+        <div class="fin-legend-color" style="background: ${color}"></div>
+        <div class="fin-legend-name">${catObj.icon} ${cat}</div>
+        <div class="fin-legend-amt">${fmtRub(amt)}</div>
+      </div>
+    `;
+  });
+
+  return `
+    <div class="fin-chart-widget">
+      <div class="fin-donut-container">
+        <div class="fin-donut" style="background: conic-gradient(${gradientStops.join(', ')})"></div>
+        <div class="fin-donut-inner">
+          <span class="fin-donut-label">Расходы</span>
+          <span class="fin-donut-total">${fmtRub(totalExp)}</span>
+        </div>
+      </div>
+      <div class="fin-chart-legend">
+        ${legendHTML}
+      </div>
+    </div>
+  `;
+}
+
 // ==================== FINANCE PAGE ====================
 function buildFinancePage() {
   const tab = uiState.finTab || 'summary';
@@ -108,6 +163,8 @@ function buildFinancePage() {
       `;
     }
 
+    const chartHTML = buildExpenseChart(txs);
+
     let txHTML = txs.slice().reverse().slice(0, 30).map(t => {
       const isInc = t.type === 'income';
       const catObj = FIN_CATEGORIES[t.type].find(c => c.name === t.category) || FIN_CATEGORIES[t.type][0];
@@ -129,6 +186,7 @@ function buildFinancePage() {
         <div class="fin-col-left">
           ${balanceHTML}
           ${actionHTML}
+          ${chartHTML}
         </div>
         <div class="fin-col-right">
           <div class="section-eyebrow" style="margin-bottom: 12px;">Последние операции</div>
@@ -186,7 +244,6 @@ function setFinTab(t) {
   render();
 }
 
-// Установка баланса вручную
 function setExactBalance() {
   const currentBal = getFinBalanceNum();
   let newBal = prompt('Введите фактический баланс на счетах (₽):', currentBal);
@@ -199,7 +256,7 @@ function setExactBalance() {
   
   const txs = getTransactions();
   txs.push({
-    id: nextId ? nextId() : Date.now(),
+    id: typeof nextId !== 'undefined' ? nextId() : Date.now(),
     type: diff > 0 ? 'income' : 'expense',
     category: 'Корректировка',
     amount: Math.abs(diff),
@@ -235,7 +292,7 @@ function confirmAddTx(type) {
   
   const txs = getTransactions();
   txs.push({
-    id: nextId ? nextId() : Date.now(),
+    id: typeof nextId !== 'undefined' ? nextId() : Date.now(),
     type: type,
     category: uiState.selectedCat,
     amount: amt,

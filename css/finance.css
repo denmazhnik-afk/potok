@@ -1,312 +1,97 @@
-/* ====== PREMIUM FINANCE LAYOUT ====== */
-.fin-balance-block {
-  text-align: center;
+/* ====== DONUT CHART ====== */
+.fin-chart-widget {
+  background: transparent;
+  padding: 16px 0;
   margin-bottom: 24px;
-  padding: 20px 0;
 }
 
-.fin-balance-label {
-  font-size: 13px;
+.fin-donut-container {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 24px auto;
+  border-radius: 50%;
+}
+
+.fin-donut {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2);
+}
+
+.fin-donut-inner {
+  position: absolute;
+  /* Толщина кольца: 16px */
+  top: 16px; left: 16px; right: 16px; bottom: 16px;
+  background: #000; /* Если фон не черный, поменяй на var(--bg) */
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.fin-donut-label {
+  font-size: 10px;
   color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 4px;
-}
-
-.fin-balance-amount {
-  font-family: var(--mono);
-  font-size: 42px;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -0.04em;
-  margin-bottom: 16px;
-}
-
-/* ====== NEW SVG ICONS & BALANCE ADJUSTMENT ====== */
-.set-balance-btn {
-  background: transparent;
-  border: 1px dashed rgba(255,255,255,0.15);
-  color: var(--text-tertiary);
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  margin: -4px auto 16px auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: all 0.2s;
-  width: fit-content;
-}
-
-.set-balance-btn:hover {
-  background: rgba(255,255,255,0.05);
-  color: var(--text-secondary);
-}
-
-.set-balance-btn svg {
-  width: 14px;
-  height: 14px;
-}
-
-/* ====== WISHLIST WIDGET ====== */
-.fin-wish-widget {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin: 0 auto;
-  max-width: 400px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.fin-wish-widget:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.fin-wish-widget-top {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-}
-
-.fin-wish-track {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.fin-wish-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--blue), var(--purple));
-  border-radius: 4px;
-  transition: width 0.4s ease;
-}
-
-/* ====== ACTION BUTTONS ====== */
-.fin-action-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.fin-action-btn {
-  flex: 1;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  color: #fff;
-}
-
-.fin-action-btn.income {
-  background: rgba(107, 227, 164, 0.15);
-  color: var(--green);
-}
-
-.fin-action-btn.expense {
-  background: rgba(239, 68, 68, 0.15);
-  color: var(--red);
-}
-
-.fin-action-btn:active {
-  transform: scale(0.97);
-}
-
-/* ====== CATEGORY PICKER ====== */
-.fin-cat-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.fin-cat-btn {
-  padding: 8px 12px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid transparent;
-  color: var(--text-secondary);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.fin-cat-btn.active {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #fff;
-}
-
-.fin-cat-btn svg {
-  width: 14px;
-  height: 14px;
-}
-
-/* ====== TRANSACTION LIST ====== */
-.tx-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.tx-item {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  border-radius: 12px;
-  background: transparent;
-  transition: all 0.2s;
-  position: relative;
-}
-
-.tx-item:hover {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.tx-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 12px;
-}
-
-.tx-icon svg {
-  width: 20px;
-  height: 20px;
-  color: var(--text-secondary);
-}
-
-.tx-info {
-  flex: 1;
-}
-
-.tx-cat {
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
   margin-bottom: 2px;
 }
 
-.tx-note {
-  font-size: 12px;
-  color: var(--text-tertiary);
-}
-
-.tx-amount {
+.fin-donut-total {
   font-family: var(--mono);
-  font-size: 16px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.tx-amount.income { color: var(--green); }
-.tx-amount.expense { color: var(--red); }
-
-.entry-del {
-  position: absolute;
-  right: -10px;
-  top: -10px;
-  background: var(--bg);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  color: var(--text-tertiary);
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: all 0.2s;
-}
-
-.tx-item:hover .entry-del,
-.wish-item:hover .entry-del {
-  opacity: 1;
-}
-
-/* ====== WISHLIST ====== */
-.wish-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.wish-item {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.03);
-  position: relative;
-  transition: all 0.2s;
-}
-
-.wish-item:hover {
-  background: rgba(255,255,255,0.05);
-}
-
-.wish-item.done {
-  opacity: 0.5;
-}
-
-.wish-emoji {
-  font-size: 20px;
-}
-
-.wish-info {
-  flex: 1;
-  margin-left: 12px;
-}
-
-.wish-name {
   font-size: 15px;
-  color: #fff;
-  margin-bottom: 2px;
-}
-
-.wish-price {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--purple);
   font-weight: 700;
+  color: #fff;
 }
 
-/* ====== DESKTOP GRID ====== */
-.fin-desktop-grid {
+.fin-chart-legend {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
-  align-items: start;
+  gap: 10px;
 }
 
-.fin-col-center {
-  max-width: 600px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .fin-desktop-grid {
+@media (min-width: 400px) {
+  .fin-chart-legend {
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
   }
+}
+
+.fin-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.03);
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.fin-legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.fin-legend-name {
+  font-size: 13px;
+  color: var(--text-secondary);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fin-legend-name svg {
+  width: 14px;
+  height: 14px;
+}
+
+.fin-legend-amt {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
 }
