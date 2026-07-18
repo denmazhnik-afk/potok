@@ -1,97 +1,54 @@
 export default async function handler(req, res) {
-  // Бот реагирует только на POST-запросы от Telegram
-  if (req.method !== 'POST') return res.status(200).send('OK');
+  // Получаем данные из ссылки (GET-параметры)
+  const { amount, type, cat, note } = req.query;
 
-  const message = req.body.message;
-  if (!message || !message.text) return res.status(200).send('OK');
-
-  const chatId = message.chat.id.toString();
-  const text = message.text.trim();
-
-  const BOT_TOKEN = process.env.TG_BOT_TOKEN;
-  const MY_CHAT_ID = process.env.TG_CHAT_ID;
-  const YA_TOKEN = process.env.YANDEX_TOKEN;
-  const FILE_PATH = process.env.YANDEX_FILE_PATH;
-
-  // Функция для отправки ответа в ТГ
-  const reply = async (msg) => {
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text: msg })
-    });
-  };
-
-  // Проверка: отвечаем только тебе
-  if (chatId !== MY_CHAT_ID) {
-    await reply('⛔️ Доступ запрещен.');
-    return res.status(200).send('OK');
+  if (!amount || !type) {
+    return res.status(400).json({ error: 'Не хватает параметров суммы или типа' });
   }
 
-  // Разбираем текст. Формат: "Категория Сумма Комментарий" (например, "Еда 500 Макдак")
-  const match = text.match(/^([а-яА-Яa-zA-Z]+)\s+(\d+(?:\.\d+)?)(.*)$/);
-  if (!match) {
-    await reply('❌ Неверный формат.\nПиши так: Категория Сумма [Комментарий]\nПример: Еда 500 Обед');
-    return res.status(200).send('OK');
-  }
-
-  const category = match[1];
-  const amount = parseFloat(match[2]);
-  const note = match[3].trim() || 'Через Telegram';
-
-  // Определяем тип (доход или расход) по категории
-  const incomeCategories = ['Заработок', 'Переводы', 'Проекты'];
-  const type = incomeCategories.includes(category) ? 'income' : 'expense';
+  // Секретный токен берем из переменных окружения Vercel
+  const token = process.env.YANDEX_TOKEN;
+  
+  // ВНИМАНИЕ: Здесь нужно указать точный путь к твоему файлу сохранений на Диске
+  const filePath = 'disk:/app_data.json'; 
 
   try {
-    // 1. Запрашиваем ссылку на скачивание файла
-    const dlRes = await fetch(`https://cloud-api.yandex.net/v1/disk/resources/download?path=${encodeURIComponent(FILE_PATH)}`, {
-      headers: { Authorization: `OAuth ${YA_TOKEN}` }
+    // 1. Получаем ссылку на скачивание текущей базы
+    const getUrlResponse = await fetch(`https://cloud-api.yandex.net/v1/disk/resources/download?path=${encodeURIComponent(filePath)}`, {
+      headers: { Authorization: `OAuth ${token}` }
     });
-    const dlData = await dlRes.json();
-
-    // Если Яндекс вернул ошибку, прерываем выполнение и пишем её в Телеграм
-    if (!dlRes.ok || dlData.error) {
-      throw new Error(`Яндекс: ${dlData.description || dlData.message || 'Файл не найден или нет доступа'}`);
-    }
-
+    const getUrlData = await getUrlResponse.json();
+    
     // 2. Скачиваем сам файл
-    const fileRes = await fetch(dlData.href);
-    let appState = await fileRes.json();
+    const fileResponse = await fetch(getUrlData.href);
+    let data = await fileResponse.json();
 
-    // 3. Добавляем транзакцию
-    if (!appState.flow_transactions) appState.flow_transactions = [];
-    appState.flow_transactions.push({
+    // 3. Инициализируем массив, если он пуст, и пушим новую транзакцию
+    if (!data.flow_transactions) data.flow_transactions = [];
+    data.flow_transactions.push({
       id: Date.now(),
       type: type,
-      category: category,
-      amount: amount,
-      note: note,
+      category: cat || (type === 'income' ? 'Заработок' : 'Прочее'),
+      amount: parseFloat(amount),
+      note: note || 'С телефона',
       date: new Date().toISOString().split('T')[0]
     });
 
-    // 4. Получаем ссылку для перезаписи файла
-    const ulRes = await fetch(`https://cloud-api.yandex.net/v1/disk/resources/upload?path=${encodeURIComponent(FILE_PATH)}&overwrite=true`, {
-      headers: { Authorization: `OAuth ${YA_TOKEN}` }
+    // 4. Запрашиваем ссылку для перезаписи файла
+    const uploadUrlResponse = await fetch(`https://cloud-api.yandex.net/v1/disk/resources/upload?path=${encodeURIComponent(filePath)}&overwrite=true`, {
+      headers: { Authorization: `OAuth ${token}` }
     });
-    const ulData = await ulRes.json();
-    
-    if (!ulRes.ok || ulData.error) {
-      throw new Error(`Яндекс (Загрузка): ${ulData.description || ulData.message}`);
-    }
+    const uploadUrlData = await uploadUrlResponse.json();
 
-    // 5. Заливаем обновленный файл обратно на Диск
-    await fetch(ulData.href, {
+    // 5. Загружаем обновленный JSON обратно на Диск
+    await fetch(uploadUrlData.href, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(appState)
+      body: JSON.stringify(data)
     });
 
-    await reply(`✅ Записано: ${category} ${amount} ₽\n(${type === 'income' ? '🟢 Доход' : '🔴 Расход'})`);
-
+    // Отдаем айфону успешный ответ
+    res.status(200).json({ success: true, message: 'Транзакция записана' });
   } catch (error) {
-    await reply(`⚠️ Ошибка: ${error.message}\n🔍 Искал по пути: [${FILE_PATH}]`);
+    res.status(500).json({ error: error.message });
   }
-
-  return res.status(200).send('OK');
 }
