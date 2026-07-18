@@ -11,11 +11,19 @@ window.navTo = function(view) {
   }
 };
 // ==================== FINANCE DATA HELPERS ====================
+
 function getTransactions() {
-  return JSON.parse(localStorage.getItem('flow_transactions') || '[]');
+  // Теперь берем данные из общего хранилища, которое видит синхронизация
+  return localStore['flow_transactions'] || [];
 }
+
 function saveTransactions(arr) {
-  localStorage.setItem('flow_transactions', JSON.stringify(arr));
+  // Сохраняем в общее хранилище
+  localStore['flow_transactions'] = arr;
+  // Дергаем главную функцию из state.js, чтобы она запустила сохранение на Яндекс Диск
+  if (typeof save === 'function') {
+    save();
+  }
 }
 function getFinBalanceNum() {
   const txs = getTransactions();
