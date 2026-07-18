@@ -1,19 +1,15 @@
 // ==================== NAVIGATION PATCH ====================
-// Заставляем приложение всегда открывать Сводку при переходе в Финансы
-if (typeof window !== 'undefined' && !window.finNavPatched) {
-  window.finNavPatched = true;
-  const originalNav = window.navTo;
-  if (originalNav) {
-    window.navTo = function(view) {
-      if (view === 'finance') {
-        uiState.finTab = 'summary'; 
-        uiState.addingTx = null;
-      }
-      originalNav(view);
-    };
+// Гарантированно сбрасываем вкладку при любом переходе в Финансы
+const originalNavTo = window.navTo;
+window.navTo = function(view) {
+  if (view === 'finance') {
+    uiState.finTab = 'summary'; 
+    uiState.addingTx = null;
   }
-}
-
+  if (originalNavTo) {
+    originalNavTo(view);
+  }
+};
 // ==================== FINANCE DATA HELPERS ====================
 function getTransactions() {
   return JSON.parse(localStorage.getItem('flow_transactions') || '[]');
