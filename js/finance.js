@@ -266,6 +266,49 @@ function buildFinancePage() {
     `;
   }
 
+  else if (tab === 'wishlist') {
+    let addForm = '';
+    if (uiState.addingWish) {
+      addForm = `
+        <div class="fin-add-form section-card" style="margin-bottom: 24px;">
+          <div style="display:flex; gap:8px; margin-bottom:12px;">
+            <input class="add-input" id="wishEmoIn" placeholder="Эмодзи (🎁)" style="width: 80px; text-align:center;">
+            <input class="add-input" id="wishNameIn" placeholder="Название цели" style="flex:1;">
+          </div>
+          <input class="add-input" id="wishPriceIn" type="number" placeholder="Стоимость (₽)" style="margin-bottom:12px;">
+          <div style="display:flex; gap:8px">
+            <button class="btn-primary" style="flex:1" onclick="confirmAddWish()">Сохранить</button>
+            <button class="btn-secondary" onclick="cancelAddWish()">Отмена</button>
+          </div>
+        </div>
+      `;
+    } else {
+      addForm = `
+        <button class="btn-primary" style="width:100%; margin-bottom:24px;" onclick="startAddWish()">+ Добавить цель</button>
+      `;
+    }
+
+    const wishItems = wish.map((w, i) => `
+      <div class="wish-item ${w.done ? 'done' : ''}">
+        <div class="wish-emoji">${esc(w.emoji)}</div>
+        <div class="wish-info">
+          <div class="wish-name">${esc(w.name)}</div>
+          <div class="wish-price">${fmtRub(w.price)}</div>
+        </div>
+        <button class="entry-del" onclick="deleteWish(${i})">×</button>
+      </div>
+    `).join('') || `<div class="empty-state" style="margin-top:20px; color:var(--text-tertiary); text-align:center;">Список пуст</div>`;
+
+    content = `
+      <div class="fin-col-center">
+        ${addForm}
+        <div class="wish-list">
+          ${wishItems}
+        </div>
+      </div>
+    `;
+  }  
+
   return `
   <div class="page-header">
     <button class="back-btn" onclick="goHome()">← Назад</button>
