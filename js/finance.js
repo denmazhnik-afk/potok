@@ -28,7 +28,15 @@ const FIN_CATEGORIES = {
     { name: 'Корректировка', icon: svgIcon('<polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>') }
   ]
 };
+// ==================== NAVIGATION INTERCEPTOR ====================
+// Принудительно открываем Сводку при клике с главной страницы
+window.openFinance = function() {
+  uiState.finTab = 'summary';
+  uiState.addingTx = null;
+  navTo('finance');
+};
 
+// ==================== FINANCE DATA HELPERS ====================
 // ==================== FINANCE PAGE ====================
 function buildFinancePage() {
   const tab = uiState.finTab || 'summary';
