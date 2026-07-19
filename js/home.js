@@ -322,22 +322,25 @@ function toggleDayTaskUrgent(i) {
 }
 
 function deleteDayTask(i) {
-  const allTasks = getDayTasksWithIdeas(ACT_Y, ACT_M, ACT_D);
+  // Для надежности берем массив, который точно отрендерен на экране
+  const allTasks = window._currentDayTasks || getDayTasksWithIdeas(ACT_Y, ACT_M, ACT_D);
   const t = allTasks[i];
   if (!t) return;
 
   if (t.fromIdea && t.ideaId) {
-    // Clear scheduledDate from the idea task (don't delete from project)
+    // Убираем дату у задачи из Проекта (она исчезнет из дня, но останется в Проекте)
     const ideas = getIdeas();
     const idea = ideas.find(p => p.id === t.ideaId);
     if (idea) {
-      const task = idea.tasks.find(x => x.id === t.ideaTaskId);
+      // Ищем задачу по обоим возможным ключам
+      const task = idea.tasks.find(x => x.id === (t.ideaTaskId || t.id));
       if (task) {
         task.scheduledDate = null;
         saveIdeas(ideas);
       }
     }
   } else {
+    // Удаляем обычную задачу
     const td = getDayData(ACT_Y, ACT_M, ACT_D);
     const realIdx = td.tasks.findIndex(x => x.text === t.text);
     if (realIdx >= 0) {

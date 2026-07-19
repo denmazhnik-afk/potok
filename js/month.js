@@ -303,6 +303,33 @@ function toggleMonthTaskUrgent(d, ti) {
   }
 }
 
+function deleteMonthTask(d, ti) {
+  const {y, m} = viewData;
+  const allTasks = getDayTasksWithIdeas(y, m, d);
+  const t = allTasks[ti];
+  if (!t) return;
+
+  if (t.fromIdea && t.ideaId) {
+    const ideas = getIdeas();
+    const idea = ideas.find(p => p.id === t.ideaId);
+    if (idea) {
+      const task = idea.tasks.find(x => x.id === (t.ideaTaskId || t.id));
+      if (task) {
+        task.scheduledDate = null;
+        saveIdeas(ideas);
+      }
+    }
+  } else {
+    const dd = getDayData(y, m, d);
+    const realIdx = dd.tasks.findIndex(x => x.text === t.text);
+    if (realIdx >= 0) {
+      dd.tasks.splice(realIdx, 1);
+      saveDayData(y, m, d, dd);
+    }
+  }
+  render();
+}
+
 function startMonthTask(d) {
   uiState.addingTask[`month-${d}`] = true; render();
 }
